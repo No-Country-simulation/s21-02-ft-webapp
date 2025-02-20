@@ -1,12 +1,13 @@
 import { useState } from 'react'
-
+import Navbar from './components/navbar/userNavbar.jsx'
+import LpNavbar from './components/navbar/lpnavbar.jsx'
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
     <>
-      <h1 className='text-3xl text-blue-700'>Hello World!!!</h1>
+      <Navbar />
     </>
   )
 }
