@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import Navbar from './components/navbar/userNavbar.jsx'
+import UserNavbar from './components/navbar/userNavbar.jsx'
 import LpNavbar from './components/navbar/lpnavbar.jsx'
 
 function App() {
@@ -7,7 +7,7 @@ function App() {
 
   return (
     <>
-      <Navbar />
+        <UserNavbar />
     </>
   )
 }
