@@ -1,75 +1,100 @@
 package com.wallex.financial_platform.entities;
 
-import java.util.Currency;
-import java.util.Date;
-import java.util.List;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.*;
 
-import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.data.annotation.CreatedDate;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.wallex.financial_platform.entities.enums.CurrencyType;
+import com.wallex.financial_platform.entities.enums.TransactionStatus;
+import com.wallex.financial_platform.entities.enums.TransactionType;
+import com.wallex.financial_platform.entities.listeners.AccountListener;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
 
-import com.wallex.financial_platform.utils.enums.AccountStatus;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-
+@Data
 @Entity
-@Table(name="accounts")
-@Getter
-@Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
+//@RequiredArgsConstructor
+@Table(name = "accounts")
+@EntityListeners(AccountListener.class)
 public class Account {
-    @Id 
-    @Column(name="account_id")
+
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @Column(length = 11)
-    private Long cbu;
+    @Column(name = "account_id")
+    //@NonNull
+    private Long accountId;
+
+    @NonNull
+    @Column(nullable = false, unique = true)
+    private String cbu;
+
+    @NonNull
+    @Column(nullable = false, unique = true)
     private String alias;
 
-    // @Column(name="available_balance")
-    // private Double balance;
-    
-    // @Column(name="reserved_balance")
-    // private Double reservedBalance;
+    @Transient
+    private BigDecimal availableBalance;
 
-    private Currency currency;
+    @Transient
+    private BigDecimal reservedBalance;
 
-    @CreationTimestamp
-    @Column(name="creation_date")
-    private Date creationDate;
+    @Enumerated(EnumType.STRING)
+    @Column( nullable = false)
+    @NonNull
+    private CurrencyType currency;
 
-    private AccountStatus status;
+    @Column( nullable = false)
+    private Boolean active = true;
 
-    @OneToMany
-    @JoinColumn(name = "user_id")
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @Column(nullable = false, length = 20)
+    private LocalDateTime updatedAt;
+
+    @NonNull
+    @NotNull(message = "Requerid")
+    @JoinColumn(name = "user_id", nullable=false)
+    @ManyToOne
+    @JsonBackReference
     private User user;
-    
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-        name="transactions", 
-        joinColumns = @JoinColumn(name="source_account_id"),
-        inverseJoinColumns = @JoinColumn(name="id")
-    )
-    private List<Transaction> sendedTransactions;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-        name="transactions", 
-        joinColumns = @JoinColumn(name="destination_account_id"),
-        inverseJoinColumns = @JoinColumn(name="id")
-    )
-    private List<Transaction> receivedTransactions;
+    @JsonManagedReference
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Reservation> reservations;
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Movement> movements;
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "sourceAccount", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Transaction> sourceTransactions;
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "destinationAccount", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Transaction> destinationTransactions;
+
+    @Transient
+    @JsonManagedReference
+    private Map<TransactionType, Map<TransactionStatus, BigDecimal>> transactionTypeBalances = new HashMap<>();
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt =  LocalDateTime.now();
+        active = true;
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 
 }

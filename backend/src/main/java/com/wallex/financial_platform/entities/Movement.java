@@ -1,40 +1,45 @@
 package com.wallex.financial_platform.entities;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-
+@Data
 @Entity
-@Table(name="movements")
-@Getter
-@Setter
-@AllArgsConstructor
+@Table(name = "movements")
+@AllArgsConstructor @NoArgsConstructor
 public class Movement {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="movement_id")
-    private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "movement_id")
+    private Long movementId;
 
     @ManyToOne
-    @JoinColumn(name="account_id")
+    @JoinColumn(name = "account_id", nullable = false)
+    @JsonBackReference
     private Account account;
 
-    private String description;
-    private Double amount;
+    @ManyToOne
+    @JoinColumn(name = "transaction_id", nullable = false)
+    private Transaction transaction;
 
-    @CreationTimestamp
-    @Column(name="movement_date")
-    private Date movementDate;
-    
+    @Column( nullable = false)
+    private String description;
+
+    @Column( nullable = false)
+    private BigDecimal amount;
+
+    @Column( nullable = false)
+    private LocalDateTime movementDate;
+
+    @PrePersist
+    protected void onCreate() {
+        movementDate = LocalDateTime.now();
+    };
+
 }
