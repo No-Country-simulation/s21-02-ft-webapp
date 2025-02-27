@@ -4,7 +4,7 @@ const WallexCard = () => {
   const [balance] = useState(0)
 
   return (
-    <div className=" w-full max-w-md bg-gray-800 rounded-xl shadow-lg p-6 space-y-6 text-white">
+    <div className=" w-full max-w-md bg-BlackBlue rounded-xl shadow-lg p-6 space-y-6 text-white">
       {/* Gaston: Cabecera de la tarjeta*/}
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-semibold">Dinero Disponible</h2>
