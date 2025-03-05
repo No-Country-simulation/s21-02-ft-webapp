@@ -22,28 +22,25 @@ public class TransactionDataLoader {
     private final AccountRepository accountRepository;
 
     public void load() {
-        // Obtener algunas cuentas para asociar con las transacciones
+        // Obtener algunas cuentas con datos de Argentina
         Account account1 = accountRepository.findById(1L).orElseThrow();
         Account account2 = accountRepository.findById(2L).orElseThrow();
         Account account3 = accountRepository.findById(3L).orElseThrow();
+        Account account4 = accountRepository.findById(4L).orElseThrow();
+        Account account5 = accountRepository.findById(5L).orElseThrow();
 
-        // Crear transacciones
+        // Crear transacciones con datos realistas
         List<Transaction> transactions = List.of(
-                new Transaction(null, account1, account2, new BigDecimal("1000.00"), TransactionType.TRANSFER, "Pago de servicio", LocalDateTime.now(), TransactionStatus.COMPLETED),
-                new Transaction(null, account2, account3, new BigDecimal("500.00"), TransactionType.WITHDRAWAL, "Retiro de efectivo", LocalDateTime.now(), TransactionStatus.PENDING),
-                new Transaction(null, account3, account1, new BigDecimal("200.00"), TransactionType.DEPOSIT, "Depósito de salario", LocalDateTime.now(), TransactionStatus.COMPLETED),
-                new Transaction(null, account1, account3, new BigDecimal("150.00"), TransactionType.TRANSFER, "Pago de alquiler", LocalDateTime.now(), TransactionStatus.FAILED),
-                new Transaction(null, account2, account1, new BigDecimal("300.00"), TransactionType.DEPOSIT, "Reembolso", LocalDateTime.now(), TransactionStatus.COMPLETED),
-                new Transaction(null, account3, account2, new BigDecimal("700.00"), TransactionType.WITHDRAWAL, "Retiro bancario", LocalDateTime.now(), TransactionStatus.PENDING),
-                new Transaction(null, account1, account2, new BigDecimal("50.00"), TransactionType.TRANSFER, "Compra en línea", LocalDateTime.now(), TransactionStatus.COMPLETED),
-                new Transaction(null, account2, account3, new BigDecimal("1200.00"), TransactionType.TRANSFER, "Pago de préstamo", LocalDateTime.now(), TransactionStatus.COMPLETED),
-                new Transaction(null, account3, account1, new BigDecimal("900.00"), TransactionType.DEPOSIT, "Pago de cliente", LocalDateTime.now(), TransactionStatus.COMPLETED),
-                new Transaction(null, account1, account2, new BigDecimal("250.00"), TransactionType.TRANSFER, "Pago de factura", LocalDateTime.now(), TransactionStatus.FAILED),
-                new Transaction(null, account2, account3, new BigDecimal("800.00"), TransactionType.WITHDRAWAL, "Retiro de efectivo", LocalDateTime.now(), TransactionStatus.PENDING),
-                new Transaction(null, account3, account1, new BigDecimal("100.00"), TransactionType.DEPOSIT, "Ingreso de intereses", LocalDateTime.now(), TransactionStatus.COMPLETED),
-                new Transaction(null, account1, account3, new BigDecimal("600.00"), TransactionType.TRANSFER, "Compra de insumos", LocalDateTime.now(), TransactionStatus.PENDING),
-                new Transaction(null, account2, account1, new BigDecimal("450.00"), TransactionType.DEPOSIT, "Pago de amigo", LocalDateTime.now(), TransactionStatus.COMPLETED),
-                new Transaction(null, account3, account2, new BigDecimal("300.00"), TransactionType.WITHDRAWAL, "Retiro rápido", LocalDateTime.now(), TransactionStatus.PENDING)
+                new Transaction(null, account1, account2, new BigDecimal("150000.00"), TransactionType.TRANSFER, "Pago de alquiler", LocalDateTime.now(), TransactionStatus.COMPLETED)
+               // new Transaction(null, account2, account3, new BigDecimal("85000.00"), TransactionType.TRANSFER, "Transferencia a cuenta sueldo", LocalDateTime.now(), TransactionStatus.COMPLETED),
+               // new Transaction(null, account3, account4, new BigDecimal("20000.00"), TransactionType.TRANSFER, "Pago de tarjeta de crédito", LocalDateTime.now(), TransactionStatus.COMPLETED),
+                //new Transaction(null, account4, account5, new BigDecimal("60000.00"), TransactionType.TRANSFER, "Compra de insumos para la empresa", LocalDateTime.now(), TransactionStatus.COMPLETED),
+               // new Transaction(null, account5, account1, new BigDecimal("35000.00"), TransactionType.TRANSFER, "Pago de proveedores", LocalDateTime.now(), TransactionStatus.COMPLETED),
+               // new Transaction(null, account1, account3, new BigDecimal("5000.00"), TransactionType.TRANSFER, "Transferencia a cuenta ahorro", LocalDateTime.now(), TransactionStatus.COMPLETED),
+               // new Transaction(null, account2, account4, new BigDecimal("70000.00"), TransactionType.TRANSFER, "Pago de impuestos AFIP", LocalDateTime.now(), TransactionStatus.COMPLETED),
+               // new Transaction(null, account3, account5, new BigDecimal("25000.00"), TransactionType.TRANSFER, "Pago de honorarios", LocalDateTime.now(), TransactionStatus.COMPLETED),
+               // new Transaction(null, account4, account1, new BigDecimal("40000.00"), TransactionType.TRANSFER, "Inversión en plazo fijo", LocalDateTime.now(), TransactionStatus.COMPLETED),
+               // new Transaction(null, account5, account2, new BigDecimal("10000.00"), TransactionType.TRANSFER, "Gasto en publicidad", LocalDateTime.now(), TransactionStatus.COMPLETED)
         );
 
         // Guardar las transacciones en el repositorio

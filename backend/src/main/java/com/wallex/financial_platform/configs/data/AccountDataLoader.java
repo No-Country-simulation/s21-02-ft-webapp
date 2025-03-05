@@ -38,7 +38,7 @@ public class AccountDataLoader {
                         "1")
                 ) // CBU único
                 .alias((faker.animal().name()+"."+faker.construction().materials()+"."+faker.commerce().material()).toLowerCase()) // Alias único
-                .availableBalance(new BigDecimal(1000)) // Saldo disponible
+                .availableBalance(new BigDecimal(10000000)) // Saldo disponible
                 .reservedBalance(new BigDecimal(200)) // Saldo reservado
                 .currency(CurrencyType.ARS) // Moneda
                 .active(true)  // Activa
@@ -62,7 +62,7 @@ public class AccountDataLoader {
                         "1")
                 ) // CBU único
                 .alias((faker.animal().name()+"."+faker.construction().materials()+"."+faker.commerce().material()).toLowerCase())
-                .availableBalance(new BigDecimal(2500))
+                .availableBalance(new BigDecimal(250000))
                 .reservedBalance(new BigDecimal(500))
                 .currency(CurrencyType.ARS)
                 .active(true)
@@ -84,7 +84,7 @@ public class AccountDataLoader {
                         "Ø")
                 ) // CBU único
                 .alias((faker.animal().name()+"."+faker.construction().materials()+"."+faker.commerce().material()).toLowerCase())
-                .availableBalance(new BigDecimal(1500))
+                .availableBalance(new BigDecimal(150000))
                 .reservedBalance(new BigDecimal(300))
                 .currency(CurrencyType.ARS)
                 .active(true)
@@ -106,7 +106,7 @@ public class AccountDataLoader {
                         "Ø")
                 ) // CBU único
                 .alias((faker.animal().name()+"."+faker.construction().materials()+"."+faker.commerce().material()).toLowerCase())
-                .availableBalance(new BigDecimal(5000))
+                .availableBalance(new BigDecimal(500000))
                 .reservedBalance(new BigDecimal(1000))
                 .currency(CurrencyType.ARS)
                 .active(true)
@@ -128,7 +128,7 @@ public class AccountDataLoader {
                         "Ø")
                 ) // CBU único
                 .alias((faker.animal().name()+"."+faker.construction().materials()+"."+faker.commerce().material()).toLowerCase())
-                .availableBalance(new BigDecimal(3500))
+                .availableBalance(new BigDecimal(350000))
                 .reservedBalance(new BigDecimal(700))
                 .currency(CurrencyType.ARS)
                 .active(true)
@@ -150,8 +150,8 @@ public class AccountDataLoader {
                         "Ø")
                 ) // CBU único
                 .alias((faker.animal().name()+"."+faker.construction().materials()+"."+faker.commerce().material()).toLowerCase())
-                .availableBalance(new BigDecimal(4500))
-                .reservedBalance(new BigDecimal(900))
+                .availableBalance(new BigDecimal(1200))
+                .reservedBalance(new BigDecimal(90))
                 .currency(CurrencyType.USD)
                 .active(true)
                 .createdAt(LocalDateTime.now())
