@@ -1,15 +1,16 @@
 import { useState } from 'react';
 
-const Navbar = ()=>{
+const Navbar = ( name )=>{
     const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
     
+    const SpanName = name;
     
     return (
-        <nav className="bg-gray-800 w-full h-16 flex items-center justify-between px-4 ">
+        <nav className="bg-BlackBlue w-full h-16 flex items-center justify-between px-4 ">
           <div className="flex items-center space-x-4">
             <div className="relative">
               <button 
-                className="text-white hover:text-gray-300 flex items-center space-x-2 px-3 py-2 rounded-md hover:bg-gray-700"
+                className="text-white font-bold cursor-pointer hover:text-gray-300 flex items-center space-x-2 px-3 py-2 rounded-md transition duration-500"
                 onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
               >
                 
@@ -21,7 +22,7 @@ const Navbar = ()=>{
                   <div className="py-1" role="menu" aria-orientation="vertical">
                     <button className='flex flex-row justify-baseline items-center fill-white w-full  stroke-black gap-2 text-left px-4 py-2 cursor-pointer hover:text-BlackBlue hover:fill-BlackBlue hover:stroke-BlackBlue transition-colors duration-500'>
                       <svg className='w-8 h-8' viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
-                      <span>Inicio</span>
+                      <span >Inicio</span>
                     </button>
                     <hr className='flex self-center mx-5  w-6/8 ' />
                     <button className='flex flex-row justify-baseline items-center fill-white w-full  stroke-black gap-2 text-left px-4 py-2 cursor-pointer hover:text-BlackBlue hover:fill-BlackBlue hover:stroke-BlackBlue transition-colors duration-500'>
@@ -48,9 +49,9 @@ const Navbar = ()=>{
                 </div>
               )}
             </div>
-            <button className="text-white hover:text-gray-300 flex items-center space-x-2 px-3 py-2 rounded-md hover:bg-gray-700">
+            <button className="text-white h-full border-l-2 border-LightGolden flex items-center space-x-2 px-5 py-5 ">
               
-              <span>Inicio</span>
+              <span >Inicio</span>
             </button>
           </div>
           
