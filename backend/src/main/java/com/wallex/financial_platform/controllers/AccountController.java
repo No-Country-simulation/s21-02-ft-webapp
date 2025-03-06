@@ -42,16 +42,20 @@ public class AccountController {
     }
 
     @PostMapping("/transfer")
-    public ResponseEntity<TransactionResponseDTO> transfer(@RequestBody TransferRequestDTO transferRequestDTO) {
-        TransactionResponseDTO responseDTO = accountService.transfer(transferRequestDTO);
+    public ResponseEntity<TransactionResponseDTO> transfer(
+            @RequestParam Long sourceAccountId, // Recibe el ID como parámetro de consulta
+            @Valid @RequestBody TransferRequestDTO transferRequestDTO) { // El resto va en el body
+        TransactionResponseDTO responseDTO = accountService.transfer(sourceAccountId, transferRequestDTO);
         return ResponseEntity.ok(responseDTO);
     }
+
 
     @PostMapping("/deposit")
     public ResponseEntity<TransactionResponseDTO> deposit(@RequestBody DepositRequestDTO depositRequestDTO) {
         TransactionResponseDTO responseDTO = accountService.addFundsFromCard(depositRequestDTO);
         return ResponseEntity.ok(responseDTO);
     }
+
    /* @PostMapping("/check")
     public ResponseEntity<CheckAccountResponseDTO> createDestinationAccount(@RequestBody @Valid CheckAccountRequestDto accountData) {
         if (accountData.alias().isBlank() && accountData.cbu().isBlank()) {

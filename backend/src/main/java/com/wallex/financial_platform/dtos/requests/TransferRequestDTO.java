@@ -7,9 +7,6 @@ import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
 
 public record TransferRequestDTO(
-        @NotNull(message = "sourceAccountId is required")
-        Long sourceAccountId,
-
         @NotNull(message = "destinationIdentifier is required")
         @Size(min = 27, max = 27, message = "destinationIdentifier must be a valid CBU")
         String destinationIdentifier,

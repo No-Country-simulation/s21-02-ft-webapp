@@ -18,6 +18,6 @@ public interface IAccountService {
     //List<ReservationResponseDto> getReservations(Long accountId);
     List<String> getCurrencies();
     List<AccountResponseDTO> getAccountsByUserAll();
-    TransactionResponseDTO transfer(TransferRequestDTO transferRequestDTO);
+    TransactionResponseDTO transfer(Long sourceAccountId, TransferRequestDTO transferRequestDTO);
     TransactionResponseDTO addFundsFromCard(DepositRequestDTO depositRequestDTO);
 }

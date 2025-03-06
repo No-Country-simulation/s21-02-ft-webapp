@@ -73,8 +73,8 @@ public class AccountService implements IAccountService {
 
     @Override
     @Transactional
-    public TransactionResponseDTO transfer(TransferRequestDTO transferRequestDTO) {
-        Account sourceAccount = accountRepository.findById(transferRequestDTO.sourceAccountId())
+    public TransactionResponseDTO transfer(Long sourceAccountId, TransferRequestDTO transferRequestDTO) {
+        Account sourceAccount = accountRepository.findById(sourceAccountId)
                 .orElseThrow(() -> new AccountNotFoundException("Cuenta de origen no encontrada"));
         Account destinationAccount = accountRepository.findByCbuOrAlias(transferRequestDTO.destinationIdentifier(), transferRequestDTO.destinationIdentifier())
                 .orElseThrow(() -> new AccountNotFoundException("Cuenta de destino no encontrada"));
