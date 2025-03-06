@@ -42,9 +42,10 @@ public class AccountService implements IAccountService {
 
     @Override
     public List<AccountResponseDTO> getAccountsByUser() {
-        List<Account> accounts = this.accountRepository.findByUserId(this.userContextService.getAuthenticatedUser().getId());
+        User authenticatedUser = userContextService.getAuthenticatedUser();
+        List<Account> accounts = accountRepository.findByUserId(authenticatedUser.getId());
         if (accounts.isEmpty()) {
-            throw new AccountNotFoundException("No se encontro cuentas del usuario");
+            throw new AccountNotFoundException("No se encontraron cuentas para el usuario");
         }
         return mapAccountsToDto(accounts);
     }
@@ -52,17 +53,10 @@ public class AccountService implements IAccountService {
     @Override
     @Transactional
     public AccountResponseDTO createAccount(AccountRequestDTO accountReq) {
-        User authenticatedUser = this.userContextService.getAuthenticatedUser();
-        if (authenticatedUser == null) {
-            throw new UserNotFoundException("Usuario autenticado no encontrado.");
-        }
-
+        User authenticatedUser = userContextService.getAuthenticatedUser();
         validateExistingAccount(authenticatedUser, accountReq.currency());
-
         Account newAccount = buildNewAccount(authenticatedUser, accountReq.currency());
-
-        this.accountRepository.save(newAccount);
-
+        accountRepository.save(newAccount);
         return convertToDTO(newAccount);
     }
 
@@ -76,95 +70,38 @@ public class AccountService implements IAccountService {
     @Override
     @Transactional
     public TransactionResponseDTO transfer(TransferRequestDTO transferRequestDTO) {
-        Long sourceAccountId = transferRequestDTO.sourceAccountId();
-        String destinationIdentifier = transferRequestDTO.destinationIdentifier();
-        BigDecimal amount = transferRequestDTO.amount();
-        String reason = transferRequestDTO.reason();
-
-        Account sourceAccount = this.accountRepository.findById(sourceAccountId)
+        Account sourceAccount = accountRepository.findById(transferRequestDTO.sourceAccountId())
                 .orElseThrow(() -> new AccountNotFoundException("Cuenta de origen no encontrada"));
-
-        Account destinationAccount = accountRepository.findByCbuOrAlias(destinationIdentifier, destinationIdentifier)
+        Account destinationAccount = accountRepository.findByCbuOrAlias(transferRequestDTO.destinationIdentifier(), transferRequestDTO.destinationIdentifier())
                 .orElseThrow(() -> new AccountNotFoundException("Cuenta de destino no encontrada"));
 
-        if (!sourceAccount.getUser().getId().equals(userContextService.getAuthenticatedUser().getId())) {
-            throw new UserNotFoundException("No autorizado para operar esta cuenta");
-        }
+        validateTransferAuthorization(sourceAccount);
+        validateSufficientFunds(sourceAccount, transferRequestDTO.amount());
 
-        if (sourceAccount.getAvailableBalance().compareTo(amount) < 0) {
-            throw new InsufficientFundsException("Fondos insuficientes en la cuenta de origen");
-        }
+        performTransfer(sourceAccount, destinationAccount, transferRequestDTO.amount());
+        Transaction transaction = createTransaction(sourceAccount, destinationAccount, transferRequestDTO.amount(), transferRequestDTO.reason());
+        transactionRepository.save(transaction);
 
-        // Realizar la transferencia
-        sourceAccount.setAvailableBalance(sourceAccount.getAvailableBalance().subtract(amount));
-        destinationAccount.setAvailableBalance(destinationAccount.getAvailableBalance().add(amount));
-
-        accountRepository.save(sourceAccount);
-        accountRepository.save(destinationAccount);
-
-        Transaction transaction = new Transaction(null, sourceAccount, destinationAccount, amount, TransactionType.TRANSFER, reason, null, TransactionStatus.COMPLETED);
-        transaction = this.transactionRepository.save(transaction);
-
-        // Devolver el DTO de la transacción completada
         return mapToDTO(transaction);
     }
 
     @Override
     @Transactional
     public TransactionResponseDTO addFundsFromCard(DepositRequestDTO depositRequestDTO) {
-        // Obtener al usuario autenticado
-        User authenticatedUser = this.userContextService.getAuthenticatedUser();
-        if (authenticatedUser == null) {
-            throw new UserNotFoundException("Usuario autenticado no encontrado.");
-        }
+        User authenticatedUser = userContextService.getAuthenticatedUser();
+        Account account = accountRepository.findById(depositRequestDTO.accountId())
+                .orElseThrow(() -> new AccountNotFoundException("Cuenta no encontrada"));
 
-        // Verificar que la cuenta existe y pertenece al usuario
-        Account account = this.accountRepository.findById(depositRequestDTO.accountId())
-                .orElseThrow(() -> new AccountNotFoundException("Cuenta no encontrada."));
-        if (!account.getUser().getId().equals(authenticatedUser.getId())) {
-            throw new AccountErrorException("La cuenta no pertenece al usuario autenticado.");
-        }
+        validateAccountOwnership(authenticatedUser, account);
+        Card card = findUserCard(authenticatedUser, depositRequestDTO.cardNumber());
+        validateCardBalance(card, depositRequestDTO.amount());
 
-        // Buscar la tarjeta asociada al usuario
-        Card card = authenticatedUser.getCards().stream()
-                .filter(c -> this.encryptionService.decrypt(c.getEncryptedNumber()).equals(depositRequestDTO.cardNumber()))
-                .findFirst()
-                .orElseThrow(() -> new AccountErrorException("La tarjeta proporcionada no está asociada al usuario autenticado."));
+        performDeposit(account, card, depositRequestDTO.amount());
+        Transaction transaction = createDepositTransaction(account, depositRequestDTO.amount(), depositRequestDTO.cardNumber());
+        transactionRepository.save(transaction);
 
-        // Verificar que la tarjeta tiene saldo suficiente
-        if (card.getBalance().compareTo(depositRequestDTO.amount()) < 0) {
-            throw new InsufficientFundsException("La tarjeta no tiene saldo suficiente para realizar esta transacción.");
-        }
-
-        // Verificar que el monto a ingresar es válido
-        if (depositRequestDTO.amount().compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("El monto a ingresar debe ser mayor a cero.");
-        }
-
-        // Descontar el monto del saldo de la tarjeta
-        card.setBalance(card.getBalance().subtract(depositRequestDTO.amount()));
-
-        // Actualizar el saldo de la cuenta
-        account.setAvailableBalance(account.getAvailableBalance().add(depositRequestDTO.amount()));
-        this.accountRepository.save(account);
-
-        // Registrar la transacción de ingreso
-        Transaction transaction = new Transaction(
-                null, // transactionId generado automáticamente
-                account, // Cuenta de origen: no aplica para depósitos
-                account, // Cuenta de destino
-                depositRequestDTO.amount(),
-                TransactionType.DEPOSIT, // Tipo de transacción: DEPÓSITO
-                "Ingreso de fondos desde tarjeta " + depositRequestDTO.cardNumber(),
-                null, // Fecha/hora asignada automáticamente
-                TransactionStatus.COMPLETED // Estado completado
-        );
-        this.transactionRepository.save(transaction);
-
-        // Retornar el DTO de la cuenta actualizada
         return mapToDTO(transaction);
     }
-
 
     @Override
     public List<AccountResponseDTO> getAccountsByUserAll() {
@@ -173,6 +110,58 @@ public class AccountService implements IAccountService {
             throw new AccountNotFoundException("No se encontro cuentas del usuario");
         }
         return mapAccountsToDto(accounts);
+    }
+
+    private void validateTransferAuthorization(Account sourceAccount) {
+        if (!sourceAccount.getUser().getId().equals(userContextService.getAuthenticatedUser().getId())) {
+            throw new UserNotFoundException("No autorizado para operar esta cuenta");
+        }
+    }
+
+    private void validateSufficientFunds(Account sourceAccount, BigDecimal amount) {
+        if (sourceAccount.getAvailableBalance().compareTo(amount) < 0) {
+            throw new InsufficientFundsException("Fondos insuficientes en la cuenta de origen");
+        }
+    }
+
+    private void performTransfer(Account sourceAccount, Account destinationAccount, BigDecimal amount) {
+        sourceAccount.setAvailableBalance(sourceAccount.getAvailableBalance().subtract(amount));
+        destinationAccount.setAvailableBalance(destinationAccount.getAvailableBalance().add(amount));
+        accountRepository.save(sourceAccount);
+        accountRepository.save(destinationAccount);
+    }
+
+    private Transaction createTransaction(Account sourceAccount, Account destinationAccount, BigDecimal amount, String reason) {
+        return new Transaction(null, sourceAccount, destinationAccount, amount, TransactionType.TRANSFER, reason, null, TransactionStatus.COMPLETED);
+    }
+
+    private void validateAccountOwnership(User user, Account account) {
+        if (!account.getUser().getId().equals(user.getId())) {
+            throw new AccountErrorException("La cuenta no pertenece al usuario autenticado");
+        }
+    }
+
+    private Card findUserCard(User user, String cardNumber) {
+        return user.getCards().stream()
+                .filter(c -> encryptionService.decrypt(c.getEncryptedNumber()).equals(cardNumber))
+                .findFirst()
+                .orElseThrow(() -> new AccountErrorException("La tarjeta proporcionada no está asociada al usuario autenticado"));
+    }
+
+    private void validateCardBalance(Card card, BigDecimal amount) {
+        if (card.getBalance().compareTo(amount) < 0) {
+            throw new InsufficientFundsException("La tarjeta no tiene saldo suficiente para realizar esta transacción");
+        }
+    }
+
+    private void performDeposit(Account account, Card card, BigDecimal amount) {
+        card.setBalance(card.getBalance().subtract(amount));
+        account.setAvailableBalance(account.getAvailableBalance().add(amount));
+        accountRepository.save(account);
+    }
+
+    private Transaction createDepositTransaction(Account account, BigDecimal amount, String cardNumber) {
+        return new Transaction(null, account, account, amount, TransactionType.DEPOSIT, "Ingreso de fondos desde tarjeta " + cardNumber, null, TransactionStatus.COMPLETED);
     }
 
     private TransactionResponseDTO mapToDTO(Transaction transaction) {
@@ -187,19 +176,16 @@ public class AccountService implements IAccountService {
         );
     }
 
-
     private void validateExistingAccount(User user, CurrencyType currency) {
         boolean accountExists = user.getAccounts().stream()
                 .anyMatch(account -> account.getCurrency() == currency);
-
         if (accountExists) {
-            throw new AccountErrorException("El usuario ya tiene una cuenta con esta moneda.");
+            throw new AccountErrorException("El usuario ya tiene una cuenta con esta moneda");
         }
     }
 
     private Account buildNewAccount(User user, CurrencyType currency) {
         Faker faker = new Faker();
-
         Account account = new Account();
         account.setReservedBalance(BigDecimal.ZERO);
         account.setAvailableBalance(BigDecimal.ZERO);
@@ -211,7 +197,6 @@ public class AccountService implements IAccountService {
         account.setSourceTransactions(new ArrayList<>());
         account.setDestinationTransactions(new ArrayList<>());
         account.setReservations(new ArrayList<>());
-
         return account;
     }
 
@@ -240,3 +225,7 @@ public class AccountService implements IAccountService {
         );
     }
 }
+
+
+
+
