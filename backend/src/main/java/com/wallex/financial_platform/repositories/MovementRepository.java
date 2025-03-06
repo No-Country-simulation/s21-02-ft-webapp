@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface MovementRepository extends JpaRepository<Movement, Long> {
-
+    List<Movement> findByAccount_AccountId(Long accountId);
 }

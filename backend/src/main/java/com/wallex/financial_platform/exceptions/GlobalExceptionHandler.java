@@ -127,6 +127,11 @@ public class GlobalExceptionHandler {
         return buildResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, "Ocurrió un error inesperado");
     }
 
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<Map<String, Object>> handleGlobalStateException(IllegalStateException ex) {
+        return buildResponseEntity(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
+
     // ✅ Método reutilizable para construir respuestas JSON con código de estado
     private ResponseEntity<Map<String, Object>> buildResponseEntity(HttpStatus status, String message) {
         Map<String, Object> response = new HashMap<>();

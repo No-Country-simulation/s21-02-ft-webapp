@@ -7,17 +7,13 @@ import com.wallex.financial_platform.dtos.responses.AccountResponseDTO;
 import com.wallex.financial_platform.dtos.responses.TransactionResponseDTO;
 import com.wallex.financial_platform.entities.Account;
 import com.wallex.financial_platform.entities.Card;
-import com.wallex.financial_platform.entities.Transaction;
 import com.wallex.financial_platform.entities.User;
 import com.wallex.financial_platform.entities.enums.CurrencyType;
-import com.wallex.financial_platform.entities.enums.TransactionStatus;
-import com.wallex.financial_platform.entities.enums.TransactionType;
 import com.wallex.financial_platform.exceptions.account.AccountErrorException;
 import com.wallex.financial_platform.exceptions.account.AccountNotFoundException;
 import com.wallex.financial_platform.exceptions.auth.UserNotFoundException;
 import com.wallex.financial_platform.exceptions.transaction.InsufficientFundsException;
 import com.wallex.financial_platform.repositories.AccountRepository;
-import com.wallex.financial_platform.repositories.TransactionRepository;
 import com.wallex.financial_platform.services.IAccountService;
 import com.wallex.financial_platform.services.utils.EncryptionService;
 import com.wallex.financial_platform.services.utils.UserContextService;
@@ -37,8 +33,9 @@ import java.util.stream.Collectors;
 public class AccountService implements IAccountService {
     private final AccountRepository accountRepository;
     private final UserContextService userContextService;
-    private final TransactionRepository transactionRepository;
+    private final TransactionService transactionService;
     private final EncryptionService encryptionService;
+    private final NotificationService notificationService;
 
     @Override
     public List<AccountResponseDTO> getAccountsByUser() {
@@ -57,6 +54,13 @@ public class AccountService implements IAccountService {
         validateExistingAccount(authenticatedUser, accountReq.currency());
         Account newAccount = buildNewAccount(authenticatedUser, accountReq.currency());
         accountRepository.save(newAccount);
+
+        // Notificar al usuario
+        notificationService.notifyUser(
+                authenticatedUser,
+                "✨ Nueva cuenta creada con éxito",
+                "🎉 ¡Has creado una nueva cuenta en " + accountReq.currency() + "! Ahora puedes realizar transacciones y gestionar tus finanzas.");
+
         return convertToDTO(newAccount);
     }
 
@@ -79,10 +83,7 @@ public class AccountService implements IAccountService {
         validateSufficientFunds(sourceAccount, transferRequestDTO.amount());
 
         performTransfer(sourceAccount, destinationAccount, transferRequestDTO.amount());
-        Transaction transaction = createTransaction(sourceAccount, destinationAccount, transferRequestDTO.amount(), transferRequestDTO.reason());
-        transactionRepository.save(transaction);
-
-        return mapToDTO(transaction);
+        return transactionService.createTransferTransaction(sourceAccount, destinationAccount, transferRequestDTO.amount(), transferRequestDTO.reason());
     }
 
     @Override
@@ -97,10 +98,7 @@ public class AccountService implements IAccountService {
         validateCardBalance(card, depositRequestDTO.amount());
 
         performDeposit(account, card, depositRequestDTO.amount());
-        Transaction transaction = createDepositTransaction(account, depositRequestDTO.amount(), depositRequestDTO.cardNumber());
-        transactionRepository.save(transaction);
-
-        return mapToDTO(transaction);
+        return transactionService.createDepositTransaction(account, depositRequestDTO.amount(), depositRequestDTO.cardNumber());
     }
 
     @Override
@@ -131,10 +129,6 @@ public class AccountService implements IAccountService {
         accountRepository.save(destinationAccount);
     }
 
-    private Transaction createTransaction(Account sourceAccount, Account destinationAccount, BigDecimal amount, String reason) {
-        return new Transaction(null, sourceAccount, destinationAccount, amount, TransactionType.TRANSFER, reason, null, TransactionStatus.COMPLETED);
-    }
-
     private void validateAccountOwnership(User user, Account account) {
         if (!account.getUser().getId().equals(user.getId())) {
             throw new AccountErrorException("La cuenta no pertenece al usuario autenticado");
@@ -158,22 +152,6 @@ public class AccountService implements IAccountService {
         card.setBalance(card.getBalance().subtract(amount));
         account.setAvailableBalance(account.getAvailableBalance().add(amount));
         accountRepository.save(account);
-    }
-
-    private Transaction createDepositTransaction(Account account, BigDecimal amount, String cardNumber) {
-        return new Transaction(null, account, account, amount, TransactionType.DEPOSIT, "Ingreso de fondos desde tarjeta " + cardNumber, null, TransactionStatus.COMPLETED);
-    }
-
-    private TransactionResponseDTO mapToDTO(Transaction transaction) {
-        return new TransactionResponseDTO(
-                transaction.getTransactionId(),
-                transaction.getTransactionDateTime(),
-                transaction.getSourceAccount().getAccountId(),
-                transaction.getDestinationAccount().getAccountId(),
-                transaction.getAmount(),
-                transaction.getReason(),
-                transaction.getStatus().name()
-        );
     }
 
     private void validateExistingAccount(User user, CurrencyType currency) {
@@ -225,7 +203,6 @@ public class AccountService implements IAccountService {
         );
     }
 }
-
 
 
 

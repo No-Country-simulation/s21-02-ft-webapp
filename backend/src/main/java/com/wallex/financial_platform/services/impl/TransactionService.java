@@ -1,14 +1,98 @@
 package com.wallex.financial_platform.services.impl;
 
+import com.wallex.financial_platform.dtos.requests.MovementRequestDTO;
+import com.wallex.financial_platform.dtos.responses.TransactionResponseDTO;
+import com.wallex.financial_platform.entities.Account;
+import com.wallex.financial_platform.entities.Transaction;
+import com.wallex.financial_platform.entities.enums.TransactionStatus;
+import com.wallex.financial_platform.entities.enums.TransactionType;
+import com.wallex.financial_platform.repositories.TransactionRepository;
 import com.wallex.financial_platform.services.ITransactionService;
-import lombok.extern.slf4j.Slf4j;
+import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import lombok.AllArgsConstructor;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
-@Slf4j
 @Service
 @AllArgsConstructor
 public class TransactionService implements ITransactionService {
+    private final TransactionRepository transactionRepository;
+    private final MovementService movementService;
+    private final NotificationService notificationService;
 
+    @Override
+    @Transactional
+    public TransactionResponseDTO createTransferTransaction(Account sourceAccount, Account destinationAccount, BigDecimal amount, String reason) {
+        Transaction transaction = saveTransaction(sourceAccount, destinationAccount, amount, reason, TransactionType.TRANSFER);
+        createTransferMovements(sourceAccount, destinationAccount, amount, transaction);
+        return mapToDTO(transaction);
+    }
+
+    @Override
+    @Transactional
+    public TransactionResponseDTO createDepositTransaction(Account account, BigDecimal amount, String cardNumber) {
+        Transaction transaction = this.saveTransaction(account, account, amount, "Ingreso de fondos desde tarjeta " + cardNumber, TransactionType.DEPOSIT);
+        createDepositMovement(account, amount, transaction);
+
+        notificationService.notifyUser(
+                account.getUser(),
+                "💰 Depósito realizado con éxito",
+                "🎉 Has depositado " + amount + " " + account.getCurrency() + " en tu cuenta desde la tarjeta " + cardNumber + "."
+        );
+
+        return mapToDTO(transaction);
+    }
+
+    private Transaction saveTransaction(Account sourceAccount, Account destinationAccount, BigDecimal amount, String reason, TransactionType transactionType) {
+        Transaction transaction = new Transaction(null, sourceAccount, destinationAccount, amount, transactionType, reason, null, TransactionStatus.COMPLETED);
+        return transactionRepository.save(transaction);
+    }
+
+    private void createTransferMovements(Account sourceAccount, Account destinationAccount, BigDecimal amount, Transaction transaction) {
+        createMovement(sourceAccount, transaction, "Transferencia enviada", amount.negate());
+        createMovement(destinationAccount, transaction, "Transferencia recibida", amount);
+
+        // Notificar al remitente
+        notificationService.notifyUser(
+                sourceAccount.getUser(),
+                "💸 Transferencia enviada",
+                "📤 Has transferido " + amount + " " + sourceAccount.getCurrency() + " a la cuenta de " + destinationAccount.getUser().getFullName() + "."
+        );
+
+        // Notificar al destinatario
+        notificationService.notifyUser(
+                destinationAccount.getUser(),
+                "💸 Transferencia recibida",
+                "📥 Has recibido " + amount + " " + destinationAccount.getCurrency() + " de " + sourceAccount.getUser().getFullName() + "."
+        );
+    }
+
+    private void createDepositMovement(Account account, BigDecimal amount, Transaction transaction) {
+        createMovement(account, transaction, "Depósito desde tarjeta", amount);
+    }
+
+    private void createMovement(Account account, Transaction transaction, String description, BigDecimal amount) {
+        MovementRequestDTO movementRequest = new MovementRequestDTO(
+                account.getAccountId(),
+                transaction.getTransactionId(),
+                description,
+                amount,
+                LocalDateTime.now()
+        );
+        movementService.createMovement(movementRequest);
+    }
+
+    private TransactionResponseDTO mapToDTO(Transaction transaction) {
+        return new TransactionResponseDTO(
+                transaction.getTransactionId(),
+                transaction.getTransactionDateTime(),
+                transaction.getSourceAccount().getAccountId(),
+                transaction.getDestinationAccount().getAccountId(),
+                transaction.getAmount(),
+                transaction.getReason(),
+                transaction.getStatus().name()
+        );
+    }
 }

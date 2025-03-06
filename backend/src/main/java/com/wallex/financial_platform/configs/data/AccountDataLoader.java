@@ -119,7 +119,7 @@ public class AccountDataLoader {
                 .build()
         );
 
-        accountList.add(
+       /* accountList.add(
             Account.builder()
                 .accountId(null)
                 .cbu(faker.numerify("CBU000000"+"0351"+"Ø"+
@@ -139,7 +139,7 @@ public class AccountDataLoader {
                 .sourceTransactions(new ArrayList<>())
                 .destinationTransactions(new ArrayList<>())
                 .build()
-        );
+        );*/
 
         accountList.add(
             Account.builder()
