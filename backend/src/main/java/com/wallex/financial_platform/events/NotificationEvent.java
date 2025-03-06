@@ -1,7 +1,6 @@
 package com.wallex.financial_platform.events;
 
 import com.wallex.financial_platform.entities.Notification;
-import com.wallex.financial_platform.entities.User;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 

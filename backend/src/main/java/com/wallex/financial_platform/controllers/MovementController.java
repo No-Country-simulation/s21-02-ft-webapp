@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/movements")
 @AllArgsConstructor
 public class MovementController {
-    private MovementService movementService;
+ /*   private MovementService movementService;
 
     @GetMapping("/{movement_id}")
     private ResponseEntity<MovementResponseDTO> getMovementById(
             @PathVariable("movement_id") Long movementId
     ){
         return ResponseEntity.ok(movementService.getMovementById(movementId));
-    }
+    }*/
 }

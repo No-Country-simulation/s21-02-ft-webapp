@@ -3,9 +3,9 @@ package com.wallex.financial_platform.configs.data;
 import com.wallex.financial_platform.entities.Account;
 import com.wallex.financial_platform.entities.Reservation;
 import com.wallex.financial_platform.entities.enums.ReservationStatus;
+import com.wallex.financial_platform.entities.enums.TypeReservation;
 import com.wallex.financial_platform.repositories.AccountRepository;
 import com.wallex.financial_platform.repositories.ReservationRepository;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -28,12 +28,12 @@ public class ReservationDataLoader {
 
         // Crear las reservas para la cuenta 1
         Reservation reservation1 = new Reservation(
-                null, // ID se genera automáticamente
+                null, // Id se genera automáticamente
                 account1, // Relación con la cuenta 1
                 new BigDecimal("500.00"), // Monto reservado
                 LocalDateTime.now(), // Fecha de creación
                 ReservationStatus.ACTIVE, // Estado de la reserva,
-                "para Abono celular"
+                TypeReservation.COMIDA
         );
 
         Reservation reservation2 = new Reservation(
@@ -42,7 +42,7 @@ public class ReservationDataLoader {
                 new BigDecimal("100.00"),
                 LocalDateTime.now(),
                 ReservationStatus.ACTIVE,
-                "para facultad"
+                TypeReservation.VACACIONES_FAMILIARES
         );
 
 //        // Crear las reservas para la cuenta 2

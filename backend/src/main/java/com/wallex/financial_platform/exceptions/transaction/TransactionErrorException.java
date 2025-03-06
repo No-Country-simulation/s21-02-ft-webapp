@@ -1,4 +1,4 @@
-package com.wallex.financial_platform.exceptions;
+package com.wallex.financial_platform.exceptions.transaction;
 
 public class TransactionErrorException extends RuntimeException {
     public TransactionErrorException(String message) {

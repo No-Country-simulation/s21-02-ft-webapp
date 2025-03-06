@@ -50,14 +50,14 @@ public class User {
     private Boolean active ;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    //@JsonManagedReference
+    @JsonManagedReference
     private List<Account> accounts;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<Notification> notifications;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Card> cards;
 

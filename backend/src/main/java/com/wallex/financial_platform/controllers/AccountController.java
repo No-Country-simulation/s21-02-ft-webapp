@@ -1,16 +1,14 @@
 package com.wallex.financial_platform.controllers;
 
-import java.util.Date;
 import java.util.List;
 
 
 import com.wallex.financial_platform.dtos.requests.AccountRequestDTO;
-import com.wallex.financial_platform.dtos.requests.CheckAccountRequestDto;
+import com.wallex.financial_platform.dtos.requests.DepositRequestDTO;
+import com.wallex.financial_platform.dtos.requests.TransferRequestDTO;
 import com.wallex.financial_platform.dtos.responses.*;
-import com.wallex.financial_platform.entities.enums.TransactionStatus;
 import com.wallex.financial_platform.services.impl.MovementService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.PastOrPresent;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,19 +23,36 @@ public class AccountController {
     private AccountService accountService;
     private MovementService movementService;
 
+    @GetMapping("/all")
+    public ResponseEntity<List<AccountResponseDTO>> getAccountsAll() {
+        List<AccountResponseDTO>response = this.accountService.getAccountsByUserAll();
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping
     public ResponseEntity<List<AccountResponseDTO>> getAccounts() {
-        return ResponseEntity.ok(accountService.getByUser());
+        List<AccountResponseDTO>response = this.accountService.getAccountsByUser();
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping
-    public ResponseEntity<AccountResponseDTO> createAccount(
-            @RequestBody @Valid AccountRequestDTO account
-    ) {
-        return ResponseEntity.ok(accountService.createAccount(account));
+    public ResponseEntity<AccountResponseDTO> createAccount(@RequestBody @Valid AccountRequestDTO accountReq) {
+        AccountResponseDTO response = this.accountService.createAccount(accountReq);
+        return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/check")
+    @PostMapping("/transfer")
+    public ResponseEntity<TransactionResponseDTO> transfer(@RequestBody TransferRequestDTO transferRequestDTO) {
+        TransactionResponseDTO responseDTO = accountService.transfer(transferRequestDTO);
+        return ResponseEntity.ok(responseDTO);
+    }
+
+    @PostMapping("/deposit")
+    public ResponseEntity<TransactionResponseDTO> deposit(@RequestBody DepositRequestDTO depositRequestDTO) {
+        TransactionResponseDTO responseDTO = accountService.addFundsFromCard(depositRequestDTO);
+        return ResponseEntity.ok(responseDTO);
+    }
+   /* @PostMapping("/check")
     public ResponseEntity<CheckAccountResponseDTO> createDestinationAccount(@RequestBody @Valid CheckAccountRequestDto accountData) {
         if (accountData.alias().isBlank() && accountData.cbu().isBlank()) {
             throw new IllegalArgumentException("Alias or cbu is required");
@@ -58,14 +73,14 @@ public class AccountController {
     @GetMapping("/{id}/reservations")
     public ResponseEntity<List<ReservationResponseDto>> getReservations(
             @PathVariable("id") Long accountId
-            ) {
+    ) {
         return ResponseEntity.ok(accountService.getReservations(accountId));
     }
 
     @GetMapping("/{id}/movements")
-    public ResponseEntity<List<MovementResponseDTO>> getMovementsByAccount(@PathVariable("id") Long accountId){
+    public ResponseEntity<List<MovementResponseDTO>> getMovementsByAccount(@PathVariable("id") Long accountId) {
         return ResponseEntity.ok(movementService.getUserAccountMovements(accountId));
-    }
+    }*/
 
     @GetMapping("/currencies")
     public ResponseEntity<List<String>> getCurrencies() {

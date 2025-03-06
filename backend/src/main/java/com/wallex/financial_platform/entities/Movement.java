@@ -10,7 +10,6 @@ import lombok.*;
 
 @Data
 @Entity
-@Builder
 @Table(name = "movements")
 @AllArgsConstructor @NoArgsConstructor
 public class Movement {

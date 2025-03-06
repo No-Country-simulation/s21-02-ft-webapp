@@ -7,21 +7,15 @@ import java.util.*;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.wallex.financial_platform.entities.enums.CurrencyType;
-import com.wallex.financial_platform.entities.enums.TransactionStatus;
-import com.wallex.financial_platform.entities.enums.TransactionType;
-import com.wallex.financial_platform.entities.listeners.AccountListener;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-@Getter
-@Setter
 @Entity
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@Data
 @Table(name = "accounts")
-@EntityListeners(AccountListener.class)
+@AllArgsConstructor @NoArgsConstructor
+@Builder
 public class Account {
 
     @Id
@@ -35,10 +29,10 @@ public class Account {
     @Column(nullable = false, unique = true)
     private String alias;
 
-    @Transient
+    @Column(nullable = false)
     private BigDecimal availableBalance;
 
-    @Transient
+    @Column(nullable = false)
     private BigDecimal reservedBalance;
 
     @Enumerated(EnumType.STRING)
@@ -75,9 +69,6 @@ public class Account {
     @JsonManagedReference
     @OneToMany(mappedBy = "destinationAccount", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Transaction> destinationTransactions;
-
-    @Transient
-    private Map<TransactionType, Map<TransactionStatus, BigDecimal>> transactionTypeBalances = new HashMap<>();
 
     @PrePersist
     protected void onCreate() {

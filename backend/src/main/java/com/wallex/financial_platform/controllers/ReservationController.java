@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class ReservationController {
     private ReservationService reservationService;
 
-    @PostMapping
+   /* @PostMapping
     private ResponseEntity<ReservationResponseDto> postReservation(@RequestBody @Valid ReservationRequestDTO reservation){
         return ResponseEntity.ok(reservationService.saveReservation(reservation));
-    }
+    }*/
 }

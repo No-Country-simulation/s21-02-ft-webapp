@@ -1,16 +1,6 @@
 package com.wallex.financial_platform.controllers;
 
-import java.util.Date;
-
-import com.wallex.financial_platform.dtos.requests.TransactionRequestDTO;
-import com.wallex.financial_platform.dtos.responses.TransactionResponseDTO;
-import com.wallex.financial_platform.entities.enums.TransactionStatus;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.PastOrPresent;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import com.wallex.financial_platform.services.impl.TransactionService;
 
 import lombok.AllArgsConstructor;
 
@@ -18,7 +8,7 @@ import lombok.AllArgsConstructor;
 @RequestMapping("/api/transactions")
 @AllArgsConstructor
 public class TransactionController {
-    private TransactionService transactionService;
+/*    private TransactionService transactionService;
 
     @GetMapping("/{id}")
     public ResponseEntity<TransactionResponseDTO> getById(@PathVariable Long id) {
@@ -28,6 +18,6 @@ public class TransactionController {
     @PostMapping
     public ResponseEntity<TransactionResponseDTO> save(@RequestBody @Valid TransactionRequestDTO transaction) {
         return ResponseEntity.ok(transactionService.save(transaction));
-    }
+    }*/
 
 }

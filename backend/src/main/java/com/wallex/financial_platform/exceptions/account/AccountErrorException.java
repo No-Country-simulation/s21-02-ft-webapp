@@ -1,4 +1,4 @@
-package com.wallex.financial_platform.exceptions;
+package com.wallex.financial_platform.exceptions.account;
 
 public class AccountErrorException extends RuntimeException {
     public AccountErrorException(String message) {

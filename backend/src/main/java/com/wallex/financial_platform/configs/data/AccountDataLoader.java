@@ -21,7 +21,6 @@ public class AccountDataLoader {
     private final UserRepository userRepository;
 
     public void load() {
-        // Obtener algunos usuarios para asociar con las cuentas
 
         List<User> userList = userRepository.findAll();
 
@@ -38,8 +37,8 @@ public class AccountDataLoader {
                         "1")
                 ) // CBU único
                 .alias((faker.animal().name()+"."+faker.construction().materials()+"."+faker.commerce().material()).toLowerCase()) // Alias único
-                .availableBalance(new BigDecimal(10000000)) // Saldo disponible
-                .reservedBalance(new BigDecimal(200)) // Saldo reservado
+                .availableBalance(new BigDecimal(250000)) // Saldo disponible
+                .reservedBalance(new BigDecimal(30000)) // Saldo reservado
                 .currency(CurrencyType.ARS) // Moneda
                 .active(true)  // Activa
                 .createdAt(LocalDateTime.now()) // Fecha de creación

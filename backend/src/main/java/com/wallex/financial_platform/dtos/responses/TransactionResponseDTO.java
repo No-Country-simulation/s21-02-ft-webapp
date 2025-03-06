@@ -9,12 +9,10 @@ import java.time.LocalDateTime;
 
 public record TransactionResponseDTO(
         Long transactionId,
-        CheckAccountResponseDTO source,
-        CheckAccountResponseDTO destination,
-        LocalDateTime date,
-        TransactionType type,
-        TransactionStatus status,
+        LocalDateTime transactionDate,
+        Long sourceAccountId,
+        Long destinationAccountId,
         BigDecimal amount,
-        String reason
-) {
+        String reason,
+        String status) {
 }

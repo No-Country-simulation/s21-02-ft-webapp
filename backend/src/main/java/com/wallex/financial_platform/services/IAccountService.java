@@ -1,20 +1,23 @@
 package com.wallex.financial_platform.services;
 
 import com.wallex.financial_platform.dtos.requests.AccountRequestDTO;
-import com.wallex.financial_platform.dtos.requests.CheckAccountRequestDto;
+import com.wallex.financial_platform.dtos.requests.DepositRequestDTO;
+import com.wallex.financial_platform.dtos.requests.TransferRequestDTO;
 import com.wallex.financial_platform.dtos.responses.*;
-import com.wallex.financial_platform.entities.Transaction;
-import com.wallex.financial_platform.entities.enums.TransactionStatus;
+import jakarta.validation.Valid;
 
+import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public interface IAccountService {
-    List<AccountResponseDTO> getByUser();
-    CheckAccountResponseDTO checkAccount(CheckAccountRequestDto chkAcc);
-    AccountResponseDTO createAccount(AccountRequestDTO accountReq);
-    List<TransactionResumeResponseDTO> getTransactions(Long accountId);
-    List<ReservationResponseDto> getReservations(Long accountId);
+    List<AccountResponseDTO> getAccountsByUser();
+    AccountResponseDTO createAccount(@Valid AccountRequestDTO accountReq);
+    //CheckAccountResponseDTO checkAccount(CheckAccountRequestDto chkAcc);
+
+    //List<TransactionResumeResponseDTO> getTransactions(Long accountId);
+    //List<ReservationResponseDto> getReservations(Long accountId);
     List<String> getCurrencies();
+    List<AccountResponseDTO> getAccountsByUserAll();
+    TransactionResponseDTO transfer(TransferRequestDTO transferRequestDTO);
+    TransactionResponseDTO addFundsFromCard(DepositRequestDTO depositRequestDTO);
 }

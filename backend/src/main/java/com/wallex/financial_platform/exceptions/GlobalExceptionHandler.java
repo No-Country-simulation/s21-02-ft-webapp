@@ -1,13 +1,18 @@
 package com.wallex.financial_platform.exceptions;
 
+import com.wallex.financial_platform.exceptions.account.AccountErrorException;
+import com.wallex.financial_platform.exceptions.account.AccountNotFoundException;
 import com.wallex.financial_platform.exceptions.auth.InvalidCredentialsException;
 import com.wallex.financial_platform.exceptions.auth.UserAlreadyExistsException;
 import com.wallex.financial_platform.exceptions.auth.UserNotFoundException;
 import com.wallex.financial_platform.exceptions.card.CardAlreadyExistsException;
 import com.wallex.financial_platform.exceptions.card.CardNotFoundException;
 import com.wallex.financial_platform.exceptions.card.UnauthorizedCardDeletionException;
+import com.wallex.financial_platform.exceptions.movement.MovementNotFoundException;
 import com.wallex.financial_platform.exceptions.notification.NotificationException;
 import com.wallex.financial_platform.exceptions.transaction.InsufficientFundsException;
+import com.wallex.financial_platform.exceptions.transaction.TransactionErrorException;
+import com.wallex.financial_platform.exceptions.transaction.TransactionNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -21,83 +26,86 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // ⚠️ Manejo de credenciales inválidas
+    // ========== AUTHENTICATION EXCEPTIONS ==========
+
     @ExceptionHandler(InvalidCredentialsException.class)
     public ResponseEntity<Map<String, Object>> handleInvalidCredentialsException(InvalidCredentialsException ex) {
         return buildResponseEntity(HttpStatus.UNAUTHORIZED, ex.getMessage());
     }
 
-    // ⚠️ Manejo de usuario no encontrado
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<Map<String, Object>> handleUserNotFoundException(UserNotFoundException ex) {
         return buildResponseEntity(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
-    // ⚠️ Manejo de tarjeta no encontrada
-    @ExceptionHandler(CardNotFoundException.class)
-    public ResponseEntity<Map<String, Object>> handleCardNotFoundException(CardNotFoundException ex) {
-        return buildResponseEntity(HttpStatus.NOT_FOUND, ex.getMessage());
-    }
-
-    // ⚠️ Manejo de duplicado de tarjeta
-    @ExceptionHandler(CardAlreadyExistsException.class)
-    public ResponseEntity<Map<String, Object>> handleCardAlreadyExistsException(CardAlreadyExistsException ex) {
-        return buildResponseEntity(HttpStatus.NOT_FOUND, ex.getMessage());
-    }
-
-    // ⚠️ Manejo de Account no encontrado
-    @ExceptionHandler(AccountNotFoundException.class)
-    public ResponseEntity<Map<String, Object>> handleAccountNotFoundException(AccountNotFoundException ex) {
-        return buildResponseEntity(HttpStatus.NOT_FOUND, ex.getMessage());
-    }
-    // ⚠️ Manejo de Transaccion no encontrado
-    @ExceptionHandler(TransactionNotFoundException.class)
-    public ResponseEntity<Map<String, Object>> handleTransactionNotFoundException(TransactionNotFoundException ex) {
-        return buildResponseEntity(HttpStatus.NOT_FOUND, ex.getMessage());
-    }
-    // ⚠️ Manejo de Movement no encontrado
-    @ExceptionHandler(MovementNotFoundException.class)
-    public ResponseEntity<Map<String, Object>> handleMovementNotFoundException(MovementNotFoundException ex) {
-        return buildResponseEntity(HttpStatus.NOT_FOUND, ex.getMessage());
-    }
-
-    // ⚠️ Manejo de validaciones cuando no hay saldo suficiente
-    @ExceptionHandler(InsufficientFundsException.class)
-    public ResponseEntity<Map<String, Object>> handleInsufficientFundException(InsufficientFundsException ex) {
-        return buildResponseEntity(HttpStatus.CONFLICT, ex.getMessage());
-    }
-
-    // ⚠️ Manejo de validaciones en Transaction Service
-    @ExceptionHandler(TransactionErrorException.class)
-    public ResponseEntity<Map<String, Object>> handleTransactionErrorException(TransactionErrorException ex) {
-        return buildResponseEntity(HttpStatus.CONFLICT, ex.getMessage());
-    }
-
-    // ⚠️ Manejo de usuario ya existente
     @ExceptionHandler(UserAlreadyExistsException.class)
     public ResponseEntity<Map<String, Object>> handleUserAlreadyExistsException(UserAlreadyExistsException ex) {
         return buildResponseEntity(HttpStatus.CONFLICT, ex.getMessage());
     }
 
-    // ⚠️ Manejo de excepciones genéricas (cualquier otro error no manejado)
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String, Object>> handleGlobalException(Exception ex) {
-        return buildResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, "Ocurrió un error inesperado");
+    // ========== ACCOUNT EXCEPTIONS ==========
+
+    @ExceptionHandler(AccountNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleAccountNotFoundException(AccountNotFoundException ex) {
+        return buildResponseEntity(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
-    // ⚠️ Manejo de intento de eliminación no autorizada de tarjeta
+    @ExceptionHandler(AccountErrorException.class)
+    public ResponseEntity<Map<String, Object>> handleAccountErrorException(AccountErrorException ex) {
+        return buildResponseEntity(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
+
+
+    // ========== CARD EXCEPTIONS ==========
+
+    @ExceptionHandler(CardNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleCardNotFoundException(CardNotFoundException ex) {
+        return buildResponseEntity(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
+
+    @ExceptionHandler(CardAlreadyExistsException.class)
+    public ResponseEntity<Map<String, Object>> handleCardAlreadyExistsException(CardAlreadyExistsException ex) {
+        return buildResponseEntity(HttpStatus.CONFLICT, ex.getMessage());
+    }
+
     @ExceptionHandler(UnauthorizedCardDeletionException.class)
     public ResponseEntity<Map<String, Object>> handleUnauthorizedCardDeletionException(UnauthorizedCardDeletionException ex) {
         return buildResponseEntity(HttpStatus.FORBIDDEN, ex.getMessage());
     }
 
-    // ⚠️ Manejo de intento de notificar al usuario
+    // ========== TRANSACTION EXCEPTIONS ==========
+
+    @ExceptionHandler(TransactionNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleTransactionNotFoundException(TransactionNotFoundException ex) {
+        return buildResponseEntity(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
+
+    @ExceptionHandler(InsufficientFundsException.class)
+    public ResponseEntity<Map<String, Object>> handleInsufficientFundException(InsufficientFundsException ex) {
+        return buildResponseEntity(HttpStatus.CONFLICT, ex.getMessage());
+    }
+
+    @ExceptionHandler(TransactionErrorException.class)
+    public ResponseEntity<Map<String, Object>> handleTransactionErrorException(TransactionErrorException ex) {
+        return buildResponseEntity(HttpStatus.CONFLICT, ex.getMessage());
+    }
+
+    // ========== MOVEMENT EXCEPTIONS ==========
+
+    @ExceptionHandler(MovementNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleMovementNotFoundException(MovementNotFoundException ex) {
+        return buildResponseEntity(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
+
+    // ========== NOTIFICATION EXCEPTIONS ==========
+
     @ExceptionHandler(NotificationException.class)
     public ResponseEntity<String> handleNotificationException(NotificationException ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al enviar notificación: " + ex.getMessage());
     }
 
-    // ✅ Método reutilizable para errores de validación
+    // ========== GLOBAL & VALIDATION EXCEPTIONS ==========
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, Object> errors = new HashMap<>();
@@ -112,6 +120,11 @@ public class GlobalExceptionHandler {
         response.put("errors", errors);
 
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Map<String, Object>> handleGlobalException(Exception ex) {
+        return buildResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, "Ocurrió un error inesperado");
     }
 
     // ✅ Método reutilizable para construir respuestas JSON con código de estado

@@ -15,9 +15,7 @@ import com.wallex.financial_platform.entities.enums.TransactionType;
 @Data
 @Entity
 @Table(name = "transactions")
-@Builder
 @AllArgsConstructor @NoArgsConstructor
-
 public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
