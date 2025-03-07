@@ -19,5 +19,5 @@ public interface IAccountService {
     List<String> getCurrencies();
     List<AccountResponseDTO> getAccountsByUserAll();
     TransactionResponseDTO transfer(Long sourceAccountId, TransferRequestDTO transferRequestDTO);
-    TransactionResponseDTO addFundsFromCard(DepositRequestDTO depositRequestDTO);
+    TransactionResponseDTO addFundsFromCard(Long sourceAccountId, @Valid DepositRequestDTO depositRequestDTO);
 }

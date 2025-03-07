@@ -88,9 +88,9 @@ public class AccountService implements IAccountService {
 
     @Override
     @Transactional
-    public TransactionResponseDTO addFundsFromCard(DepositRequestDTO depositRequestDTO) {
+    public TransactionResponseDTO addFundsFromCard(Long sourceAccountId, DepositRequestDTO depositRequestDTO) {
         User authenticatedUser = userContextService.getAuthenticatedUser();
-        Account account = accountRepository.findById(depositRequestDTO.accountId())
+        Account account = accountRepository.findById(sourceAccountId)
                 .orElseThrow(() -> new AccountNotFoundException("Cuenta no encontrada"));
 
         validateAccountOwnership(authenticatedUser, account);
