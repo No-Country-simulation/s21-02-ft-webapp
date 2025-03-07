@@ -10,11 +10,13 @@ import com.wallex.financial_platform.exceptions.card.CardNotFoundException;
 import com.wallex.financial_platform.exceptions.card.UnauthorizedCardDeletionException;
 import com.wallex.financial_platform.exceptions.movement.MovementNotFoundException;
 import com.wallex.financial_platform.exceptions.notification.NotificationException;
+import com.wallex.financial_platform.exceptions.reservation.ReservationNotFoundException;
 import com.wallex.financial_platform.exceptions.transaction.InsufficientFundsException;
 import com.wallex.financial_platform.exceptions.transaction.TransactionErrorException;
 import com.wallex.financial_platform.exceptions.transaction.TransactionNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -97,6 +99,13 @@ public class GlobalExceptionHandler {
         return buildResponseEntity(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
+    // ========== RESERVATION EXCEPTIONS ==========
+
+    @ExceptionHandler(ReservationNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleReservationNotFoundException(ReservationNotFoundException ex) {
+        return buildResponseEntity(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
+
     // ========== NOTIFICATION EXCEPTIONS ==========
 
     @ExceptionHandler(NotificationException.class)
@@ -122,6 +131,21 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<Map<String, Object>> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
+        Throwable rootCause = ex.getRootCause();
+
+        if (rootCause instanceof IllegalArgumentException) {
+            return buildResponseEntity(HttpStatus.BAD_REQUEST, "El valor proporcionado no es válido para el campo enum.");
+        }
+
+        if (ex.getMessage() != null && ex.getMessage().contains("Cannot deserialize value of type")) {
+            return buildResponseEntity(HttpStatus.BAD_REQUEST, "El valor proporcionado no es válido para el campo enum.");
+        }
+
+        return buildResponseEntity(HttpStatus.BAD_REQUEST, "Error en el formato de la solicitud.");
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleGlobalException(Exception ex) {
         return buildResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, "Ocurrió un error inesperado");
@@ -132,7 +156,8 @@ public class GlobalExceptionHandler {
         return buildResponseEntity(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
-    // ✅ Método reutilizable para construir respuestas JSON con código de estado
+    // ========== ✅ Método reutilizable para construir respuestas JSON con código de estado ==========
+
     private ResponseEntity<Map<String, Object>> buildResponseEntity(HttpStatus status, String message) {
         Map<String, Object> response = new HashMap<>();
         response.put("timestamp", LocalDateTime.now());

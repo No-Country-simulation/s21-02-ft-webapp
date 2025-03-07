@@ -1,17 +1,17 @@
 package com.wallex.financial_platform.dtos.responses;
 
-import com.wallex.financial_platform.entities.Account;
 import com.wallex.financial_platform.entities.enums.ReservationStatus;
+import com.wallex.financial_platform.entities.enums.TypeReservation;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-public record ReservationResponseDto(
+public record ReservationResponseDTO(
         Long reservationId,
-        Long AccountId,
+        Long accountId,
         BigDecimal reservedAmount,
         LocalDateTime creationDate,
         ReservationStatus status,
-        String description
+        TypeReservation type
 ) {
 }

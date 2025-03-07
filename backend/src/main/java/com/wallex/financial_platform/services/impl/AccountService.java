@@ -105,7 +105,7 @@ public class AccountService implements IAccountService {
     public List<AccountResponseDTO> getAccountsByUserAll() {
         List<Account> accounts = this.accountRepository.findAll();
         if (accounts.isEmpty()) {
-            throw new AccountNotFoundException("No se encontro cuentas del usuario");
+            throw new AccountNotFoundException("No se encontró cuentas del usuario");
         }
         return mapAccountsToDto(accounts);
     }
