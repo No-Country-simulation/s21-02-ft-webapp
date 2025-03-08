@@ -18,7 +18,7 @@ import java.util.List;
 public class NotificationController {
     private final NotificationService notificationService;
 
-    @GetMapping("by-user")
+    @GetMapping
     public ResponseEntity<List<NotificationResponseDTO>>getNotificationsByUser() {
         List<NotificationResponseDTO> response = this.notificationService.getAllNotificationByUserOnline();
         return ResponseEntity.ok(response);
