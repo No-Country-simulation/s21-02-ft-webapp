@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -43,6 +45,37 @@ public class TransactionService implements ITransactionService {
         );
 
         return mapToDTO(transaction);
+    }
+
+    @Override
+    public List<TransactionResponseDTO> getTransactionByAccount(Long accountId) {
+        // Obtener todas las transacciones donde la cuenta sea la fuente o el destino
+        List<Transaction> transactions = transactionRepository.findBySourceAccountAccountIdOrDestinationAccountAccountId(accountId, accountId);
+
+        // Mapear las transacciones a DTOs y ajustar el monto según el tipo de transacción
+        return transactions.stream()
+                .map(transaction -> {
+                    BigDecimal amount = transaction.getAmount();
+                    if (transaction.getSourceAccount().getAccountId().equals(accountId) && transaction.getType().equals(TransactionType.TRANSFER) ) {
+                        // Si la cuenta es la fuente, el monto es negativo (transferencia enviada)
+                        amount = amount.negate();
+                    }
+                    // Si la cuenta es el destino, el monto es positivo (transferencia recibida o depósito)
+                    return mapToDTO1(transaction, amount);
+                })
+                .collect(Collectors.toList());
+    }
+
+    private TransactionResponseDTO mapToDTO1(Transaction transaction, BigDecimal amount) {
+        return new TransactionResponseDTO(
+                transaction.getTransactionId(),
+                transaction.getTransactionDateTime(),
+                transaction.getSourceAccount().getAccountId(),
+                transaction.getDestinationAccount().getAccountId(),
+                amount,
+                transaction.getReason(),
+                transaction.getType()
+        );
     }
 
     private Transaction saveTransaction(Account sourceAccount, Account destinationAccount, BigDecimal amount, String reason, TransactionType transactionType) {
@@ -92,7 +125,7 @@ public class TransactionService implements ITransactionService {
                 transaction.getDestinationAccount().getAccountId(),
                 transaction.getAmount(),
                 transaction.getReason(),
-                transaction.getStatus().name()
+                transaction.getType()
         );
     }
 }

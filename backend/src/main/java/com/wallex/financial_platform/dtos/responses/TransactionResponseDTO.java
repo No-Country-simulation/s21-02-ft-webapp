@@ -14,5 +14,5 @@ public record TransactionResponseDTO(
         Long destinationAccountId,
         BigDecimal amount,
         String reason,
-        String status) {
+        TransactionType transactionType) {
 }

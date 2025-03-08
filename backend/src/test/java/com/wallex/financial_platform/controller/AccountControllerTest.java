@@ -77,7 +77,7 @@ class AccountControllerTest {
     @Test
     @DisplayName("Test find all accounts By User")
     void testFindAllAccountsByUser() throws Exception {
-        given(accountService.getByUser())
+        given(accountService.getAccountsByUser())
                 .willReturn(accountResponseDTOList);
 
         this.mockMvc.perform(get("/api/accounts").accept(MediaType.APPLICATION_JSON))

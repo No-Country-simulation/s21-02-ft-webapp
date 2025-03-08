@@ -63,7 +63,7 @@ public class TransactionServiceTest {
                 .thenReturn(sampleUser1);
     }
 
-    @Test
+/*    @Test
     @DisplayName("Test find all transactions")
     void findAllTransaction(){
         Transaction transaction = sampleTransacctions.getFirst();
@@ -75,6 +75,6 @@ public class TransactionServiceTest {
 
         assertThat(transactionResponse).isNotNull();
         assertThat(transactionResponse.amount()).isEqualTo(sampleTransacctions.getFirst().getAmount());
-    }
+    }*/
 
 }

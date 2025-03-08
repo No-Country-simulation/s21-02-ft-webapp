@@ -1,8 +1,7 @@
 package com.wallex.financial_platform.controllers;
 
-import com.wallex.financial_platform.dtos.responses.CardResponseDTO;
+
 import com.wallex.financial_platform.dtos.responses.NotificationResponseDTO;
-import com.wallex.financial_platform.entities.Notification;
 import com.wallex.financial_platform.services.impl.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

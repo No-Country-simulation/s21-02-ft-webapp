@@ -31,9 +31,9 @@ public class TransactionDataLoader {
 
         // Crear transacciones con datos realistas
         List<Transaction> transactions = List.of(
-                new Transaction(null, account1, account2, new BigDecimal("150000.00"), TransactionType.TRANSFER, "Pago de alquiler", LocalDateTime.now(), TransactionStatus.COMPLETED)
-               // new Transaction(null, account2, account3, new BigDecimal("85000.00"), TransactionType.TRANSFER, "Transferencia a cuenta sueldo", LocalDateTime.now(), TransactionStatus.COMPLETED),
-               // new Transaction(null, account3, account4, new BigDecimal("20000.00"), TransactionType.TRANSFER, "Pago de tarjeta de crédito", LocalDateTime.now(), TransactionStatus.COMPLETED),
+                new Transaction(null, account1, account2, new BigDecimal("150000.00"), TransactionType.TRANSFER, "Pago de alquiler", LocalDateTime.now(), TransactionStatus.COMPLETED),
+                new Transaction(null, account2, account1, new BigDecimal("100000.00"), TransactionType.TRANSFER, "Pago por prestamo", LocalDateTime.now(), TransactionStatus.COMPLETED),
+                new Transaction(null, account1, account1, new BigDecimal("20000.00"), TransactionType.DEPOSIT, "Ingreso de dinero desde tarjeta de debito", LocalDateTime.now(), TransactionStatus.COMPLETED)
                 //new Transaction(null, account4, account5, new BigDecimal("60000.00"), TransactionType.TRANSFER, "Compra de insumos para la empresa", LocalDateTime.now(), TransactionStatus.COMPLETED),
                // new Transaction(null, account5, account1, new BigDecimal("35000.00"), TransactionType.TRANSFER, "Pago de proveedores", LocalDateTime.now(), TransactionStatus.COMPLETED),
                // new Transaction(null, account1, account3, new BigDecimal("5000.00"), TransactionType.TRANSFER, "Transferencia a cuenta ahorro", LocalDateTime.now(), TransactionStatus.COMPLETED),

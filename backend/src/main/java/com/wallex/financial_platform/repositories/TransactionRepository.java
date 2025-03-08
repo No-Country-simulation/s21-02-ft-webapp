@@ -8,14 +8,10 @@ import org.springframework.stereotype.Repository;
 
 import com.wallex.financial_platform.entities.Transaction;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
-
-    @Query(value="SELECT * FROM transactions t " +
-            "JOIN accounts acc ON acc.account_id = t.destination_account_account_id OR acc.account_id = t.source_account_account_id "+
-            "JOIN users u ON acc.user_id = u.id " +
-            "WHERE t.transaction_id = :transactionId AND u.id = :userId", nativeQuery = true)
-    Optional<Transaction> findByTransactionIdAndUser(@Param("transactionId") Long transactionId, @Param("userId") Long userId);
+    List<Transaction> findBySourceAccountAccountIdOrDestinationAccountAccountId(Long accountId, Long accountId1);
 }
