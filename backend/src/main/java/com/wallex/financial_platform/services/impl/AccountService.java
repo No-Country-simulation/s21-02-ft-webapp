@@ -55,7 +55,6 @@ public class AccountService implements IAccountService {
         Account newAccount = buildNewAccount(authenticatedUser, accountReq.currency());
         accountRepository.save(newAccount);
 
-        // Notificar al usuario
         notificationService.notifyUser(
                 authenticatedUser,
                 "✨ Nueva cuenta creada con éxito",

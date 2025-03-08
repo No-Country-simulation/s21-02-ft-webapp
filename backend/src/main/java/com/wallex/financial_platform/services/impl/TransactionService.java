@@ -52,15 +52,12 @@ public class TransactionService implements ITransactionService {
         // Obtener todas las transacciones donde la cuenta sea la fuente o el destino
         List<Transaction> transactions = transactionRepository.findBySourceAccountAccountIdOrDestinationAccountAccountId(accountId, accountId);
 
-        // Mapear las transacciones a DTOs y ajustar el monto según el tipo de transacción
         return transactions.stream()
                 .map(transaction -> {
                     BigDecimal amount = transaction.getAmount();
                     if (transaction.getSourceAccount().getAccountId().equals(accountId) && transaction.getType().equals(TransactionType.TRANSFER) ) {
-                        // Si la cuenta es la fuente, el monto es negativo (transferencia enviada)
                         amount = amount.negate();
                     }
-                    // Si la cuenta es el destino, el monto es positivo (transferencia recibida o depósito)
                     return mapToDTO1(transaction, amount);
                 })
                 .collect(Collectors.toList());
@@ -86,8 +83,7 @@ public class TransactionService implements ITransactionService {
     private void createTransferMovements(Account sourceAccount, Account destinationAccount, BigDecimal amount, Transaction transaction) {
         createMovement(sourceAccount, transaction, "Transferencia enviada", amount.negate());
         createMovement(destinationAccount, transaction, "Transferencia recibida", amount);
-
-        // Notificar al remitente
+        
         notificationService.notifyUser(
                 sourceAccount.getUser(),
                 "💸 Transferencia enviada",
