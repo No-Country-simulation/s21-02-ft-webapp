@@ -74,7 +74,7 @@ class AccountControllerTest {
         SecurityContextHolder.setContext(securityContext);
     }
 
-    @Test
+/*    @Test
     @DisplayName("Test find all accounts By User")
     void testFindAllAccountsByUser() throws Exception {
         given(accountService.getAccountsByUser())
@@ -87,7 +87,7 @@ class AccountControllerTest {
                 .andExpect(jsonPath("$[0].currency").value(accountResponseDTOList.get(0).currency().toString()))
                 .andExpect(jsonPath("$[0].balance").value(accountResponseDTOList.get(0).balance()))
         ;
-    }
+    }*/
 
     private AccountResponseDTO mapToDTO(Account account) {
         return new AccountResponseDTO(

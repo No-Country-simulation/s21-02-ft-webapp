@@ -10,7 +10,6 @@ import jakarta.validation.constraints.Positive;
 import java.math.BigDecimal;
 
 public record ReservationRequestDTO(
-        @NotNull Long accountId,
         @NotNull @Positive BigDecimal reservedAmount,
         @NotNull TypeReservation type
 ) {}

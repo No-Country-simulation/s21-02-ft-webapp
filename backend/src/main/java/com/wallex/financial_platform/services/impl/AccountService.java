@@ -38,9 +38,11 @@ public class AccountService implements IAccountService {
     private final NotificationService notificationService;
 
     @Override
-    public List<AccountResponseDTO> getAccountsByUser() {
+    public List<AccountResponseDTO> getAccountsByUser(Long userId) {
         User authenticatedUser = userContextService.getAuthenticatedUser();
-        List<Account> accounts = accountRepository.findByUserId(authenticatedUser.getId());
+        validateUserOwnership(authenticatedUser, userId);
+
+        List<Account> accounts = accountRepository.findByUserId(userId);
         if (accounts.isEmpty()) {
             throw new AccountNotFoundException("No se encontraron cuentas para el usuario");
         }
@@ -118,6 +120,12 @@ public class AccountService implements IAccountService {
     private void validateSufficientFunds(Account sourceAccount, BigDecimal amount) {
         if (sourceAccount.getAvailableBalance().compareTo(amount) < 0) {
             throw new InsufficientFundsException("Fondos insuficientes en la cuenta de origen");
+        }
+    }
+
+    private void validateUserOwnership(User authenticatedUser, Long userId) {
+        if (!authenticatedUser.getId().equals(userId)) {
+            throw new UserNotFoundException("No autorizado para operar esta cuenta");
         }
     }
 

@@ -33,41 +33,35 @@ public class ReservationService implements IReservationService {
 
     @Transactional
     @Override
-    public ReservationResponseDTO createReservation(ReservationRequestDTO reservationRequestDTO) {
-        Account account = this.validateAndGetAccount(reservationRequestDTO.accountId());
+    public ReservationResponseDTO createReservation(Long accountId, ReservationRequestDTO reservationRequestDTO) {
+        Account account = this.validateAndGetAccount(accountId);
         this.validateAccountOwnership(account);
-
-        Optional<Reservation> existingReservation = findExistingReservation(
-                reservationRequestDTO.accountId(),
-                reservationRequestDTO.type().name()
-        );
-
         this.validateSufficientFunds(account, reservationRequestDTO.reservedAmount());
 
-        Reservation reservation = existingReservation
+        Reservation reservation = this.findExistingReservation(accountId, reservationRequestDTO.type().name())
                 .map(res -> this.updateReservationAmount(res, reservationRequestDTO.reservedAmount()))
                 .orElseGet(() -> this.createNewReservation(account, reservationRequestDTO));
 
         this.updateAccountBalance(account, reservationRequestDTO.reservedAmount().negate());
-        reservation = saveReservation(reservation);
+        reservation = this.saveReservation(reservation);
 
-        return this.mapToDTO(reservation);
+        return mapToDTO(reservation);
     }
 
     @Transactional
     @Override
-    public ReservationResponseDTO releaseReservation(Long reservationId) {
-        Reservation reservation = this.validateAndGetReservation(reservationId);
-        this.validateReservationStatus(reservation);
-
-        Account account = reservation.getAccount();
+    public ReservationResponseDTO releaseReservation(Long reservationId, Long accountId) {
+        Account account = this.validateAndGetAccount(accountId);
         this.validateAccountOwnership(account);
+
+        Reservation reservation = this.validateReservationBelongsToAccount(reservationId, accountId);
+        this.validateReservationStatus(reservation);
 
         this.updateAccountBalance(account, reservation.getReservedAmount());
         reservation.setStatus(ReservationStatus.RELEASED);
         reservation = this.saveReservation(reservation);
 
-        return this.mapToDTO(reservation);
+        return mapToDTO(reservation);
     }
 
     @Override
@@ -75,32 +69,20 @@ public class ReservationService implements IReservationService {
         Account account = this.validateAndGetAccount(accountId);
         this.validateAccountOwnership(account);
 
-        List<Reservation> reservations = findActiveReservationsByAccount(accountId);
-        return this.mapReservationsToDTOs(reservations);
+        return mapReservationsToDTOs(this.findActiveReservationsByAccount(accountId));
     }
 
     // ========== Métodos de Validación ==========
 
     private Account validateAndGetAccount(Long accountId) {
-        return this.accountRepository.findById(accountId)
+        return accountRepository.findById(accountId)
                 .orElseThrow(() -> new AccountNotFoundException("Cuenta no encontrada"));
     }
 
-    private Reservation validateAndGetReservation(Long reservationId) {
-        return this.reservationRepository.findById(reservationId)
-                .orElseThrow(() -> new ReservationNotFoundException("Reserva no encontrada"));
-    }
-
     private void validateAccountOwnership(Account account) {
-        User authenticatedUser = this.userContextService.getAuthenticatedUser();
+        User authenticatedUser = userContextService.getAuthenticatedUser();
         if (!account.getUser().getId().equals(authenticatedUser.getId())) {
             throw new AccountErrorException("No estás autorizado para operar esta cuenta.");
-        }
-    }
-
-    private void validateReservationStatus(Reservation reservation) {
-        if (reservation.getStatus() != ReservationStatus.ACTIVE) {
-            throw new IllegalStateException("La reserva no está activa");
         }
     }
 
@@ -110,10 +92,29 @@ public class ReservationService implements IReservationService {
         }
     }
 
+    private Reservation validateReservationBelongsToAccount(Long reservationId, Long accountId) {
+        Reservation reservation = this.validateAndGetReservation(reservationId);
+        if (!reservation.getAccount().getAccountId().equals(accountId)) {
+            throw new ReservationNotFoundException("La reserva no pertenece a la cuenta especificada");
+        }
+        return reservation;
+    }
+
+    private void validateReservationStatus(Reservation reservation) {
+        if (reservation.getStatus() != ReservationStatus.ACTIVE) {
+            throw new IllegalStateException("La reserva no está activa");
+        }
+    }
+
+    private Reservation validateAndGetReservation(Long reservationId) {
+        return this.reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new ReservationNotFoundException("Reserva no encontrada"));
+    }
+
     // ========== Métodos de Búsqueda ==========
 
     private Optional<Reservation> findExistingReservation(Long accountId, String type) {
-        return this.reservationRepository.findByAccount_AccountIdAndTypeAndStatus(
+        return reservationRepository.findByAccount_AccountIdAndTypeAndStatus(
                 accountId,
                 TypeReservation.valueOf(type),
                 ReservationStatus.ACTIVE
@@ -121,7 +122,7 @@ public class ReservationService implements IReservationService {
     }
 
     private List<Reservation> findActiveReservationsByAccount(Long accountId) {
-        return this.reservationRepository.findByAccount_AccountIdAndStatus(accountId, ReservationStatus.ACTIVE);
+        return reservationRepository.findByAccount_AccountIdAndStatus(accountId, ReservationStatus.ACTIVE);
     }
 
     // ========== Métodos de Creación y Actualización ==========
@@ -142,11 +143,11 @@ public class ReservationService implements IReservationService {
 
     private void updateAccountBalance(Account account, BigDecimal amount) {
         account.setAvailableBalance(account.getAvailableBalance().add(amount));
-        this.accountRepository.save(account);
+        accountRepository.save(account);
     }
 
     private Reservation saveReservation(Reservation reservation) {
-        return this.reservationRepository.save(reservation);
+        return reservationRepository.save(reservation);
     }
 
     // ========== Métodos de Mapeo ==========

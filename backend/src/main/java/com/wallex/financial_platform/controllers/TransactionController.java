@@ -10,20 +10,15 @@ import lombok.AllArgsConstructor;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/transactions")
+@RequestMapping("/api/accounts/{accountId}/transactions")
 @AllArgsConstructor
 public class TransactionController {
 private TransactionService transactionService;
 
-    @GetMapping("/account/{id}")
-    public ResponseEntity<List<TransactionResponseDTO>> getTransactionByAccount(@PathVariable Long id) {
-       List<TransactionResponseDTO> response = this.transactionService.getTransactionByAccount(id);
+    @GetMapping
+    public ResponseEntity<List<TransactionResponseDTO>> getTransactionByAccount( @PathVariable Long accountId) {
+       List<TransactionResponseDTO> response = this.transactionService.getTransactionByAccount(accountId);
         return ResponseEntity.ok(response);
     }
-/*
-    @PostMapping
-    public ResponseEntity<TransactionResponseDTO> save(@RequestBody @Valid TransactionRequestDTO transaction) {
-        return ResponseEntity.ok(transactionService.save(transaction));
-    }*/
 
 }

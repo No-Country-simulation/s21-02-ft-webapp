@@ -30,8 +30,8 @@ public class AccountController {
     }
 
     @GetMapping
-    public ResponseEntity<List<AccountResponseDTO>> getAccounts() {
-        List<AccountResponseDTO>response = this.accountService.getAccountsByUser();
+    public ResponseEntity<List<AccountResponseDTO>> getAccounts(@PathVariable Long accountId) {
+        List<AccountResponseDTO>response = this.accountService.getAccountsByUser(accountId);
         return ResponseEntity.ok(response);
     }
 
@@ -47,42 +47,11 @@ public class AccountController {
         return ResponseEntity.ok(responseDTO);
     }
 
-
     @PostMapping("/deposit")
     public ResponseEntity<TransactionResponseDTO> deposit(@RequestParam Long sourceAccountId, @Valid @RequestBody DepositRequestDTO depositRequestDTO) {
         TransactionResponseDTO responseDTO = accountService.addFundsFromCard(sourceAccountId, depositRequestDTO);
         return ResponseEntity.ok(responseDTO);
     }
-
-   /* @PostMapping("/check")
-    public ResponseEntity<CheckAccountResponseDTO> createDestinationAccount(@RequestBody @Valid CheckAccountRequestDto accountData) {
-        if (accountData.alias().isBlank() && accountData.cbu().isBlank()) {
-            throw new IllegalArgumentException("Alias or cbu is required");
-        }
-        return ResponseEntity.ok(accountService.checkAccount(accountData));
-    }
-
-    @GetMapping("/{id}/transactions")
-    public ResponseEntity<List<TransactionResumeResponseDTO>> getTransactions(
-            @PathVariable("id") Long accountId,
-            @RequestParam(required = false) @PastOrPresent Date from,
-            @RequestParam(required = false) @PastOrPresent Date to,
-            @RequestParam(required = false) TransactionStatus status
-    ) {
-        return ResponseEntity.ok(accountService.getTransactions(accountId));
-    }
-
-    @GetMapping("/{id}/reservations")
-    public ResponseEntity<List<ReservationResponseDto>> getReservations(
-            @PathVariable("id") Long accountId
-    ) {
-        return ResponseEntity.ok(accountService.getReservations(accountId));
-    }
-
-    @GetMapping("/{id}/movements")
-    public ResponseEntity<List<MovementResponseDTO>> getMovementsByAccount(@PathVariable("id") Long accountId) {
-        return ResponseEntity.ok(movementService.getUserAccountMovements(accountId));
-    }*/
 
     @GetMapping("/currencies")
     public ResponseEntity<List<String>> getCurrencies() {
