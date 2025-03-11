@@ -17,7 +17,6 @@ import com.wallex.financial_platform.services.utils.EncryptionService;
 import com.wallex.financial_platform.services.utils.UserContextService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -30,7 +29,6 @@ public class CardService implements ICardService {
 
     private final CardRepository cardRepository;
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
     private final UserContextService userContextService;
     private final EncryptionService encryptionService;
     private final NotificationService notificationService;
@@ -55,7 +53,7 @@ public class CardService implements ICardService {
         card.setType(cardRequestDTO.type());
         card.setProvider(provider);
         card.setExpirationDate(cardRequestDTO.expirationDate());
-        card.setEncryptedCvv(passwordEncoder.encode(cardRequestDTO.encryptedCvv()));
+        card.setEncryptedCvv(encryptionService.encrypt(cardRequestDTO.encryptedCvv()));
         card.setBalance(cardRequestDTO.balance());
         card.setUser(user);
 
@@ -116,6 +114,7 @@ public class CardService implements ICardService {
         User authenticatedUser = userContextService.getAuthenticatedUser();
         if (authenticatedUser != null && authenticatedUser.getId().equals(card.getUser().getId())) {
             card.setEncryptedNumber(encryptionService.decrypt(card.getEncryptedNumber()));
+            card.setEncryptedCvv(encryptionService.decrypt(card.getEncryptedCvv()));
         }
         return card;
     }
@@ -134,6 +133,7 @@ public class CardService implements ICardService {
                 card.getProvider().getFullName(),
                 card.getExpirationDate(),
                 card.getBalance(),
+                card.getEncryptedCvv(),
                 card.getRegistrationDate()
         );
     }

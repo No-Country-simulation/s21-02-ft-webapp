@@ -6,7 +6,6 @@ import com.wallex.financial_platform.entities.enums.NotificationStatus;
 import com.wallex.financial_platform.entities.enums.NotificationType;
 import com.wallex.financial_platform.repositories.NotificationRepository;
 import com.wallex.financial_platform.repositories.UserRepository;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -25,12 +24,17 @@ public class NotificationDataLoader {
         User user2 = userRepository.findById(2L).orElseThrow();
         User user3 = userRepository.findById(4L).orElseThrow();
 
+        LocalDateTime date1 = LocalDateTime.of(2025, 3, 2, 10, 0); // 2 de enero de 2025, 10:00 AM
+        LocalDateTime date2 = LocalDateTime.of(2025, 3, 8, 14, 30); // 15 de enero de 2025, 2:30 PM
+        LocalDateTime date3 = LocalDateTime.of(2025, 3, 6, 9, 15); // 1 de febrero de 2025, 9:15 AM
+        LocalDateTime date4 = LocalDateTime.of(2025, 3, 1, 18, 45); // 11 de marzo de 2025, 6:45 PM
+
         Notification notification1 = new Notification(
                 null,
                 user1,
                 NotificationType.EMAIL,
                 "Este es un mensaje informativo",
-                LocalDateTime.now(),
+                date1,
                 NotificationStatus.SENT
         );
 
@@ -39,17 +43,16 @@ public class NotificationDataLoader {
                 user1,
                 NotificationType.EMAIL,
                 "Este es un mensaje de alerta",
-                LocalDateTime.now(),
+                date2,
                 NotificationStatus.SENT
         );
 
-        // Crear las notificaciones para el usuario 2
         Notification notification3 = new Notification(
                 null,
                 user2,
                 NotificationType.EMAIL,
                 "Este es un mensaje de advertencia",
-                LocalDateTime.now(),
+                date3,
                 NotificationStatus.SENT
         );
 
@@ -58,10 +61,10 @@ public class NotificationDataLoader {
                 user3,
                 NotificationType.EMAIL,
                 "Este es otro mensaje informativo",
-                LocalDateTime.now(),
+                date4,
                 NotificationStatus.SENT
         );
 
-        notificationRepository.saveAll(List.of(notification1, notification2, notification3, notification4)); // Guardar las notificaciones
+        notificationRepository.saveAll(List.of(notification1, notification2, notification3, notification4));
     }
 }

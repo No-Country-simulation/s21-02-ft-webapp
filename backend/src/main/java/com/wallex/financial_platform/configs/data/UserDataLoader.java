@@ -20,6 +20,14 @@ public class UserDataLoader {
     public void load() {
         Faker faker = new Faker();
 
+        // Fechas hardcodeadas en enero de 2025
+        LocalDateTime date1 = LocalDateTime.of(2025, 1, 2, 10, 0);
+        LocalDateTime date2 = LocalDateTime.of(2025, 1, 5, 12, 30);
+        LocalDateTime date3 = LocalDateTime.of(2025, 1, 10, 15, 45);
+        LocalDateTime date4 = LocalDateTime.of(2025, 1, 15, 9, 15);
+        LocalDateTime date5 = LocalDateTime.of(2025, 1, 20, 14, 0);
+        LocalDateTime date6 = LocalDateTime.of(2025, 1, 25, 11, 30);
+
         // Crear usuarios con contraseñas encriptadas
         User user1 = new User(
                 null,
@@ -28,8 +36,8 @@ public class UserDataLoader {
                 "jindrg@gmail.com",
                 "+541112345678",
                 passwordEncoder.encode("password123"),
-                LocalDateTime.now(),
-                LocalDateTime.now(),
+                date1,
+                date1,
                 true,
                 null,
                 null,
@@ -45,8 +53,8 @@ public class UserDataLoader {
                 "maria.gomez@dominio.com",
                 "+541198765432",
                 passwordEncoder.encode("password456"),
-                LocalDateTime.now(),
-                LocalDateTime.now(),
+                date2,
+                date2,
                 true,
                 null,
                 null,
@@ -62,8 +70,8 @@ public class UserDataLoader {
                 "carlos.lopez@dominio.com",
                 "+541112345679",
                 passwordEncoder.encode("password789"),
-                LocalDateTime.now(),
-                LocalDateTime.now(),
+                date3,
+                date3,
                 true,
                 null,
                 null,
@@ -79,8 +87,8 @@ public class UserDataLoader {
                 "ana.torres@dominio.com",
                 "+541112345680",
                 passwordEncoder.encode("password012"),
-                LocalDateTime.now(),
-                LocalDateTime.now(),
+                date4,
+                date4,
                 true,
                 null,
                 null,
@@ -96,8 +104,8 @@ public class UserDataLoader {
                 "luis.mendez@dominio.com",
                 "+541112345681",
                 passwordEncoder.encode("password345"),
-                LocalDateTime.now(),
-                LocalDateTime.now(),
+                date5,
+                date5,
                 true,
                 null,
                 null,
@@ -113,8 +121,8 @@ public class UserDataLoader {
                 "support@mercadopago.com",
                 faker.numerify("+54##########"),
                 passwordEncoder.encode("password345"),
-                LocalDateTime.now(),
-                LocalDateTime.now(),
+                date6,
+                date6,
                 false,
                 null,
                 null,
@@ -130,8 +138,8 @@ public class UserDataLoader {
                 "tesoreria@wallex.com",
                 faker.numerify("+54##########"),
                 passwordEncoder.encode("qwertyui"),
-                LocalDateTime.now(),
-                LocalDateTime.now(),
+                date1,
+                date1,
                 false,
                 null,
                 null,
@@ -140,7 +148,6 @@ public class UserDataLoader {
                 false
         );
 
-
         User user8 = new User(
                 null,
                 "Visa",
@@ -148,8 +155,8 @@ public class UserDataLoader {
                 "visa@testing.com",
                 faker.numerify("+54##########"),
                 passwordEncoder.encode("qwertyui"),
-                LocalDateTime.now(),
-                LocalDateTime.now(),
+                date2,
+                date2,
                 false,
                 null,
                 null,
@@ -165,8 +172,8 @@ public class UserDataLoader {
                 "mastercard@testing.com",
                 faker.numerify("+54##########"),
                 passwordEncoder.encode("qwertyui"),
-                LocalDateTime.now(),
-                LocalDateTime.now(),
+                date3,
+                date3,
                 false,
                 null,
                 null,
@@ -182,8 +189,8 @@ public class UserDataLoader {
                 "amex@testing.com",
                 faker.numerify("+54##########"),
                 passwordEncoder.encode("qwertyui"),
-                LocalDateTime.now(),
-                LocalDateTime.now(),
+                date4,
+                date4,
                 false,
                 null,
                 null,
@@ -194,5 +201,4 @@ public class UserDataLoader {
 
         userRepository.saveAll(List.of(user1, user2, user3, user4, user5, user6, user7, user8, user9, user10));
     }
-
 }

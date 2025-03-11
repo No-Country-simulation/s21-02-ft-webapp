@@ -10,5 +10,6 @@ public record CardResponseDTO(
  String issuingBank,
  String expirationDate,
  BigDecimal balance,
+ String cvv,
  LocalDateTime registrationDate
 ) { }
