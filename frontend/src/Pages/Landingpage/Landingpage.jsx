@@ -64,27 +64,26 @@ const Landingpage = () => {
         </div>
       </main>
 
+
       <footer>
-        <div className=' bg-BlackBlue flex  justify-between text-white py-3 px-4'>
-          <a className='text-2xl' href='/Acercade'>
-            Acerca de
-          </a>
-          <a className='text-2xl' href='/Accesibilidad'>
-            Accesibilidad
-          </a>
-          <a className='text-2xl' href='/Condicionesdeuso'>
-            Condiciones de uso
-          </a>
-          <a className='text-2xl' href='/Terminosdelservicio'>
-            Términos del Servicio
-          </a>
-          <a className='text-2xl'>
-            Políticas de Privacidad
-          </a>
-
-
-        </div>
-      </footer>
+  <div className='bg-BlackBlue flex flex-wrap justify-between text-white py-3 px-4'>
+    <a className='text-2xl mb-2 sm:mb-0' href='/Acercade'>
+      Acerca de
+    </a>
+    <a className='text-2xl mb-2 sm:mb-0' href='/Accesibilidad'>
+      Accesibilidad
+    </a>
+    <a className='text-2xl mb-2 sm:mb-0' href='/Condicionesdeuso'>
+      Condiciones de uso
+    </a>
+    <a className='text-2xl mb-2 sm:mb-0' href='/Terminosdelservicio'>
+      Términos del Servicio
+    </a>
+    <a className='text-2xl mb-2 sm:mb-0'>
+      Políticas de Privacidad
+    </a>
+  </div>
+</footer>
 
     </div>
   )
