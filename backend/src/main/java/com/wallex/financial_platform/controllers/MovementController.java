@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/movements")
+@RequestMapping("api/accounts/{accountId}/movements")
 @AllArgsConstructor
 public class MovementController {
 
  private final MovementService movementService;
 
-    @GetMapping("/account/{accountId}")
+    @GetMapping
     public ResponseEntity<List<MovementResponseDTO>> getMovementsByAccount(@PathVariable Long accountId) {
         List<MovementResponseDTO> movements = movementService.getMovementsByAccount(accountId);
         return ResponseEntity.ok(movements);

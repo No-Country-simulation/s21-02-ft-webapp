@@ -30,8 +30,8 @@ public class AccountController {
     }
 
     @GetMapping
-    public ResponseEntity<List<AccountResponseDTO>> getAccounts(@PathVariable Long accountId) {
-        List<AccountResponseDTO>response = this.accountService.getAccountsByUser(accountId);
+    public ResponseEntity<List<AccountResponseDTO>> getAccounts() {
+        List<AccountResponseDTO>response = this.accountService.getAccountsByUser();
         return ResponseEntity.ok(response);
     }
 

@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface IAccountService {
-    List<AccountResponseDTO> getAccountsByUser(Long accountId);
+    List<AccountResponseDTO> getAccountsByUser();
     AccountResponseDTO createAccount(@Valid AccountRequestDTO accountReq);
     //CheckAccountResponseDTO checkAccount(CheckAccountRequestDto chkAcc);
 

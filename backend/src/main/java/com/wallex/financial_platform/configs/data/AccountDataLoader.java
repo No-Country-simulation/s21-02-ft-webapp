@@ -29,40 +29,53 @@ public class AccountDataLoader {
         List<Account> accountList = new ArrayList<>();
 
         // Crear las cuentas para el usuario 1
-      /*  accountList.add(
+        accountList.add(
                 Account.builder()
                 .accountId(null)
-                .cbu(faker.numerify("CBU000000"+"0351"+"1"+
-                        "000000000000".substring(0, 12-String.valueOf(accountList.size()+1).length())+(accountList.size()+1)+
-                        "1")
-                ) // CBU único
+                .cbu("CBU000000000000000000000000")
                 .alias((faker.animal().name()+"."+faker.construction().materials()+"."+faker.commerce().material()).toLowerCase()) // Alias único
-                .availableBalance(new BigDecimal(250000)) // Saldo disponible
-                .reservedBalance(new BigDecimal(30000)) // Saldo reservado
-                .currency(CurrencyType.ARS) // Moneda
+                .availableBalance(new BigDecimal(2500)) // Saldo disponible
+                .reservedBalance(new BigDecimal(0)) // Saldo reservado
+                .currency(CurrencyType.USD) // Moneda
                 .active(true)  // Activa
                 .createdAt(LocalDateTime.now()) // Fecha de creación
                 .updatedAt(LocalDateTime.now()) // Fecha de actualización
-                .user(userList.get(0)) // Relación con el usuario 1
-                // Puedes omitir o asignar null a los campos opcionales:
+                .user(userList.get(0))
                 .reservations(new ArrayList<>()) // Reservas (vacío si no tienes datos)
                 .movements(new ArrayList<>())   // Movimientos (vacío si no tienes datos)
                 .sourceTransactions(new ArrayList<>()) // Transacciones origen
                 .destinationTransactions(new ArrayList<>()) // Transacciones destino
                 .build()
-        );*/
+        );
 
 
         accountList.add(
             Account.builder()
                 .accountId(null)
-                .cbu(faker.numerify("CBU000000"+"0351"+"1"+
-                        "000000000000".substring(0, 12-String.valueOf(accountList.size()+1).length())+(accountList.size()+1)+
-                        "1")
-                ) // CBU único
+                .cbu("CBU000000000000000000000001")
                 .alias((faker.animal().name()+"."+faker.construction().materials()+"."+faker.commerce().material()).toLowerCase())
                 .availableBalance(new BigDecimal(250000))
                 .reservedBalance(new BigDecimal(500))
+                .currency(CurrencyType.ARS)
+                .active(true)
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .user(userList.get(0))
+                .reservations(new ArrayList<>())
+                .movements(new ArrayList<>())
+                .sourceTransactions(new ArrayList<>())
+                .destinationTransactions(new ArrayList<>())
+                .build()
+        );
+
+        accountList.add(
+            Account.builder()
+                .accountId(null)
+                .cbu(faker.numerify("CBU000000000000000000000002")
+                ) // CBU único
+                .alias((faker.animal().name()+"."+faker.construction().materials()+"."+faker.commerce().material()).toLowerCase())
+                .availableBalance(new BigDecimal(150000))
+                .reservedBalance(new BigDecimal(3000))
                 .currency(CurrencyType.ARS)
                 .active(true)
                 .createdAt(LocalDateTime.now())
@@ -78,13 +91,10 @@ public class AccountDataLoader {
         accountList.add(
             Account.builder()
                 .accountId(null)
-                .cbu(faker.numerify("CBU000000"+"0351"+"Ø"+
-                        "000000000000".substring(0, 12-String.valueOf(accountList.size()+1).length())+(accountList.size()+1)+
-                        "Ø")
-                ) // CBU único
+                .cbu("CBU000000000000000000000003")
                 .alias((faker.animal().name()+"."+faker.construction().materials()+"."+faker.commerce().material()).toLowerCase())
-                .availableBalance(new BigDecimal(150000))
-                .reservedBalance(new BigDecimal(300))
+                .availableBalance(new BigDecimal(500000))
+                .reservedBalance(new BigDecimal(1000))
                 .currency(CurrencyType.ARS)
                 .active(true)
                 .createdAt(LocalDateTime.now())
@@ -100,13 +110,10 @@ public class AccountDataLoader {
         accountList.add(
             Account.builder()
                 .accountId(null)
-                .cbu(faker.numerify("CBU000000"+"0351"+"Ø"+
-                        "000000000000".substring(0, 12-String.valueOf(accountList.size()+1).length())+(accountList.size()+1)+
-                        "Ø")
-                ) // CBU único
+                .cbu("CBU000000000000000000000004")
                 .alias((faker.animal().name()+"."+faker.construction().materials()+"."+faker.commerce().material()).toLowerCase())
-                .availableBalance(new BigDecimal(500000))
-                .reservedBalance(new BigDecimal(1000))
+                .availableBalance(new BigDecimal(350000))
+                .reservedBalance(new BigDecimal(700))
                 .currency(CurrencyType.ARS)
                 .active(true)
                 .createdAt(LocalDateTime.now())
@@ -119,52 +126,6 @@ public class AccountDataLoader {
                 .build()
         );
 
-        accountList.add(
-            Account.builder()
-                .accountId(null)
-                .cbu(faker.numerify("CBU000000"+"0351"+"Ø"+
-                        "000000000000".substring(0, 12-String.valueOf(accountList.size()+1).length())+(accountList.size()+1)+
-                        "Ø")
-                ) // CBU único
-                .alias((faker.animal().name()+"."+faker.construction().materials()+"."+faker.commerce().material()).toLowerCase())
-                .availableBalance(new BigDecimal(350000))
-                .reservedBalance(new BigDecimal(700))
-                .currency(CurrencyType.ARS)
-                .active(true)
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
-                .user(userList.get(4))
-                .reservations(new ArrayList<>())
-                .movements(new ArrayList<>())
-                .sourceTransactions(new ArrayList<>())
-                .destinationTransactions(new ArrayList<>())
-                .build()
-        );
-
-        accountList.add(
-            Account.builder()
-                .accountId(null)
-                .cbu(faker.numerify("CBU000000"+"0351"+"Ø"+
-                        "000000000000".substring(0, 12-String.valueOf(accountList.size()+1).length())+(accountList.size()+1)+
-                        "Ø")
-                ) // CBU único
-                .alias((faker.animal().name()+"."+faker.construction().materials()+"."+faker.commerce().material()).toLowerCase())
-                .availableBalance(new BigDecimal(1200))
-                .reservedBalance(new BigDecimal(90))
-                .currency(CurrencyType.USD)
-                .active(true)
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
-                .user(userList.get(0))
-                .reservations(new ArrayList<>())
-                .movements(new ArrayList<>())
-                .sourceTransactions(new ArrayList<>())
-                .destinationTransactions(new ArrayList<>())
-                .build()
-        );
-
-
-        // Guardar las cuentas en el repositorio
         accountRepository.saveAll(accountList); // Guardar las cuentas
     }
 }

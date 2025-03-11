@@ -4,16 +4,20 @@ import com.wallex.financial_platform.dtos.requests.MovementRequestDTO;
 import com.wallex.financial_platform.dtos.responses.TransactionResponseDTO;
 import com.wallex.financial_platform.entities.Account;
 import com.wallex.financial_platform.entities.Transaction;
+import com.wallex.financial_platform.entities.User;
 import com.wallex.financial_platform.entities.enums.TransactionStatus;
 import com.wallex.financial_platform.entities.enums.TransactionType;
+import com.wallex.financial_platform.exceptions.account.AccountErrorException;
 import com.wallex.financial_platform.repositories.TransactionRepository;
 import com.wallex.financial_platform.services.ITransactionService;
+import com.wallex.financial_platform.services.utils.UserContextService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,6 +27,7 @@ public class TransactionService implements ITransactionService {
     private final TransactionRepository transactionRepository;
     private final MovementService movementService;
     private final NotificationService notificationService;
+    private final UserContextService userContextService;
 
     @Override
     @Transactional
@@ -49,7 +54,13 @@ public class TransactionService implements ITransactionService {
 
     @Override
     public List<TransactionResponseDTO> getTransactionByAccount(Long accountId) {
-        // Obtener todas las transacciones donde la cuenta sea la fuente o el destino
+
+        User user = userContextService.getAuthenticatedUser();
+
+        if (user.getAccounts().stream().noneMatch(a -> a.getAccountId().equals(accountId))) {
+            throw new AccountErrorException("No tienes acceso a esta cuenta");
+        }
+
         List<Transaction> transactions = transactionRepository.findBySourceAccountAccountIdOrDestinationAccountAccountId(accountId, accountId);
 
         return transactions.stream()
@@ -76,7 +87,7 @@ public class TransactionService implements ITransactionService {
     }
 
     private Transaction saveTransaction(Account sourceAccount, Account destinationAccount, BigDecimal amount, String reason, TransactionType transactionType) {
-        Transaction transaction = new Transaction(null, sourceAccount, destinationAccount, amount, transactionType, reason, null, TransactionStatus.COMPLETED);
+        Transaction transaction = new Transaction(null, sourceAccount, destinationAccount, amount, transactionType, reason, null, TransactionStatus.COMPLETED, new ArrayList<>());
         return transactionRepository.save(transaction);
     }
 

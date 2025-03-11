@@ -3,15 +3,15 @@ package com.wallex.financial_platform.configs.data;
 import com.wallex.financial_platform.entities.Account;
 import com.wallex.financial_platform.entities.Movement;
 import com.wallex.financial_platform.entities.Transaction;
-import com.wallex.financial_platform.repositories.AccountRepository;
+import com.wallex.financial_platform.entities.enums.TransactionType;
 import com.wallex.financial_platform.repositories.MovementRepository;
 import com.wallex.financial_platform.repositories.TransactionRepository;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -19,25 +19,53 @@ import java.util.List;
 public class MovementDataLoader {
 
     private final MovementRepository movementRepository;
-    private final AccountRepository accountRepository;
     private final TransactionRepository transactionRepository;
 
     public void load() {
         // Obtener las transacciones registradas
         List<Transaction> transactions = transactionRepository.findAll();
+        List<Movement> movements = new ArrayList<>();
 
-        // Crear movimientos basados en las transacciones
-        List<Movement> movements = transactions.stream().map(transaction -> {
-            Account account = transaction.getSourceAccount();
-            return new Movement(
-                    null,
-                    account,
-                    transaction,
-                    "Movimiento generado para la transacción " + transaction.getTransactionId(),
-                    transaction.getAmount(),
-                    LocalDateTime.now()
-            );
-        }).toList();
+        for (Transaction transaction : transactions) {
+            Account sourceAccount = transaction.getSourceAccount();
+            Account destinationAccount = transaction.getDestinationAccount();
+
+            if (sourceAccount.getAccountId().equals(destinationAccount.getAccountId())
+                    && transaction.getType() == TransactionType.DEPOSIT) {
+                // Caso de depósito: solo un movimiento de entrada
+                Movement depositMovement = new Movement(
+                        null,
+                        sourceAccount,
+                        transaction,
+                        "Depósito desde fuente externa",
+                        transaction.getAmount(), // Monto positivo
+                        LocalDateTime.now()
+                );
+                movements.add(depositMovement);
+            } else {
+                // Caso de transferencia: dos movimientos (débito y crédito)
+                Movement debitMovement = new Movement(
+                        null,
+                        sourceAccount,
+                        transaction,
+                        "Transferencia enviada a " + destinationAccount.getAccountId(),
+                        transaction.getAmount().negate(), // Monto negativo
+                        LocalDateTime.now()
+                );
+
+                Movement creditMovement = new Movement(
+                        null,
+                        destinationAccount,
+                        transaction,
+                        "Transferencia recibida de " + sourceAccount.getAccountId(),
+                        transaction.getAmount(), // Monto positivo
+                        LocalDateTime.now()
+                );
+
+                movements.add(debitMovement);
+                movements.add(creditMovement);
+            }
+        }
 
         // Guardar los movimientos en el repositorio
         movementRepository.saveAll(movements);

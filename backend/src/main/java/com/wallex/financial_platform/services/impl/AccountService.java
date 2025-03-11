@@ -26,6 +26,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,14 +39,10 @@ public class AccountService implements IAccountService {
     private final NotificationService notificationService;
 
     @Override
-    public List<AccountResponseDTO> getAccountsByUser(Long userId) {
+    public List<AccountResponseDTO> getAccountsByUser() {
         User authenticatedUser = userContextService.getAuthenticatedUser();
-        validateUserOwnership(authenticatedUser, userId);
-
-        List<Account> accounts = accountRepository.findByUserId(userId);
-        if (accounts.isEmpty()) {
-            throw new AccountNotFoundException("No se encontraron cuentas para el usuario");
-        }
+        List<Account> accounts = accountRepository.findByUserId(authenticatedUser.getId());
+        validateAccountsNotEmpty(accounts, "No se encontraron cuentas para el usuario");
         return mapAccountsToDto(accounts);
     }
 
@@ -75,13 +72,10 @@ public class AccountService implements IAccountService {
     @Override
     @Transactional
     public TransactionResponseDTO transfer(Long sourceAccountId, TransferRequestDTO transferRequestDTO) {
-        Account sourceAccount = accountRepository.findById(sourceAccountId)
-                .orElseThrow(() -> new AccountNotFoundException("Cuenta de origen no encontrada"));
-        Account destinationAccount = accountRepository.findByCbuOrAlias(transferRequestDTO.destinationIdentifier(), transferRequestDTO.destinationIdentifier())
-                .orElseThrow(() -> new AccountNotFoundException("Cuenta de destino no encontrada"));
+        Account sourceAccount = getAccountById(sourceAccountId);
+        Account destinationAccount = getAccountByIdentifier(transferRequestDTO.destinationIdentifier());
 
-        validateTransferAuthorization(sourceAccount);
-        validateSufficientFunds(sourceAccount, transferRequestDTO.amount());
+        validateTransfer(sourceAccount, destinationAccount, transferRequestDTO.amount());
 
         performTransfer(sourceAccount, destinationAccount, transferRequestDTO.amount());
         return transactionService.createTransferTransaction(sourceAccount, destinationAccount, transferRequestDTO.amount(), transferRequestDTO.reason());
@@ -91,8 +85,7 @@ public class AccountService implements IAccountService {
     @Transactional
     public TransactionResponseDTO addFundsFromCard(Long sourceAccountId, DepositRequestDTO depositRequestDTO) {
         User authenticatedUser = userContextService.getAuthenticatedUser();
-        Account account = accountRepository.findById(sourceAccountId)
-                .orElseThrow(() -> new AccountNotFoundException("Cuenta no encontrada"));
+        Account account = getAccountById(sourceAccountId);
 
         validateAccountOwnership(authenticatedUser, account);
         Card card = findUserCard(authenticatedUser, depositRequestDTO.cardNumber());
@@ -104,16 +97,51 @@ public class AccountService implements IAccountService {
 
     @Override
     public List<AccountResponseDTO> getAccountsByUserAll() {
-        List<Account> accounts = this.accountRepository.findAll();
-        if (accounts.isEmpty()) {
-            throw new AccountNotFoundException("No se encontró cuentas del usuario");
-        }
+        List<Account> accounts = accountRepository.findAll();
+        validateAccountsNotEmpty(accounts, "No se encontró cuentas del usuario");
         return mapAccountsToDto(accounts);
     }
 
-    private void validateTransferAuthorization(Account sourceAccount) {
-        if (!sourceAccount.getUser().getId().equals(userContextService.getAuthenticatedUser().getId())) {
+    private Account getAccountById(Long accountId) {
+        return accountRepository.findById(accountId)
+                .orElseThrow(() -> new AccountNotFoundException("Cuenta no encontrada"));
+    }
+
+    private Account getAccountByIdentifier(String identifier) {
+        return accountRepository.findByCbuOrAlias(identifier, identifier)
+                .orElseThrow(() -> new AccountNotFoundException("Cuenta no encontrada"));
+    }
+
+    private void validateTransfer(Account sourceAccount, Account destinationAccount, BigDecimal amount) {
+        validateSameAccount(sourceAccount, destinationAccount);
+        validateAccountOwnership(sourceAccount);
+        validateAccountStatus(sourceAccount);
+        validateAccountStatus(destinationAccount);
+        validateSufficientFunds(sourceAccount, amount);
+        validateCurrencyCompatibility(sourceAccount, destinationAccount);
+    }
+
+    private void validateSameAccount(Account sourceAccount, Account destinationAccount) {
+        if (sourceAccount.getAccountId().equals(destinationAccount.getAccountId())) {
+            throw new AccountErrorException("No puedes transferir a la misma cuenta");
+        }
+    }
+
+    private void validateAccountOwnership(Account account) {
+        if (!account.getUser().getId().equals(userContextService.getAuthenticatedUser().getId())) {
             throw new UserNotFoundException("No autorizado para operar esta cuenta");
+        }
+    }
+
+    private void validateAccountStatus(Account account) {
+        if (!account.getActive()) {
+            throw new AccountErrorException("La cuenta " + account.getAccountId() + " no está activa");
+        }
+    }
+
+    private void validateCurrencyCompatibility(Account sourceAccount, Account destinationAccount) {
+        if (!sourceAccount.getCurrency().equals(destinationAccount.getCurrency())) {
+            throw new AccountErrorException("Las cuentas deben tener la misma moneda para realizar la transferencia");
         }
     }
 
@@ -123,17 +151,10 @@ public class AccountService implements IAccountService {
         }
     }
 
-    private void validateUserOwnership(User authenticatedUser, Long userId) {
-        if (!authenticatedUser.getId().equals(userId)) {
-            throw new UserNotFoundException("No autorizado para operar esta cuenta");
-        }
-    }
-
     private void performTransfer(Account sourceAccount, Account destinationAccount, BigDecimal amount) {
         sourceAccount.setAvailableBalance(sourceAccount.getAvailableBalance().subtract(amount));
         destinationAccount.setAvailableBalance(destinationAccount.getAvailableBalance().add(amount));
-        accountRepository.save(sourceAccount);
-        accountRepository.save(destinationAccount);
+        accountRepository.saveAll(List.of(sourceAccount, destinationAccount));
     }
 
     private void validateAccountOwnership(User user, Account account) {
@@ -209,7 +230,10 @@ public class AccountService implements IAccountService {
                 account.getReservedBalance()
         );
     }
+
+    private void validateAccountsNotEmpty(List<Account> accounts, String message) {
+        if (accounts.isEmpty()) {
+            throw new AccountNotFoundException(message);
+        }
+    }
 }
-
-
-

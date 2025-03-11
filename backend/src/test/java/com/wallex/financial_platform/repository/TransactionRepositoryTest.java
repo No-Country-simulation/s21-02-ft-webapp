@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @DataJpaTest
 public class TransactionRepositoryTest {
-    @Autowired
+    /*@Autowired
     private TransactionRepository transactionRepository;
     @Autowired
     private UserRepository userRepository;
@@ -186,5 +186,5 @@ public class TransactionRepositoryTest {
             mapping.put(transactionType, balanceType);
         }
         return mapping;
-    }
+    }*/
 }

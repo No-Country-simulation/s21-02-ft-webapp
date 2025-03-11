@@ -20,7 +20,7 @@ import net.datafaker.Faker;
 @Getter
 public class SampleDataTest {
 
-    private final Faker faker = new Faker();
+    /*private final Faker faker = new Faker();
 
     private final List<User> userList;
     private final List<Transaction> transactionsList;
@@ -120,5 +120,5 @@ public class SampleDataTest {
             destAccountReceivedtransacions.add(transaction);
             destAccount.setDestinationTransactions(destAccountReceivedtransacions);
         }
-    }
+    }*/
 }

@@ -3,8 +3,10 @@ package com.wallex.financial_platform.entities;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.wallex.financial_platform.entities.enums.TransactionStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -48,6 +50,10 @@ public class Transaction {
     @Enumerated(EnumType.STRING)
     @Column( nullable = false)
     private TransactionStatus status;
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "transaction", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Movement> movements;
 
     @PrePersist
     protected void onCreate() {

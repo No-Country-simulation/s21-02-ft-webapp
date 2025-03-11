@@ -5,19 +5,24 @@ import com.wallex.financial_platform.dtos.responses.MovementResponseDTO;
 import com.wallex.financial_platform.entities.Account;
 import com.wallex.financial_platform.entities.Movement;
 import com.wallex.financial_platform.entities.Transaction;
+import com.wallex.financial_platform.entities.User;
 import com.wallex.financial_platform.entities.enums.TransactionType;
+import com.wallex.financial_platform.exceptions.account.AccountErrorException;
 import com.wallex.financial_platform.exceptions.account.AccountNotFoundException;
 import com.wallex.financial_platform.exceptions.transaction.TransactionNotFoundException;
 import com.wallex.financial_platform.repositories.AccountRepository;
 import com.wallex.financial_platform.repositories.MovementRepository;
 import com.wallex.financial_platform.repositories.TransactionRepository;
 import com.wallex.financial_platform.services.IMovementService;
+import com.wallex.financial_platform.services.utils.UserContextService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,6 +31,7 @@ public class MovementService implements IMovementService {
     private final MovementRepository movementRepository;
     private final AccountRepository accountRepository;
     private final TransactionRepository transactionRepository;
+    private final UserContextService userContextService;
 
     @Override
     @Transactional
@@ -41,8 +47,13 @@ public class MovementService implements IMovementService {
 
     @Override
     public List<MovementResponseDTO> getMovementsByAccount(Long accountId) {
-        List<Movement> movements = findMovementsByAccountId(accountId);
-        return mapMovementsToDTOs(movements);
+        User user = userContextService.getAuthenticatedUser();
+
+        if (user.getAccounts().stream().noneMatch(a -> a.getAccountId().equals(accountId))) {
+            throw new AccountErrorException("No tienes acceso a esta cuenta");
+        }
+
+        return mapMovementsToDTOs(findMovementsByAccountId(accountId));
     }
 
     private Account validateAccountExists(Long accountId) {

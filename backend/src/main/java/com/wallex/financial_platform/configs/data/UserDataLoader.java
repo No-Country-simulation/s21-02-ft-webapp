@@ -78,23 +78,10 @@ public class UserDataLoader {
                 null
         );
 
-        User user5 = new User(
-                null,
-                "Luis Méndez",
-                "34567891",
-                "luis.mendez@dominio.com",
-                "+541112345681",
-                passwordEncoder.encode("password345"), // Contraseña encriptada
-                LocalDateTime.now(),
-                LocalDateTime.now(),
-                true,
-                null,
-                null,
-                null
-        );
+
 
         // Guardar los usuarios en la base de datos
-        userRepository.saveAll(List.of(user1, user2, user3, user4, user5));
+        userRepository.saveAll(List.of(user1, user2, user3, user4));
     }
 
 }
