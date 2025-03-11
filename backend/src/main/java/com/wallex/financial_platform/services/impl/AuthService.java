@@ -24,11 +24,10 @@ import com.wallex.financial_platform.configs.auth.JwtUtil;
 @RequiredArgsConstructor
 public class AuthService implements IAuthService {
 
-    private final AccountService accountService;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
-
+    private final NotificationService notificationService;
 
     @Override
     @Transactional
@@ -48,6 +47,13 @@ public class AuthService implements IAuthService {
         user.setActive(true);
 
         this.userRepository.save(user);
+
+        notificationService.notifyUser(
+                user,
+                "🎉 ¡Bienvenido a Wallex!",
+                "👋 Hola " + user.getFullName() + ", te has registrado exitosamente en nuestra plataforma. " +
+                        "Ahora puedes disfrutar de todos nuestros servicios financieros."
+        );
 
         return new UserResponseDTO(
                 user.getId(), user.getFullName(), user.getDni(), user.getEmail(),

@@ -37,6 +37,7 @@ public class TransactionService implements ITransactionService {
     private MovementService movementService;
     private EncryptionService encryptionService;
     private CardRepository cardRepository;
+    private final NotificationService notificationService;
 
     @Override
     @SneakyThrows
@@ -71,7 +72,23 @@ public class TransactionService implements ITransactionService {
         }
         Transaction newTransaction = transactionRepository.save(transaction);
         movementService.save(newTransaction);
-        //if (user.getRecipients().stream().filter())
+
+        // Notificar al usuario que envía la transferencia
+        notificationService.notifyUser(
+                sourceAccount.getUser(),
+                "💸 Transferencia enviada",
+                "📤 Has transferido " + transactionReq.amount() + " " + sourceAccount.getCurrency() +
+                        " a la cuenta de " + destinationAccount.getUser().getFullName() + "."
+        );
+
+        // Notificar al usuario que recibe la transferencia
+        notificationService.notifyUser(
+                destinationAccount.getUser(),
+                "💸 Transferencia recibida",
+                "📥 Has recibido " + transactionReq.amount() + " " + destinationAccount.getCurrency() +
+                        " de " + sourceAccount.getUser().getFullName() + "."
+        );
+
         return mapToDTO(newTransaction);
     }
 
