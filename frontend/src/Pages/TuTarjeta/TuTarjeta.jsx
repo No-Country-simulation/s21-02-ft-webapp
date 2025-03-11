@@ -23,7 +23,7 @@ const TuTarjeta = () => {
 
   const cardNumber = isCardValid ? Card.encryptedNumber : '---- ---- ---- ----';
   const expirationDate = isCardValid ? Card.expirationDate : '--/--';
-  const cvv = isCardValid ? '---' : '---'; 
+  const cvv = isCardValid ? Card.cvv : '---'; 
 
   return (
     <div className='Contenido'>

@@ -35,10 +35,11 @@ function ActivityItem({ data }) {
 
 
   const owner =
-  data.destinationAccount &&
-  data.destinationAccount.owner?.trim().toLowerCase() === name?.toLowerCase()
-    ? data.sourceAccount.owner 
-    : data.destinationAccount.owner; 
+  data.destinationAccount && data.destinationAccount.owner &&
+  data.destinationAccount.owner.trim().toLowerCase() === name?.toLowerCase()
+    ? data.sourceAccount?.owner || "Reserva" 
+    : data.destinationAccount?.owner || "Reserva";
+
 
   const typeText = data.type === 'com.wallex.financial_platform.entities.Reservation' ? 'Reserva' : data.type;
 
