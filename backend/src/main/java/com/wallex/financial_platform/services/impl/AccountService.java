@@ -43,6 +43,7 @@ public class AccountService implements IAccountService {
     private UserContextService userContextService;
     private AccountServiceHelper accountServiceHelper;
     private OfficialBankConectorHelper officialBankConectorHelper;
+    private final NotificationService notificationService;
 
     @SneakyThrows
     public AccountResponseDTO getAccountById(Long id) {
@@ -93,7 +94,17 @@ public class AccountService implements IAccountService {
                 .destinationTransactions(new ArrayList<>())
                 .reservations(new ArrayList<>())
                 .build();
-        return mapToDTO(accountRepository.save(newAccount));
+
+        Account savedAccount = accountRepository.save(newAccount);
+
+        notificationService.notifyUser(
+                user,
+                "✅ Cuenta creada exitosamente",
+                "📝 Has creado una nueva cuenta en " + accountReq.currency() + ". " +
+                        "Tu CBU es: " + savedAccount.getCbu() + " y tu alias es: " + savedAccount.getAlias() + "."
+        );
+
+        return mapToDTO(accountRepository.save(savedAccount));
     }
 
     @Override
