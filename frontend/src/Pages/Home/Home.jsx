@@ -14,14 +14,13 @@ const Home = () => {
   const [Movements, SetMovements] = useState([])
  
 
-
   const fetchData = async () => {
     try {
       const dataAccounts = await FetchAccountsbyid();
       const dataMovements = await FetchMovementsbyuser();
       SetMovements(dataMovements)
       SetAccounts(dataAccounts || [])
-      console.log(dataAccounts)
+      
     } catch (error) {
       SetCurrencies([]);
     }

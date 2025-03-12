@@ -2,7 +2,7 @@ import React, { use, useState } from 'react'
 import './Transferir'
 import Navbar from '../../components/navbar/Navbar'
 import AccountsService from '../../Services/AccountsService'
-import { ArrowBigLeft } from 'lucide-react'
+import { ArrowBigLeft, CircleAlert } from 'lucide-react'
 import TransactionsService from '../../Services/TransactionsService'
 const Transferir = () => {
 
@@ -120,8 +120,11 @@ const Transferir = () => {
                 <button className="w-3/5 self-center bg-LightGolden text-BlackBlue py-1 px-2 rounded-xl cursor-pointer hover:bg-DarkGolden transition duration-500" onClick={HandlerTransaction} >Transferir</button>
 
                 <div className="flex flex-row gap-4 text-LightGolden">
+                
                 <svg className="fill-transparent w-8 h-8" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <CircleAlert/>
                 </svg>
+                
                     <span>Se transfiere al instante. <br />
                         No es cancelable.
                     </span>

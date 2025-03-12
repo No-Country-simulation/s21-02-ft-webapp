@@ -32,8 +32,9 @@ function ActivityItem({ data }) {
     icon = iconoGenerico; 
   }
 
-
-  const owner = data.destinationAccount ? data.destinationAccount.owner : data.accountOwner; 
+console.log(data)
+  const owner = data.destinationAccount ? data.destinationAccount.owner === name ?  
+  data.sourceAccount.owner : data.destinationAccount.owner : data.accountOwner; 
 
 
   const typeText = data.type === 'com.wallex.financial_platform.entities.Reservation' ? 'Reserva' : data.type;
