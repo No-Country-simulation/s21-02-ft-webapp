@@ -27,7 +27,6 @@ const TuReserva = () => {
       try {
         const data = await FetchReserve();
         const acaount = await FetchAccountsbyid();
-        console.log(acaount)
         SetAcountAmount(acaount.balance)
         setReserve(data);
       } catch (error) {
@@ -68,7 +67,7 @@ const TuReserva = () => {
       <div className="flex justify-center items-center mt-10 ">
 
         {reserve.length === 0 ? (
-          CreateReserve && (
+          !CreateReserve && (
 
             <div className="bg-BlackBlue rounded-2xl items-center text-center p-5 flex flex-col w-full md:w-1/2">
               <img src={iconchancho} className="invert mx-auto mb-3" alt="Icono chancho" />

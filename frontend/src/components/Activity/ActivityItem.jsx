@@ -8,7 +8,6 @@ import { useEffect, useState } from 'react';
 function ActivityItem({ data }) {
 
   const name = localStorage.getItem('Name');
-  
   const formattedDate = data.createdAt ? data.createdAt.split("T")[0] : data.date.split("T")[0]; 
   const [year, month, day] = formattedDate.split("-");
   const monthNames = [
@@ -34,11 +33,7 @@ function ActivityItem({ data }) {
   }
 
 
-  const owner =
-  data.destinationAccount && data.destinationAccount.owner &&
-  data.destinationAccount.owner.trim().toLowerCase() === name?.toLowerCase()
-    ? data.sourceAccount?.owner || "Reserva" 
-    : data.destinationAccount?.owner || "Reserva";
+  const owner = data.destinationAccount ? data.destinationAccount.owner : data.accountOwner; 
 
 
   const typeText = data.type === 'com.wallex.financial_platform.entities.Reservation' ? 'Reserva' : data.type;
