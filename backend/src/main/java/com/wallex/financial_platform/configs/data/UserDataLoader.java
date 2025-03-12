@@ -31,7 +31,7 @@ public class UserDataLoader {
         // Crear usuarios con contraseñas encriptadas
         User user1 = new User(
                 null,
-                "Juan Pérez",
+                "Delmer Rodríguez",
                 "12345678",
                 "jindrg@gmail.com",
                 "+541112345678",
@@ -48,9 +48,9 @@ public class UserDataLoader {
 
         User user2 = new User(
                 null,
-                "María Gómez",
+                "Gustavo Paz",
                 "87654321",
-                "maria.gomez@dominio.com",
+                "gusti.paz@gmail.com",
                 "+541198765432",
                 passwordEncoder.encode("password456"),
                 date2,
@@ -65,9 +65,9 @@ public class UserDataLoader {
 
         User user3 = new User(
                 null,
-                "Carlos López",
+                "Sebastián Tournier",
                 "56789123",
-                "carlos.lopez@dominio.com",
+                "sebastian.tournier@gmail.com",
                 "+541112345679",
                 passwordEncoder.encode("password789"),
                 date3,
@@ -82,9 +82,9 @@ public class UserDataLoader {
 
         User user4 = new User(
                 null,
-                "Ana Torres",
+                "Gastón Federico Nahuel Gómez",
                 "23456789",
-                "ana.torres@dominio.com",
+                "gastongomez2014@hotmail.com",
                 "+541112345680",
                 passwordEncoder.encode("password012"),
                 date4,
