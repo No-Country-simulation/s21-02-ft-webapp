@@ -26,7 +26,7 @@ const Uselogin = () =>{
              
 
         }catch(error){
-            if(error.status == 404){
+            if(error.status == 401){
                 return 'Usuario o contraseña incorrectas';
             }
 
