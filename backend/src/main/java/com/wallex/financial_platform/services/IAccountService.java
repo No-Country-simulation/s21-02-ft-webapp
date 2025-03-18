@@ -2,6 +2,7 @@ package com.wallex.financial_platform.services;
 
 import com.wallex.financial_platform.dtos.requests.AccountRequestDTO;
 import com.wallex.financial_platform.dtos.requests.DepositRequestDTO;
+import com.wallex.financial_platform.dtos.requests.ReservationRequestDTO;
 import com.wallex.financial_platform.dtos.requests.TransferRequestDTO;
 import com.wallex.financial_platform.dtos.responses.*;
 import jakarta.validation.Valid;
@@ -20,4 +21,5 @@ public interface IAccountService {
     List<AccountResponseDTO> getAccountsByUserAll();
     TransactionResponseDTO transfer(Long sourceAccountId, TransferRequestDTO transferRequestDTO);
     TransactionResponseDTO addFundsFromCard(Long sourceAccountId, @Valid DepositRequestDTO depositRequestDTO);
+    TransactionResponseDTO createReservation(Long sourceAccountId, @Valid ReservationRequestDTO reservationRequestDTO);
 }

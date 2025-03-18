@@ -25,21 +25,10 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<UserResponseDTO> getUserById(@PathVariable Long id) {
-        UserResponseDTO response = userService.getUserById(id);
-        return ResponseEntity.ok(response);
-    }
-
     @GetMapping("/by-dni")
     public ResponseEntity<UserResponseDTO> getUserByDni(@RequestBody DniRequestDTO dniRequestDTO) {
         UserResponseDTO response = userService.getUserByDni(dniRequestDTO.dni());
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/by-email")
-    public ResponseEntity<UserResponseDTO> getUserByEmail(@RequestBody EmailRequestDTO emailRequestDTO) {
-        UserResponseDTO response = userService.getUserByEmail(emailRequestDTO.email());
-        return ResponseEntity.ok(response);
-    }
 }

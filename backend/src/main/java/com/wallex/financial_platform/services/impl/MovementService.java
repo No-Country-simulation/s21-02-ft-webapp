@@ -15,19 +15,19 @@ import com.wallex.financial_platform.repositories.MovementRepository;
 import com.wallex.financial_platform.repositories.TransactionRepository;
 import com.wallex.financial_platform.services.IMovementService;
 import com.wallex.financial_platform.services.utils.UserContextService;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 public class MovementService implements IMovementService {
+    private static final String USERNAME_WALLEX = "Tesoreria Wallex";
+    private static final String DESCRIPTION_RENDIMIENTO = "Se genera rendimiento por subida del dollar";
     private final MovementRepository movementRepository;
     private final AccountRepository accountRepository;
     private final TransactionRepository transactionRepository;
@@ -37,7 +37,11 @@ public class MovementService implements IMovementService {
     @Transactional
     public MovementResponseDTO createMovement(MovementRequestDTO movementRequestDTO) {
         Account account = validateAccountExists(movementRequestDTO.accountId());
-        Transaction transaction = validateTransactionExists(movementRequestDTO.transactionId());
+        Transaction transaction = null;
+
+        if (movementRequestDTO.transactionId() != null) {
+            transaction = validateTransactionExists(movementRequestDTO.transactionId());
+        }
 
         Movement movement = buildMovement(movementRequestDTO, account, transaction);
         movement = this.saveMovement(movement);
@@ -46,6 +50,7 @@ public class MovementService implements IMovementService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<MovementResponseDTO> getMovementsByAccount(Long accountId) {
         User user = userContextService.getAuthenticatedUser();
 
@@ -82,13 +87,13 @@ public class MovementService implements IMovementService {
 
     private MovementResponseDTO mapToDTO(Movement movement) {
         String userName = this.determineUserName(movement);
-        String transactionType = determineTransactionType(movement);
+        String transactionType = determineTransactionType(movement,userName);
 
         return new MovementResponseDTO(
                 movement.getMovementId(),
                 movement.getAccount().getAccountId(),
                 movement.getTransaction().getTransactionId(),
-                movement.getDescription(),
+                transactionType.equals(TransactionType.RENDIMIENTO.name())?DESCRIPTION_RENDIMIENTO:movement.getDescription(),
                 movement.getAmount(),
                 movement.getMovementDate(),
                 userName,
@@ -98,22 +103,19 @@ public class MovementService implements IMovementService {
 
     private String determineUserName(Movement movement) {
         Transaction transaction = movement.getTransaction();
-
-        if (transaction.getType() == TransactionType.TRANSFER) {
-            if (movement.getAmount().compareTo(BigDecimal.ZERO) < 0) {
-                return transaction.getDestinationAccount().getUser().getFullName();
-            } else {
-                return transaction.getSourceAccount().getUser().getFullName();
-            }
-        } else if (transaction.getType() == TransactionType.DEPOSIT) {
-            return movement.getAccount().getUser().getFullName();
-        }
-
-        throw new IllegalStateException("Tipo de transacción no manejado: " + transaction.getType());
+        TransactionType type = transaction.getType();
+        return switch (type) {
+            case TRANSFER -> movement.getAmount().compareTo(BigDecimal.ZERO) < 0
+                    ? transaction.getDestinationAccount().getUser().getFullName()
+                    : transaction.getSourceAccount().getUser().getFullName();
+            case DEPOSIT -> movement.getAccount().getUser().getFullName();
+            case RENDIMIENTO, RESERVE -> transaction.getDestinationAccount().getUser().getFullName();
+            default -> throw new IllegalStateException("Tipo de transacción no manejado: " + type);
+        };
     }
 
-    private String determineTransactionType(Movement movement) {
-        return movement.getTransaction().getType().name();
+    private String determineTransactionType(Movement movement, String userName) {
+        return userName.equals(USERNAME_WALLEX)? TransactionType.RENDIMIENTO.name() : movement.getTransaction().getType().name();
     }
 
     private List<Movement> findMovementsByAccountId(Long accountId) {

@@ -1,6 +1,7 @@
 package com.wallex.financial_platform.services.impl;
 
 import com.wallex.financial_platform.dtos.requests.MovementRequestDTO;
+import com.wallex.financial_platform.dtos.requests.ReservationRequestDTO;
 import com.wallex.financial_platform.dtos.responses.TransactionResponseDTO;
 import com.wallex.financial_platform.entities.Account;
 import com.wallex.financial_platform.entities.Transaction;
@@ -11,15 +12,17 @@ import com.wallex.financial_platform.exceptions.account.AccountErrorException;
 import com.wallex.financial_platform.repositories.TransactionRepository;
 import com.wallex.financial_platform.services.ITransactionService;
 import com.wallex.financial_platform.services.utils.UserContextService;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.wallex.financial_platform.services.utils.AccountContextService.CBU_WALLEX;
 
 @Service
 @AllArgsConstructor
@@ -32,7 +35,8 @@ public class TransactionService implements ITransactionService {
     @Override
     @Transactional
     public TransactionResponseDTO createTransferTransaction(Account sourceAccount, Account destinationAccount, BigDecimal amount, String reason) {
-        Transaction transaction = saveTransaction(sourceAccount, destinationAccount, amount, reason, TransactionType.TRANSFER);
+        String nameTransaction = this.getNameTransaction(sourceAccount);
+        Transaction transaction = saveTransaction(sourceAccount, destinationAccount, amount, reason, TransactionType.valueOf(nameTransaction));
         createTransferMovements(sourceAccount, destinationAccount, amount, transaction);
         return mapToDTO(transaction);
     }
@@ -48,11 +52,24 @@ public class TransactionService implements ITransactionService {
                 "💰 Depósito realizado con éxito",
                 "🎉 Has depositado " + amount + " " + account.getCurrency() + " en tu cuenta desde la tarjeta " + cardNumber + "."
         );
-
         return mapToDTO(transaction);
     }
 
     @Override
+    public TransactionResponseDTO createReservationTransaction(Account account, ReservationRequestDTO reservationRequestDTO) {
+        Transaction transaction = this.saveTransaction(account,account,reservationRequestDTO.reservedAmount(), "Reservo dinero para "+ reservationRequestDTO.type().name(), TransactionType.RESERVE);
+        createReservationMovement(account,reservationRequestDTO.reservedAmount(),transaction);
+
+        notificationService.notifyUser(
+                account.getUser(),
+                "💰 La reserva se realizado con éxito",
+                "🎉 Has reservado " + reservationRequestDTO.reservedAmount() + " " + account.getCurrency() + " para " + reservationRequestDTO.type().name() + "."
+        );
+        return mapToDTO(transaction);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<TransactionResponseDTO> getTransactionByAccount(Long accountId) {
 
         User user = userContextService.getAuthenticatedUser();
@@ -86,6 +103,10 @@ public class TransactionService implements ITransactionService {
         );
     }
 
+    private String getNameTransaction(Account sourceAccount) {
+        return sourceAccount.getCbu().equals(CBU_WALLEX)? TransactionType.RENDIMIENTO.name() : TransactionType.DEPOSIT.name();
+    }
+
     private Transaction saveTransaction(Account sourceAccount, Account destinationAccount, BigDecimal amount, String reason, TransactionType transactionType) {
         Transaction transaction = new Transaction(null, sourceAccount, destinationAccount, amount, transactionType, reason, null, TransactionStatus.COMPLETED, new ArrayList<>());
         return transactionRepository.save(transaction);
@@ -111,6 +132,10 @@ public class TransactionService implements ITransactionService {
 
     private void createDepositMovement(Account account, BigDecimal amount, Transaction transaction) {
         createMovement(account, transaction, "Depósito desde tarjeta", amount);
+    }
+
+    private void createReservationMovement(Account account, BigDecimal amount, Transaction transaction) {
+        createMovement(account, transaction, "Se genero reserva", amount);
     }
 
     private void createMovement(Account account, Transaction transaction, String description, BigDecimal amount) {

@@ -32,7 +32,7 @@ public class AccountDataLoader {
         accountList.add(
                 Account.builder()
                 .accountId(null)
-                .cbu("CBU000000000000000000000000")
+                .cbu("CBU000000000000000000000001")
                 .alias((faker.animal().name()+"."+faker.construction().materials()+"."+faker.commerce().material()).toLowerCase()) // Alias único
                 .availableBalance(new BigDecimal(2500)) // Saldo disponible
                 .reservedBalance(new BigDecimal(0)) // Saldo reservado
@@ -52,7 +52,7 @@ public class AccountDataLoader {
         accountList.add(
             Account.builder()
                 .accountId(null)
-                .cbu("CBU000000000000000000000001")
+                .cbu("CBU000000000000000000000002")
                 .alias((faker.animal().name()+"."+faker.construction().materials()+"."+faker.commerce().material()).toLowerCase())
                 .availableBalance(new BigDecimal(250000))
                 .reservedBalance(new BigDecimal(500))
@@ -71,7 +71,7 @@ public class AccountDataLoader {
         accountList.add(
             Account.builder()
                 .accountId(null)
-                .cbu(faker.numerify("CBU000000000000000000000002")
+                .cbu(faker.numerify("CBU000000000000000000000003")
                 ) // CBU único
                 .alias((faker.animal().name()+"."+faker.construction().materials()+"."+faker.commerce().material()).toLowerCase())
                 .availableBalance(new BigDecimal(150000))
@@ -91,7 +91,7 @@ public class AccountDataLoader {
         accountList.add(
             Account.builder()
                 .accountId(null)
-                .cbu("CBU000000000000000000000003")
+                .cbu("CBU000000000000000000000004")
                 .alias((faker.animal().name()+"."+faker.construction().materials()+"."+faker.commerce().material()).toLowerCase())
                 .availableBalance(new BigDecimal(500000))
                 .reservedBalance(new BigDecimal(1000))
@@ -110,7 +110,7 @@ public class AccountDataLoader {
         accountList.add(
             Account.builder()
                 .accountId(null)
-                .cbu("CBU000000000000000000000004")
+                .cbu("CBU000000000000000000000005")
                 .alias((faker.animal().name()+"."+faker.construction().materials()+"."+faker.commerce().material()).toLowerCase())
                 .availableBalance(new BigDecimal(350000))
                 .reservedBalance(new BigDecimal(700))
@@ -124,6 +124,25 @@ public class AccountDataLoader {
                 .sourceTransactions(new ArrayList<>())
                 .destinationTransactions(new ArrayList<>())
                 .build()
+        );
+
+        accountList.add(
+                Account.builder()
+                        .accountId(null)
+                        .cbu("CBU000000000000000000000000")
+                        .alias((faker.animal().name()+"."+faker.construction().materials()+"."+faker.commerce().material()).toLowerCase())
+                        .availableBalance(new BigDecimal(350000))
+                        .reservedBalance(new BigDecimal(700))
+                        .currency(CurrencyType.ARS)
+                        .active(true)
+                        .createdAt(LocalDateTime.now())
+                        .updatedAt(LocalDateTime.now())
+                        .user(userList.get(6))
+                        .reservations(new ArrayList<>())
+                        .movements(new ArrayList<>())
+                        .sourceTransactions(new ArrayList<>())
+                        .destinationTransactions(new ArrayList<>())
+                        .build()
         );
 
         accountRepository.saveAll(accountList); // Guardar las cuentas

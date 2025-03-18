@@ -3,6 +3,7 @@ package com.wallex.financial_platform.configs.data;
 import com.wallex.financial_platform.entities.User;
 import com.wallex.financial_platform.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import net.datafaker.Faker;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -17,31 +18,41 @@ public class UserDataLoader {
     private final BCryptPasswordEncoder passwordEncoder;
 
     public void load() {
-        // Crear usuarios con contraseñas encriptadas
+        Faker faker = new Faker();
+        String USER_PASSWORD = "password123";
+        String ENTITY_PASSWORD = "password456";
+
+        LocalDateTime date1 = LocalDateTime.of(2025, 1, 2, 10, 0);
+        LocalDateTime date2 = LocalDateTime.of(2025, 1, 5, 12, 30);
+        LocalDateTime date3 = LocalDateTime.of(2025, 1, 10, 15, 45);
+        LocalDateTime date4 = LocalDateTime.of(2025, 1, 15, 9, 15);
+        LocalDateTime date5 = LocalDateTime.of(2025, 1, 20, 14, 0);
+        LocalDateTime date6 = LocalDateTime.of(2025, 1, 25, 11, 30);
+
         User user1 = new User(
-                null, // ID generado automáticamente
-                "Juan Pérez", // Nombre completo
-                "12345678", // DNI
-                "jindrg@gmail.com", // Email
-                "+541112345678", // Teléfono
-                passwordEncoder.encode("password123"), // Contraseña encriptada
-                LocalDateTime.now(), // Fecha de creación
-                LocalDateTime.now(), // Fecha de actualización
-                true, // Estado activo
-                null, // Listado de cuentas
-                null, // Listado de notificaciones
-                null  // Listado de tarjetas
+                null,
+                "Delmer Rodríguez",
+                "12345678",
+                "jindrg@gmail.com",
+                "+541112345678",
+                passwordEncoder.encode(USER_PASSWORD),
+                date1,
+                date1,
+                true,
+                null,
+                null,
+                null
         );
 
         User user2 = new User(
                 null,
-                "María Gómez",
+                "Gustavo Paz",
                 "87654321",
-                "maria.gomez@dominio.com",
+                "gusti.paz@gmail.com",
                 "+541198765432",
-                passwordEncoder.encode("password456"), // Contraseña encriptada
-                LocalDateTime.now(),
-                LocalDateTime.now(),
+                passwordEncoder.encode(USER_PASSWORD),
+                date2,
+                date2,
                 true,
                 null,
                 null,
@@ -50,13 +61,13 @@ public class UserDataLoader {
 
         User user3 = new User(
                 null,
-                "Carlos López",
+                "Sebastián Tournier",
                 "56789123",
-                "carlos.lopez@dominio.com",
+                "sebastian.tournier@gmail.com",
                 "+541112345679",
-                passwordEncoder.encode("password789"), // Contraseña encriptada
-                LocalDateTime.now(),
-                LocalDateTime.now(),
+                passwordEncoder.encode(USER_PASSWORD),
+                date3,
+                date3,
                 true,
                 null,
                 null,
@@ -65,23 +76,109 @@ public class UserDataLoader {
 
         User user4 = new User(
                 null,
-                "Ana Torres",
+                "Gastón Federico Nahuel Gómez",
                 "23456789",
-                "ana.torres@dominio.com",
+                "gastongomez2014@hotmail.com",
                 "+541112345680",
-                passwordEncoder.encode("password012"), // Contraseña encriptada
-                LocalDateTime.now(),
-                LocalDateTime.now(),
+                passwordEncoder.encode(USER_PASSWORD),
+                date4,
+                date4,
                 true,
                 null,
                 null,
                 null
         );
 
+        User user5 = new User(
+                null,
+                "Luis Méndez",
+                "34567891",
+                "luis.mendez@dominio.com",
+                "+541112345681",
+                passwordEncoder.encode(USER_PASSWORD),
+                date5,
+                date5,
+                true,
+                null,
+                null,
+                null
+        );
 
+        User user6 = new User(
+                null,
+                "MERCADO PAGO SERVICIOS DE PROCESAMIENTO S.R.L",
+                "71699949",
+                "support@mercadopago.com",
+                faker.numerify("+54##########"),
+                passwordEncoder.encode(USER_PASSWORD),
+                date6,
+                date6,
+                false,
+                null,
+                null,
+                null
+        );
 
-        // Guardar los usuarios en la base de datos
-        userRepository.saveAll(List.of(user1, user2, user3, user4));
+        User user7 = new User(
+                null,
+                "Tesoreria Wallex",
+                "71221356",
+                "tesoreria@wallex.com",
+                faker.numerify("+54##########"),
+                passwordEncoder.encode("ENTITY_PASSWORD"),
+                date1,
+                date1,
+                false,
+                null,
+                null,
+                null
+        );
+
+        User user8 = new User(
+                null,
+                "Visa",
+                "71135628",
+                "visa@testing.com",
+                faker.numerify("+54##########"),
+                passwordEncoder.encode(ENTITY_PASSWORD),
+                date2,
+                date2,
+                false,
+                null,
+                null,
+                null
+        );
+
+        User user9 = new User(
+                null,
+                "MasterCard",
+                "71003569",
+                "mastercard@testing.com",
+                faker.numerify("+54##########"),
+                passwordEncoder.encode(ENTITY_PASSWORD),
+                date3,
+                date3,
+                false,
+                null,
+                null,
+                null
+        );
+
+        User user10 = new User(
+                null,
+                "American Express",
+                "73100620",
+                "amex@testing.com",
+                faker.numerify("+54##########"),
+                passwordEncoder.encode(ENTITY_PASSWORD),
+                date4,
+                date4,
+                false,
+                null,
+                null,
+                null
+        );
+
+        userRepository.saveAll(List.of(user1, user2, user3, user4, user5, user6, user7, user8, user9, user10));
     }
-
 }

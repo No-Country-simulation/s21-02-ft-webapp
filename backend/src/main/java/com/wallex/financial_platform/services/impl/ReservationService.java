@@ -15,9 +15,9 @@ import com.wallex.financial_platform.repositories.AccountRepository;
 import com.wallex.financial_platform.repositories.ReservationRepository;
 import com.wallex.financial_platform.services.IReservationService;
 import com.wallex.financial_platform.services.utils.UserContextService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -65,6 +65,7 @@ public class ReservationService implements IReservationService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ReservationResponseDTO> getActiveReservationsByAccount(Long accountId) {
         Account account = this.validateAndGetAccount(accountId);
         this.validateAccountOwnership(account);

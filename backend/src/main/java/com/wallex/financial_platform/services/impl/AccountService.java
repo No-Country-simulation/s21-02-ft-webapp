@@ -2,6 +2,7 @@ package com.wallex.financial_platform.services.impl;
 
 import com.wallex.financial_platform.dtos.requests.AccountRequestDTO;
 import com.wallex.financial_platform.dtos.requests.DepositRequestDTO;
+import com.wallex.financial_platform.dtos.requests.ReservationRequestDTO;
 import com.wallex.financial_platform.dtos.requests.TransferRequestDTO;
 import com.wallex.financial_platform.dtos.responses.AccountResponseDTO;
 import com.wallex.financial_platform.dtos.responses.TransactionResponseDTO;
@@ -17,16 +18,17 @@ import com.wallex.financial_platform.repositories.AccountRepository;
 import com.wallex.financial_platform.services.IAccountService;
 import com.wallex.financial_platform.services.utils.EncryptionService;
 import com.wallex.financial_platform.services.utils.UserContextService;
-import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import net.datafaker.Faker;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,8 +39,10 @@ public class AccountService implements IAccountService {
     private final TransactionService transactionService;
     private final EncryptionService encryptionService;
     private final NotificationService notificationService;
+    private final ReservationService reservationService;
 
     @Override
+    @Transactional(readOnly = true)
     public List<AccountResponseDTO> getAccountsByUser() {
         User authenticatedUser = userContextService.getAuthenticatedUser();
         List<Account> accounts = accountRepository.findByUserId(authenticatedUser.getId());
@@ -63,6 +67,7 @@ public class AccountService implements IAccountService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<String> getCurrencies() {
         return Arrays.stream(CurrencyType.values())
                 .map(Enum::name)
@@ -93,6 +98,20 @@ public class AccountService implements IAccountService {
 
         performDeposit(account, card, depositRequestDTO.amount());
         return transactionService.createDepositTransaction(account, depositRequestDTO.amount(), depositRequestDTO.cardNumber());
+    }
+
+    @Override
+    public TransactionResponseDTO createReservation(Long sourceAccountId, ReservationRequestDTO reservationRequestDTO) {
+        reservationService.createReservation(sourceAccountId, reservationRequestDTO);
+        Account account = getAccountById(sourceAccountId);
+        return transactionService.createReservationTransaction(account, reservationRequestDTO);
+    }
+
+    private void validateReservation(Account account, @NotNull @Positive BigDecimal amount) {
+        validateAccountOwnership(account);
+        validateAccountStatus(account);
+        validateSufficientFunds(account, amount);
+        validateCurrencyCompatibility(account, account);
     }
 
     @Override

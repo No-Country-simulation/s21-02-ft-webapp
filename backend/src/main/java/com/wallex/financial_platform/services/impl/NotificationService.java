@@ -10,10 +10,10 @@ import com.wallex.financial_platform.exceptions.notification.NotificationExcepti
 import com.wallex.financial_platform.repositories.NotificationRepository;
 import com.wallex.financial_platform.services.INotificationService;
 import com.wallex.financial_platform.services.utils.UserContextService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -42,6 +42,7 @@ public class NotificationService implements INotificationService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<NotificationResponseDTO> getAllNotificationByUserOnline() {
 
             List<Notification> notifications = this.notificationRepository.findByUserId(userContextService.getAuthenticatedUser().getId());

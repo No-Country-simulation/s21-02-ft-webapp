@@ -8,12 +8,14 @@ import com.wallex.financial_platform.dtos.responses.UserResponseDTO;
 import com.wallex.financial_platform.exceptions.auth.UserNotFoundException;
 import com.wallex.financial_platform.services.IUserService;
 import com.wallex.financial_platform.services.utils.UserContextService;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import com.wallex.financial_platform.entities.User;
 import com.wallex.financial_platform.repositories.UserRepository;
 
 import lombok.AllArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor
@@ -22,41 +24,21 @@ public class UserService implements IUserService {
     private final UserContextService userContextService;
 
     @Override
-    public UserResponseDTO getUserByEmail(String email) {
-        return this.userRepository.findByEmail(email).map(this::convertToDTO).orElseThrow(()->new UserNotFoundException("Usuario  con email " + email + " no encontrado"));
-    }
-
-    @Override
-    public UserResponseDTO getUserById(Long id) {
-        return this.userRepository.findById(id).map(this::convertToDTO).orElseThrow(()->new UserNotFoundException("Usuario  con id " + id + " no encontrado"));
-    }
-
-    @Override
+    @Transactional(readOnly = true)
     public UserResponseDTO getUserByDni(String dni) {
-        return this.userRepository.findByDni(dni).map(this::convertToDTO).orElseThrow(()->new UserNotFoundException("Usuario  con dni " + dni + " no encontrado"));
+        User user = userContextService.validateUserAccess(dni); 
+        return convertToDTO(user);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<UserResponseDTO> getUserOnline() {
-        Optional<User> users = this.userRepository.findById(this.userContextService.getAuthenticatedUser().getId());
-        if(users.isEmpty()) {
-            throw new UserNotFoundException("No hay usuarios registrados");
-        }
-        return users.stream().map(this::convertToDTO).collect(Collectors.toList());
-    }
-
-    @Override
-    public boolean existsByEmail(String email) {
-        return this.userRepository.existsByEmail(email);
-    }
-
-    @Override
-    public boolean existsByDni(String dni) {
-        return this.userRepository.existsByDni(dni);
+        User user = this.userRepository.findById(this.userContextService.getAuthenticatedUser().getId())
+                .orElseThrow(() -> new UserNotFoundException("No hay usuarios registrados"));
+        return List.of(convertToDTO(user));
     }
 
     private UserResponseDTO convertToDTO(User user) {
-
         return new UserResponseDTO(
                 user.getId(),
                 user.getFullName(),

@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.wallex.financial_platform.dtos.requests.AccountRequestDTO;
 import com.wallex.financial_platform.dtos.requests.DepositRequestDTO;
+import com.wallex.financial_platform.dtos.requests.ReservationRequestDTO;
 import com.wallex.financial_platform.dtos.requests.TransferRequestDTO;
 import com.wallex.financial_platform.dtos.responses.*;
 import com.wallex.financial_platform.services.impl.MovementService;
@@ -50,6 +51,12 @@ public class AccountController {
     @PostMapping("/deposit")
     public ResponseEntity<TransactionResponseDTO> deposit(@RequestParam Long sourceAccountId, @Valid @RequestBody DepositRequestDTO depositRequestDTO) {
         TransactionResponseDTO responseDTO = accountService.addFundsFromCard(sourceAccountId, depositRequestDTO);
+        return ResponseEntity.ok(responseDTO);
+    }
+
+    @PostMapping("/reservation")
+    public ResponseEntity<TransactionResponseDTO> reservation(@RequestParam Long sourceAccountId, @Valid @RequestBody ReservationRequestDTO reservationRequestDTO) {
+        TransactionResponseDTO responseDTO = accountService.createReservation(sourceAccountId, reservationRequestDTO);
         return ResponseEntity.ok(responseDTO);
     }
 

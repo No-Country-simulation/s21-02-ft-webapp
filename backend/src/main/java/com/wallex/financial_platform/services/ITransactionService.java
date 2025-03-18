@@ -1,5 +1,6 @@
 package com.wallex.financial_platform.services;
 
+import com.wallex.financial_platform.dtos.requests.ReservationRequestDTO;
 import com.wallex.financial_platform.dtos.responses.TransactionResponseDTO;
 import com.wallex.financial_platform.entities.Account;
 
@@ -11,4 +12,5 @@ public interface ITransactionService {
     TransactionResponseDTO createDepositTransaction(Account account, BigDecimal amount, String cardNumber);
     List<TransactionResponseDTO> getTransactionByAccount(Long id);
 
+    TransactionResponseDTO createReservationTransaction(Account account, ReservationRequestDTO reservationRequestDTO);
 }

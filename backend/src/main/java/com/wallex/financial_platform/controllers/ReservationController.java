@@ -16,12 +16,6 @@ import java.util.List;
 public class ReservationController {
     private final ReservationService reservationService;
 
-    @PostMapping
-    public ResponseEntity<ReservationResponseDTO> createReservation( @PathVariable Long accountId, @RequestBody @Valid ReservationRequestDTO reservationRequestDTO) {
-        ReservationResponseDTO response = reservationService.createReservation(accountId, reservationRequestDTO);
-        return ResponseEntity.ok(response);
-    }
-
     @PostMapping("/{reservationId}/release")
     public ResponseEntity<ReservationResponseDTO> releaseReservation(@PathVariable Long reservationId, @PathVariable Long accountId) {
         ReservationResponseDTO response = reservationService.releaseReservation(reservationId,accountId);

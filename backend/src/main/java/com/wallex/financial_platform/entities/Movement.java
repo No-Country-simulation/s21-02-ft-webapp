@@ -24,7 +24,7 @@ public class Movement {
     private Account account;
 
     @ManyToOne
-    @JoinColumn(name = "transaction_id", nullable = false)
+    @JoinColumn(name = "transaction_id")
     private Transaction transaction;
 
     @Column( nullable = false)
