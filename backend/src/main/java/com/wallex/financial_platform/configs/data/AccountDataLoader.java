@@ -21,30 +21,26 @@ public class AccountDataLoader {
     private final UserRepository userRepository;
 
     public void load() {
-
         List<User> userList = userRepository.findAll();
-
         Faker faker = new Faker();
-
         List<Account> accountList = new ArrayList<>();
 
-        // Crear las cuentas para el usuario 1
         accountList.add(
                 Account.builder()
                 .accountId(null)
                 .cbu("CBU000000000000000000000001")
                 .alias((faker.animal().name()+"."+faker.construction().materials()+"."+faker.commerce().material()).toLowerCase()) // Alias único
-                .availableBalance(new BigDecimal(2500)) // Saldo disponible
-                .reservedBalance(new BigDecimal(0)) // Saldo reservado
-                .currency(CurrencyType.USD) // Moneda
-                .active(true)  // Activa
-                .createdAt(LocalDateTime.now()) // Fecha de creación
-                .updatedAt(LocalDateTime.now()) // Fecha de actualización
+                .availableBalance(new BigDecimal(2500))
+                .reservedBalance(new BigDecimal(0))
+                .currency(CurrencyType.USD)
+                .active(true)
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
                 .user(userList.get(0))
-                .reservations(new ArrayList<>()) // Reservas (vacío si no tienes datos)
-                .movements(new ArrayList<>())   // Movimientos (vacío si no tienes datos)
-                .sourceTransactions(new ArrayList<>()) // Transacciones origen
-                .destinationTransactions(new ArrayList<>()) // Transacciones destino
+                .reservations(new ArrayList<>())
+                .movements(new ArrayList<>())
+                .sourceTransactions(new ArrayList<>())
+                .destinationTransactions(new ArrayList<>())
                 .build()
         );
 
@@ -145,6 +141,6 @@ public class AccountDataLoader {
                         .build()
         );
 
-        accountRepository.saveAll(accountList); // Guardar las cuentas
+        accountRepository.saveAll(accountList);
     }
 }

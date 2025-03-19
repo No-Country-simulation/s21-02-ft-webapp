@@ -22,7 +22,6 @@ public class MovementDataLoader {
     private final TransactionRepository transactionRepository;
 
     public void load() {
-        // Obtener las transacciones registradas
         List<Transaction> transactions = transactionRepository.findAll();
         List<Movement> movements = new ArrayList<>();
 
@@ -31,7 +30,7 @@ public class MovementDataLoader {
             Account destinationAccount = transaction.getDestinationAccount();
 
             if (sourceAccount.getAccountId().equals(destinationAccount.getAccountId())
-                    && transaction.getType() == TransactionType.DEPOSIT) {
+                    && transaction.getType() == TransactionType.DEPOSIT || transaction.getType() == TransactionType.RENDIMIENTO || transaction.getType() == TransactionType.RESERVE) {
                 // Caso de depósito: solo un movimiento de entrada
                 Movement depositMovement = new Movement(
                         null,
@@ -43,13 +42,12 @@ public class MovementDataLoader {
                 );
                 movements.add(depositMovement);
             } else {
-                // Caso de transferencia: dos movimientos (débito y crédito)
                 Movement debitMovement = new Movement(
                         null,
                         sourceAccount,
                         transaction,
                         "Transferencia enviada a " + destinationAccount.getAccountId(),
-                        transaction.getAmount().negate(), // Monto negativo
+                        transaction.getAmount(), // Monto negativo
                         LocalDateTime.now()
                 );
 
@@ -58,7 +56,7 @@ public class MovementDataLoader {
                         destinationAccount,
                         transaction,
                         "Transferencia recibida de " + sourceAccount.getAccountId(),
-                        transaction.getAmount(), // Monto positivo
+                        transaction.getAmount().negate(), // Monto positivo
                         LocalDateTime.now()
                 );
 
@@ -67,7 +65,6 @@ public class MovementDataLoader {
             }
         }
 
-        // Guardar los movimientos en el repositorio
         movementRepository.saveAll(movements);
     }
 }

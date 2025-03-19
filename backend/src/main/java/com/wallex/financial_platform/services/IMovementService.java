@@ -9,7 +9,5 @@ import java.util.List;
 public interface IMovementService {
 
     MovementResponseDTO createMovement(MovementRequestDTO movementRequestDTO);
-    //MovementResponseDTO getMovementById(Long movementId);
-    //List<MovementResponseDTO> getUserAccountMovements(Long accountId);
     List<MovementResponseDTO> getMovementsByAccount(Long accountId);
 }

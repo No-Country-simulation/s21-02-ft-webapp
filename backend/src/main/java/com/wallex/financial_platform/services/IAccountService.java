@@ -13,15 +13,10 @@ import java.util.List;
 public interface IAccountService {
     List<AccountResponseDTO> getAccountsByUser();
     AccountResponseDTO createAccount(@Valid AccountRequestDTO accountReq);
-    //CheckAccountResponseDTO checkAccount(CheckAccountRequestDto chkAcc);
-
-    //List<TransactionResumeResponseDTO> getTransactions(Long accountId);
-    //List<ReservationResponseDto> getReservations(Long accountId);
     List<String> getCurrencies();
     List<AccountResponseDTO> getAccountsByUserAll();
     TransactionResponseDTO transfer(Long sourceAccountId, TransferRequestDTO transferRequestDTO);
     TransactionResponseDTO addFundsFromCard(Long sourceAccountId, @Valid DepositRequestDTO depositRequestDTO);
     TransactionResponseDTO createReservation(Long sourceAccountId, @Valid ReservationRequestDTO reservationRequestDTO);
-
     TransactionResponseDTO releaseReservation(Long reservationId, Long accountId);
 }

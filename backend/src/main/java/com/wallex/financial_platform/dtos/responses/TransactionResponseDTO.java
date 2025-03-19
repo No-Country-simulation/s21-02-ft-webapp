@@ -10,8 +10,8 @@ import java.time.LocalDateTime;
 public record TransactionResponseDTO(
         Long transactionId,
         LocalDateTime transactionDate,
-        Long sourceAccountId,
-        Long destinationAccountId,
+        String sourceAccount,
+        String destinationAccount,
         BigDecimal amount,
         String reason,
         TransactionType transactionType) {

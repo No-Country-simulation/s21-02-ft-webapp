@@ -24,7 +24,7 @@ public class DollarService {
         String url = baseUrl + dollarOficialUrl;
         DollarResponse response = restTemplate.getForObject(url, DollarResponse.class);
         if (response != null) {
-            return response.venta(); // Obtener el valor de venta del dólar oficial
+            return response.venta();
         }
         throw new RuntimeException("No se pudo obtener el valor del dólar oficial");
     }

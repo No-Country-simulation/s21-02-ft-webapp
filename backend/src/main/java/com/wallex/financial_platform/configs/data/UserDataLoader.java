@@ -20,7 +20,7 @@ public class UserDataLoader {
     public void load() {
         Faker faker = new Faker();
         String USER_PASSWORD = "password123";
-        //String ENTITY_PASSWORD = "password456";
+        String ENTITY_PASSWORD = "password456";
 
         LocalDateTime date1 = LocalDateTime.of(2025, 1, 2, 10, 0);
         LocalDateTime date2 = LocalDateTime.of(2025, 1, 5, 12, 30);
@@ -104,28 +104,13 @@ public class UserDataLoader {
                 null
         );
 
-       /* User user6 = new User(
-                null,
-                "MERCADO PAGO SERVICIOS DE PROCESAMIENTO S.R.L",
-                "71699949",
-                "support@mercadopago.com",
-                faker.numerify("+54##########"),
-                passwordEncoder.encode(USER_PASSWORD),
-                date6,
-                date6,
-                false,
-                null,
-                null,
-                null
-        );*/
-
         User user6 = new User(
                 null,
                 "Tesoreria Wallex",
                 "71221356",
                 "tesoreria@wallex.com",
                 faker.numerify("+54##########"),
-                passwordEncoder.encode("ENTITY_PASSWORD"),
+                passwordEncoder.encode(ENTITY_PASSWORD),
                 date1,
                 date1,
                 false,
@@ -133,51 +118,6 @@ public class UserDataLoader {
                 null,
                 null
         );
-
-       /* User user8 = new User(
-                null,
-                "Visa",
-                "71135628",
-                "visa@testing.com",
-                faker.numerify("+54##########"),
-                passwordEncoder.encode(ENTITY_PASSWORD),
-                date2,
-                date2,
-                false,
-                null,
-                null,
-                null
-        );
-
-        User user9 = new User(
-                null,
-                "MasterCard",
-                "71003569",
-                "mastercard@testing.com",
-                faker.numerify("+54##########"),
-                passwordEncoder.encode(ENTITY_PASSWORD),
-                date3,
-                date3,
-                false,
-                null,
-                null,
-                null
-        );
-
-        User user10 = new User(
-                null,
-                "American Express",
-                "73100620",
-                "amex@testing.com",
-                faker.numerify("+54##########"),
-                passwordEncoder.encode(ENTITY_PASSWORD),
-                date4,
-                date4,
-                false,
-                null,
-                null,
-                null
-        );*/
 
         userRepository.saveAll(List.of(user1, user2, user3, user4, user5, user6));
     }

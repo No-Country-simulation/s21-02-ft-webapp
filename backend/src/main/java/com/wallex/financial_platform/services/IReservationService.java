@@ -6,8 +6,6 @@ import com.wallex.financial_platform.dtos.responses.ReservationResponseDTO;
 import java.util.List;
 
 public interface IReservationService {
-    //List<ReservationResponseDto> getReservationsByAccountId(Long accountId);
-    //ReservationResponseDto saveReservation(ReservationRequestDTO reservationReq);
     ReservationResponseDTO createReservation(Long accountId, ReservationRequestDTO reservationRequestDTO);
     ReservationResponseDTO releaseReservation(Long reservationId,Long accountId);
     List<ReservationResponseDTO> getActiveReservationsByAccount(Long accountId);

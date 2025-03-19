@@ -117,8 +117,8 @@ public class TransactionService implements ITransactionService {
         return new TransactionResponseDTO(
                 transaction.getTransactionId(),
                 transaction.getTransactionDateTime(),
-                transaction.getSourceAccount().getAccountId(),
-                transaction.getDestinationAccount().getAccountId(),
+                transaction.getSourceAccount().getUser().getFullName(),
+                transaction.getDestinationAccount().getUser().getFullName(),
                 amount,
                 transaction.getReason(),
                 transaction.getType()
@@ -188,8 +188,8 @@ public class TransactionService implements ITransactionService {
         return new TransactionResponseDTO(
                 transaction.getTransactionId(),
                 transaction.getTransactionDateTime(),
-                transaction.getSourceAccount().getAccountId(),
-                transaction.getDestinationAccount().getAccountId(),
+                transaction.getSourceAccount().getUser().getFullName(),
+                transaction.getDestinationAccount().getUser().getFullName(),
                 transaction.getType().equals(TransactionType.TRANSFER) || transaction.getType().equals(TransactionType.RESERVE)? transaction.getAmount().negate(): transaction.getAmount(),
                 transaction.getReason(),
                 transaction.getType()
