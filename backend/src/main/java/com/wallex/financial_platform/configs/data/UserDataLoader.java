@@ -20,7 +20,7 @@ public class UserDataLoader {
     public void load() {
         Faker faker = new Faker();
         String USER_PASSWORD = "password123";
-        String ENTITY_PASSWORD = "password456";
+        //String ENTITY_PASSWORD = "password456";
 
         LocalDateTime date1 = LocalDateTime.of(2025, 1, 2, 10, 0);
         LocalDateTime date2 = LocalDateTime.of(2025, 1, 5, 12, 30);
@@ -48,7 +48,7 @@ public class UserDataLoader {
                 null,
                 "Gustavo Paz",
                 "87654321",
-                "gusti.paz@gmail.com",
+                "gusti.paz1@gmail.com",
                 "+541198765432",
                 passwordEncoder.encode(USER_PASSWORD),
                 date2,
@@ -63,7 +63,7 @@ public class UserDataLoader {
                 null,
                 "Sebastián Tournier",
                 "56789123",
-                "sebastian.tournier@gmail.com",
+                "sebastian.tournier1@gmail.com",
                 "+541112345679",
                 passwordEncoder.encode(USER_PASSWORD),
                 date3,
@@ -104,7 +104,7 @@ public class UserDataLoader {
                 null
         );
 
-        User user6 = new User(
+       /* User user6 = new User(
                 null,
                 "MERCADO PAGO SERVICIOS DE PROCESAMIENTO S.R.L",
                 "71699949",
@@ -117,9 +117,9 @@ public class UserDataLoader {
                 null,
                 null,
                 null
-        );
+        );*/
 
-        User user7 = new User(
+        User user6 = new User(
                 null,
                 "Tesoreria Wallex",
                 "71221356",
@@ -134,7 +134,7 @@ public class UserDataLoader {
                 null
         );
 
-        User user8 = new User(
+       /* User user8 = new User(
                 null,
                 "Visa",
                 "71135628",
@@ -177,8 +177,8 @@ public class UserDataLoader {
                 null,
                 null,
                 null
-        );
+        );*/
 
-        userRepository.saveAll(List.of(user1, user2, user3, user4, user5, user6, user7, user8, user9, user10));
+        userRepository.saveAll(List.of(user1, user2, user3, user4, user5, user6));
     }
 }

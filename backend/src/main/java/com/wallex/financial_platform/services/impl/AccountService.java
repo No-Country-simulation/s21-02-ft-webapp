@@ -5,6 +5,7 @@ import com.wallex.financial_platform.dtos.requests.DepositRequestDTO;
 import com.wallex.financial_platform.dtos.requests.ReservationRequestDTO;
 import com.wallex.financial_platform.dtos.requests.TransferRequestDTO;
 import com.wallex.financial_platform.dtos.responses.AccountResponseDTO;
+import com.wallex.financial_platform.dtos.responses.ReservationResponseDTO;
 import com.wallex.financial_platform.dtos.responses.TransactionResponseDTO;
 import com.wallex.financial_platform.entities.Account;
 import com.wallex.financial_platform.entities.Card;
@@ -101,10 +102,19 @@ public class AccountService implements IAccountService {
     }
 
     @Override
+    @Transactional
     public TransactionResponseDTO createReservation(Long sourceAccountId, ReservationRequestDTO reservationRequestDTO) {
         reservationService.createReservation(sourceAccountId, reservationRequestDTO);
         Account account = getAccountById(sourceAccountId);
         return transactionService.createReservationTransaction(account, reservationRequestDTO);
+    }
+
+    @Override
+    @Transactional
+    public TransactionResponseDTO releaseReservation(Long reservationId, Long accountId) {
+      ReservationResponseDTO reservationResponseDTO = reservationService.releaseReservation(reservationId, accountId);
+       Account account = getAccountById(accountId);
+        return transactionService.releaseReservationTransaction(account, reservationResponseDTO);
     }
 
     private void validateReservation(Account account, @NotNull @Positive BigDecimal amount) {

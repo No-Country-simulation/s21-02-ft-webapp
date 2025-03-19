@@ -22,7 +22,6 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class AccountController {
     private AccountService accountService;
-    private MovementService movementService;
 
     @GetMapping("/all")
     public ResponseEntity<List<AccountResponseDTO>> getAccountsAll() {
@@ -58,6 +57,12 @@ public class AccountController {
     public ResponseEntity<TransactionResponseDTO> reservation(@RequestParam Long sourceAccountId, @Valid @RequestBody ReservationRequestDTO reservationRequestDTO) {
         TransactionResponseDTO responseDTO = accountService.createReservation(sourceAccountId, reservationRequestDTO);
         return ResponseEntity.ok(responseDTO);
+    }
+
+    @PostMapping("/{accountId}/reservations/{reservationId}/release")
+    public ResponseEntity<TransactionResponseDTO> releaseReservation(@PathVariable Long reservationId, @PathVariable Long accountId) {
+        TransactionResponseDTO response = accountService.releaseReservation(reservationId,accountId);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/currencies")

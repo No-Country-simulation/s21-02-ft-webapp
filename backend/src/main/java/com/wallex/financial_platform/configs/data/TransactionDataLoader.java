@@ -28,12 +28,11 @@ public class TransactionDataLoader {
         Account account2 = accountRepository.findById(2L).orElseThrow();
         Account account3 = accountRepository.findById(3L).orElseThrow();
         Account account4 = accountRepository.findById(4L).orElseThrow();
-        Account account5 = accountRepository.findById(5L).orElseThrow();
 
         // Crear transacciones con datos realistas
         List<Transaction> transactions = List.of(
-                new Transaction(null, account2, account3, new BigDecimal("150000.00"), TransactionType.TRANSFER, "Pago de alquiler", LocalDateTime.now(), TransactionStatus.COMPLETED, new ArrayList<>()),
-                new Transaction(null, account2, account4, new BigDecimal("100000.00"), TransactionType.TRANSFER, "Pago por prestamo", LocalDateTime.now(), TransactionStatus.COMPLETED,new ArrayList<>()),
+                new Transaction(null, account2, account3, new BigDecimal("150000.00").negate(), TransactionType.TRANSFER, "Pago de alquiler", LocalDateTime.now(), TransactionStatus.COMPLETED, new ArrayList<>()),
+                new Transaction(null, account2, account4, new BigDecimal("100000.00").negate(), TransactionType.TRANSFER, "Pago por prestamo", LocalDateTime.now(), TransactionStatus.COMPLETED,new ArrayList<>()),
                 new Transaction(null, account2, account2, new BigDecimal("20000.00"), TransactionType.DEPOSIT, "Ingreso de dinero desde tarjeta de debito", LocalDateTime.now(), TransactionStatus.COMPLETED, new ArrayList<>())
 
         );

@@ -2,6 +2,7 @@ package com.wallex.financial_platform.services.utils;
 
 import com.wallex.financial_platform.entities.Account;
 import com.wallex.financial_platform.entities.enums.CurrencyType;
+import com.wallex.financial_platform.entities.enums.TransactionType;
 import com.wallex.financial_platform.exceptions.account.AccountNotFoundException;
 import com.wallex.financial_platform.repositories.AccountRepository;
 import com.wallex.financial_platform.services.impl.AccountService;
@@ -34,19 +35,19 @@ public class DollarUpdateService {
 
     @Scheduled(cron = "0 * * * * *")
     public void updateBalancesBasedOnDollar() {
-        BigDecimal currentDollarValue = BigDecimal.valueOf(1200);
+        BigDecimal currentDollarValue = dollarService.getCurrentDollarValue();
         if (currentDollarValue.compareTo(previousDollarValue) > 0) {
             BigDecimal dollarIncrease = currentDollarValue.subtract(previousDollarValue);
             List<Account> accounts = accountRepository.findByCurrency(CurrencyType.ARS);
 
             for (Account account : accounts) {
-                if (account.getActive() && account.getAvailableBalance().compareTo(BigDecimal.ZERO) > 0) {
+                if (account.getActive() && account.getAvailableBalance().compareTo(BigDecimal.ZERO) > 0 && !account.getUser().getEmail().equals("tesoreria@wallex.com")) {
                     BigDecimal profit = account.getAvailableBalance()
                             .multiply(dollarIncrease.divide(previousDollarValue, 4, RoundingMode.HALF_UP));
 
                     account.setAvailableBalance(account.getAvailableBalance().add(profit));
 
-                    this.transactionService.createTransferTransaction(accountContextService.getAccountWallexPesos(),account,profit, "Rendimiento" );
+                    this.transactionService.createYieldTransaction(accountContextService.getAccountWallexPesos(),account,profit, "Se genero rendimiento por subida del dollar" , TransactionType.RENDIMIENTO);
                     accountRepository.save(account);
                 }
             }

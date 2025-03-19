@@ -22,4 +22,6 @@ public interface IAccountService {
     TransactionResponseDTO transfer(Long sourceAccountId, TransferRequestDTO transferRequestDTO);
     TransactionResponseDTO addFundsFromCard(Long sourceAccountId, @Valid DepositRequestDTO depositRequestDTO);
     TransactionResponseDTO createReservation(Long sourceAccountId, @Valid ReservationRequestDTO reservationRequestDTO);
+
+    TransactionResponseDTO releaseReservation(Long reservationId, Long accountId);
 }
