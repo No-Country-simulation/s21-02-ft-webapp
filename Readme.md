@@ -19,7 +19,7 @@ El objetivo principal del sistema es facilitar la gestión del dinero de manera 
 </p>
 
 <p align="center">
-  <img src="https://media.discordapp.net/attachments/1338664601998594108/1346273997817643130/image.png?ex=67c796dd&is=67c6455d&hm=c8b1adf57f2d7a2637bcd46cd70f5f8218c3b42624641a5163e44551348ea16f&=&format=webp&quality=lossless&width=353&height=614" alt="Vista de la aplicación" width="400">
+  <img src="https://i.postimg.cc/zvRyP3Mc/image0.png?ex=67c796dd&is=67c6455d&hm=c8b1adf57f2d7a2637bcd46cd70f5f8218c3b42624641a5163e44551348ea16f&=&format=webp&quality=lossless&width=353&height=614" alt="Vista de la aplicación" width="400">
 </p>
 
 
@@ -197,7 +197,7 @@ Haz clic en el enlace Local: http://localhost:5173/ para abrir la aplicación en
 
 ### 📌 **Diagrama Entidad-Relación (ER)**  
 <p align="center">
-  <img src="https://media.discordapp.net/attachments/1338664601998594108/1346279570445434900/image.png?ex=67c79c0e&is=67c64a8e&hm=75f03ac965247e70526aacc9419c37efc97e908fc2385081d5b0eaee2afb3504&=&format=webp&quality=lossless&width=471&height=614" alt="Modelo de Datos" width="600">
+  <img src="https://i.postimg.cc/9z5D3CHF/image.png?ex=67c79c0e&is=67c64a8e&hm=75f03ac965247e70526aacc9419c37efc97e908fc2385081d5b0eaee2afb3504&=&format=webp&quality=lossless&width=471&height=614" alt="Modelo de Datos" width="600">
 </p>
 
 ### 📄 **Descripción de las Entidades**  
