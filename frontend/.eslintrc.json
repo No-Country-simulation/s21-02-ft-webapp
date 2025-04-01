@@ -1,0 +1,7 @@
+{
+    "extends": ["react-app", "react-app/jest", "plugin:prettier/recommended"],
+    "rules": {
+     "prettier/prettier": ["error"],
+     "react/react-in-jsx-scope": "off"
+    }
+ }
