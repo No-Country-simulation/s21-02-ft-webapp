@@ -1,25 +1,25 @@
 // src/App.tsx
-import { Routes, Route } from 'react-router-dom'; // Importa Routes y Route que sirven para manejar las rutas
-import { Navbar } from './components/shared/Navbar'; // Importa el componente Navbar
-import { LoginPage as Login } from './pages/LoginPage';
-/* import { Dashboard } from './pages/DashboardPage';
-import { RegisterPage } from './pages/RegisterPage';
-import { Home } from './pages/Home';
-import  UserOnline  from './components/forms/UserOnline'; */
+import { useState } from 'react';
+import { Routes, Route } from 'react-router-dom';
+import { Navbar } from './components/shared/Navbar';
+import { LoginPage } from './pages/LoginPage';
+/* import { DashboardPage } from './pages/DashboardPage';
+import { HomePage } from './pages/HomePage'; */
 
-// Define la función App que devuelve el componente principal de la aplicación
 function App() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   return (
-    <div className="min-h-screen bg-gray-100">
-      <Navbar />
-      <main className="container mx-auto p-4">
-        <Routes>
-         {/*  <Route path="/" element={<Home />} />  */}
-          <Route path="/login" element={<Login />} />
-          {/* <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/registerUser" element={<RegisterPage />} />
-          <Route path="/userOnline" element={<UserOnline />} /> */}
-        </Routes>
+    <div className="min-h-screen bg-gray-50">
+      <Navbar isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} />
+      <main className={`transition-all duration-300 ${isMenuOpen ? 'md:ml-64' : 'ml-0'} pt-16`}>
+        <div className="p-4">
+          <Routes>
+            {/* <Route path="/" element={<HomePage />} /> */}
+            <Route path="/login" element={<LoginPage />} />
+          {/*   <Route path="/dashboard" element={<DashboardPage />} /> */}
+          </Routes>
+        </div>
       </main>
     </div>
   );
