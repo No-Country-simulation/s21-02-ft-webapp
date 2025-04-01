@@ -6,6 +6,6 @@ import com.wallex.financial_platform.dtos.responses.AuthResponseDTO;
 import com.wallex.financial_platform.dtos.responses.UserResponseDTO;
 
 public interface IAuthService {
-    UserResponseDTO register(RegisterUserRequestDTO registerUserRequestDTO);
+    AuthResponseDTO register(RegisterUserRequestDTO registerUserRequestDTO);
     AuthResponseDTO login(LoginRequestDTO loginRequestDTO);
 }

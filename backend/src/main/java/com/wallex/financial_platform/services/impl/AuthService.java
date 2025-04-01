@@ -32,7 +32,7 @@ public class AuthService implements IAuthService {
 
     @Override
     @Transactional
-    public UserResponseDTO register(RegisterUserRequestDTO registerUserRequestDTO) {
+    public AuthResponseDTO register(RegisterUserRequestDTO registerUserRequestDTO) {
         if (this.userRepository.findByEmail(registerUserRequestDTO.email()).isPresent()) {
             throw new UserAlreadyExistsException("El email ya está registrado");
         }
@@ -48,11 +48,8 @@ public class AuthService implements IAuthService {
         user.setActive(true);
 
         this.userRepository.save(user);
-
-        return new UserResponseDTO(
-                user.getId(), user.getFullName(), user.getDni(), user.getEmail(),
-                user.getPhoneNumber(), user.getCreatedAt(), user.getUpdatedAt(), user.getActive()
-        );
+        String token = jwtUtil.generateToken(user.getEmail());
+        return new AuthResponseDTO(token, user.getFullName(), user.getEmail());
     }
 
     @Override

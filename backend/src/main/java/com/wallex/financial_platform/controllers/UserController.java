@@ -17,7 +17,6 @@ import java.util.List;
 
 public class UserController {
     private final UserService userService;
-    private final CardService cardService;
 
     @GetMapping
     public ResponseEntity<List<UserResponseDTO>> getUserOnline() {

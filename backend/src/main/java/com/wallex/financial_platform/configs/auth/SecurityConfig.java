@@ -1,5 +1,6 @@
 package com.wallex.financial_platform.configs.auth;
 
+import com.wallex.financial_platform.services.impl.JwtBlacklistService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -17,11 +18,12 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
     private final JwtTokenProvider jwtTokenProvider;
+    private final JwtBlacklistService jwtBlacklistService; // Agrega JwtBlacklistService
 
-    public SecurityConfig(JwtTokenProvider jwtTokenProvider) {
+    public SecurityConfig(JwtTokenProvider jwtTokenProvider, JwtBlacklistService jwtBlacklistService) {
         this.jwtTokenProvider = jwtTokenProvider;
+        this.jwtBlacklistService = jwtBlacklistService; // Inyecta JwtBlacklistService
     }
 
     @Bean
@@ -37,10 +39,8 @@ public class SecurityConfig {
                 .headers(headers -> headers
                         .frameOptions(frameOptions -> frameOptions.sameOrigin())
                 )
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, jwtBlacklistService), UsernamePasswordAuthenticationFilter.class); // Pasa los dos argumentos
 
         return http.build();
     }
@@ -48,13 +48,13 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173/")); // Permite cualquier origen
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Métodos permitidos
-        configuration.setAllowedHeaders(List.of("*")); // Permitir cualquier encabezado
-        configuration.setAllowCredentials(true); // Permitir credenciales (opcional)
+        configuration.setAllowedOrigins(List.of("http://localhost:5173/"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration); // Aplicar CORS a todas las rutas
+        source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 
@@ -62,4 +62,5 @@ public class SecurityConfig {
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
 }
