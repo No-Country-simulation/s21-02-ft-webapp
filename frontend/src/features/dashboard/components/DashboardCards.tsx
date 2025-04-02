@@ -1,45 +1,52 @@
 // src/components/dashboard/DashboardCards.tsx
 import { FaHandHoldingUsd, FaExchangeAlt, FaQrcode } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 
 export const DashboardCards = () => {
   return (
     <div className="lg:flex gap-4 items-stretch">
-      {/* Caja Grande */}
-      <div className="bg-white md:p-2 p-6 rounded-lg border border-gray-200 mb-4 lg:mb-0 shadow-md lg:w-[35%]">
-        <div className="flex justify-center items-center space-x-5 h-full">
+      {/* Caja Grande - Tarjeta de Saldo */}
+      <div className="bg-white p-6 rounded-lg border border-gray-200 mb-4 lg:mb-0 shadow-md lg:w-[35%]">
+        <div className="flex justify-between items-center h-full">
           <div>
-            <p className="text-gray-500">Saldo actual</p>
-            <h2 className="text-4xl font-bold text-gray-600">50.365</h2>
-            <p className="text-gray-500">25.365 $</p>
+            <p className="text-gray-500 text-sm md:text-base">Saldo actual</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-600">50.365</h2>
+            <p className="text-gray-500 text-sm md:text-base">25.365 $</p>
           </div>
           <img 
             src="https://www.emprenderconactitud.com/img/Wallet.png" 
             alt="wallet"
-            className="h-24 md:h-20 w-38"
+            className="h-20 w-20 md:h-24 md:w-24"
           />
         </div>
       </div>
 
-      {/* Caja Blanca */}
-      <div className="bg-white p-4 rounded-lg xs:mb-4 max-w-full shadow-md lg:w-[65%]">
-        <div className="flex flex-wrap justify-between h-full">
-          {/* Caja pequeña 1 */}
-          <button className="flex-1 bg-gradient-to-r from-cyan-400 to-cyan-600 rounded-lg flex flex-col items-center justify-center p-4 space-y-2 border border-gray-200 m-2 hover:opacity-90 transition-opacity">
-            <FaHandHoldingUsd className="text-white text-4xl" />
-            <p className="text-white">Depositar</p>
-          </button>
+      {/* Caja de Acciones */}
+      <div className="bg-white p-4 rounded-lg shadow-md lg:w-[65%]">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <Link
+            to="/deposit"
+            className="bg-gradient-to-r from-cyan-400 to-cyan-600 rounded-lg flex flex-col items-center justify-center p-4 space-y-2 border border-gray-200 hover:shadow-lg transition-shadow min-h-[120px]"
+          >
+            <FaHandHoldingUsd className="text-white text-3xl md:text-4xl" />
+            <p className="text-white font-medium">Depositar</p>
+          </Link>
 
-          {/* Caja pequeña 2 */}
-          <button className="flex-1 bg-gradient-to-r from-cyan-400 to-cyan-600 rounded-lg flex flex-col items-center justify-center p-4 space-y-2 border border-gray-200 m-2 hover:opacity-90 transition-opacity">
-            <FaExchangeAlt className="text-white text-4xl" />
-            <p className="text-white">Transferir</p>
-          </button>
+          <Link
+            to="/transfer"
+            className="bg-gradient-to-r from-cyan-400 to-cyan-600 rounded-lg flex flex-col items-center justify-center p-4 space-y-2 border border-gray-200 hover:shadow-lg transition-shadow min-h-[120px]"
+          >
+            <FaExchangeAlt className="text-white text-3xl md:text-4xl" />
+            <p className="text-white font-medium">Transferir</p>
+          </Link>
 
-          {/* Caja pequeña 3 */}
-          <button className="flex-1 bg-gradient-to-r from-cyan-400 to-cyan-600 rounded-lg flex flex-col items-center justify-center p-4 space-y-2 border border-gray-200 m-2 hover:opacity-90 transition-opacity">
-            <FaQrcode className="text-white text-4xl" />
-            <p className="text-white">Canjear</p>
-          </button>
+          <Link
+            to="/redeem"
+            className="bg-gradient-to-r from-cyan-400 to-cyan-600 rounded-lg flex flex-col items-center justify-center p-4 space-y-2 border border-gray-200 hover:shadow-lg transition-shadow min-h-[120px]"
+          >
+            <FaQrcode className="text-white text-3xl md:text-4xl" />
+            <p className="text-white font-medium">Canjear</p>
+          </Link>
         </div>
       </div>
     </div>

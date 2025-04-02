@@ -1,11 +1,11 @@
 // src/components/layout/Sidebar.tsx
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { 
-  FaHome, FaWallet, FaExchangeAlt, FaUser, 
-  FaSignOutAlt, FaBell, FaBars, FaSearch, 
-  FaHandHoldingUsd, FaQrcode, FaEnvelope, 
-  FaPhone, FaMapMarkerAlt, FaInfoCircle,
+import {
+  FaHome, FaWallet, FaExchangeAlt, FaUser,
+  FaSignOutAlt, FaBell, FaBars,
+  FaEnvelope,
+  FaPhone, FaMapMarkerAlt,
   FaQuestionCircle, FaShieldAlt, FaLock,
   FaFacebook, FaTwitter, FaInstagram, FaLinkedin
 } from 'react-icons/fa';
@@ -43,7 +43,7 @@ export const Sidebar = () => {
   }
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col max-h-screen">
       {/* Fixed Navbar - Height: 4rem (64px) */}
       <nav className="bg-white border-b border-gray-300 fixed w-full h-16 z-30">
         <div className="flex justify-between items-center h-full px-9">
@@ -51,10 +51,10 @@ export const Sidebar = () => {
             <FaBars className="text-cyan-500 text-lg" />
           </button>
 
-          <div className="ml-1">
-            <img 
-              src="https://www.emprenderconactitud.com/img/POC%20WCS%20(1).png" 
-              alt="logo" 
+         <div className="ml-1">
+            <img
+              src="/src/assets/icons/logo.svg"  // Asegúrate de que la ruta sea correcta
+              alt="logo"
               className="h-12"
             />
           </div>
@@ -75,8 +75,8 @@ export const Sidebar = () => {
       <div className={`${isOpen ? 'block' : 'hidden'} lg:block bg-white w-64 fixed top-16 left-0 bottom-0 z-20 border-r border-gray-200 overflow-y-auto`}>
         <div className="p-4 space-y-4">
           {/* Main Navigation Links */}
-          <Link 
-            to="/dashboard" 
+          <Link
+            to="/dashboard"
             className="relative px-4 py-3 flex items-center space-x-4 rounded-lg text-white bg-gradient-to-r from-sky-600 to-cyan-400"
             onClick={() => setIsOpen(false)}
           >
@@ -84,26 +84,26 @@ export const Sidebar = () => {
             <span className="-mr-1 font-medium">Inicio</span>
           </Link>
 
-          <Link 
-            to="/wallet" 
+          <Link
+            to="/wallet"
             className="px-4 py-3 flex items-center space-x-4 rounded-md text-gray-600 hover:bg-gray-100"
             onClick={() => setIsOpen(false)}
           >
             <FaWallet />
             <span>Billetera</span>
           </Link>
-          
-          <Link 
-            to="/transactions" 
+
+          <Link
+            to="/transactions"
             className="px-4 py-3 flex items-center space-x-4 rounded-md text-gray-600 hover:bg-gray-100"
             onClick={() => setIsOpen(false)}
           >
             <FaExchangeAlt />
             <span>Transacciones</span>
           </Link>
-          
-          <Link 
-            to="/account" 
+
+          <Link
+            to="/account"
             className="px-4 py-3 flex items-center space-x-4 rounded-md text-gray-600 hover:bg-gray-100"
             onClick={() => setIsOpen(false)}
           >
@@ -116,7 +116,7 @@ export const Sidebar = () => {
             <h3 className="px-4 py-2 text-sm font-semibold text-gray-500 uppercase tracking-wider">
               Información
             </h3>
-            
+
             <div className="space-y-3">
               {/* Contact Info */}
               <div className="px-4 py-2">
@@ -142,8 +142,8 @@ export const Sidebar = () => {
                 <h4 className="text-xs font-semibold text-gray-400 mb-1">Enlaces</h4>
                 <ul className="space-y-1">
                   <li>
-                    <Link 
-                      to="/faq" 
+                    <Link
+                      to="/faq"
                       className="flex items-center text-gray-600 hover:text-cyan-500 text-sm"
                       onClick={() => setIsOpen(false)}
                     >
@@ -152,8 +152,8 @@ export const Sidebar = () => {
                     </Link>
                   </li>
                   <li>
-                    <Link 
-                      to="/terms" 
+                    <Link
+                      to="/terms"
                       className="flex items-center text-gray-600 hover:text-cyan-500 text-sm"
                       onClick={() => setIsOpen(false)}
                     >
@@ -162,8 +162,8 @@ export const Sidebar = () => {
                     </Link>
                   </li>
                   <li>
-                    <Link 
-                      to="/privacy" 
+                    <Link
+                      to="/privacy"
                       className="flex items-center text-gray-600 hover:text-cyan-500 text-sm"
                       onClick={() => setIsOpen(false)}
                     >
@@ -194,8 +194,8 @@ export const Sidebar = () => {
               </div>
             </div>
           </div>
-          
-          <button 
+
+          <button
             onClick={handleLogout}
             className="px-4 py-3 flex items-center space-x-4 rounded-md text-gray-600 hover:bg-gray-100 w-full text-left mt-4"
           >
@@ -205,66 +205,6 @@ export const Sidebar = () => {
         </div>
       </div>
 
-      {/* Main Content - Adjusted for fixed navbar and sidebar */}
-      <div className={`flex-grow pt-25 ${isOpen ? 'lg:ml-64' : ''}`}>
-        <div className="mx-4 lg:mx-6">
-          {/* Scrollable Content */}
-          <div className="pb-20">
-            {/* Balance Cards */}
-            <div className="lg:flex gap-4 items-stretch">
-              <div className="bg-white md:p-2 p-6 rounded-lg border border-gray-200 mb-4 lg:mb-0 shadow-md lg:w-[35%]">
-                <div className="flex justify-center items-center space-x-5 h-full">
-                  <div>
-                    <p className="text-gray-600">Saldo actual</p>
-                    <h2 className="text-4xl font-bold text-gray-600">50.365</h2>
-                    <p className="text-gray-600">25.365 $</p>
-                  </div>
-                  <img 
-                    src="https://www.emprenderconactitud.com/img/Wallet.png" 
-                    alt="wallet"
-                    className="h-24 md:h-20 w-38"
-                  />
-                </div>
-              </div>
-
-              <div className="bg-white p-4 rounded-lg xs:mb-4 max-w-full shadow-md lg:w-[65%]">
-                <div className="flex flex-wrap justify-between h-full">
-                  <Link
-                    to="/deposit"
-                    className="flex-1 bg-gradient-to-r from-cyan-400 to-cyan-600 rounded-lg flex flex-col items-center justify-center p-4 space-y-2 border border-gray-200 m-2 hover:shadow-lg transition-shadow"
-                  >
-                    <FaHandHoldingUsd className="text-white text-4xl" />
-                    <p className="text-white">Depositar</p>
-                  </Link>
-
-                  <Link
-                    to="/transfer"
-                    className="flex-1 bg-gradient-to-r from-cyan-400 to-cyan-600 rounded-lg flex flex-col items-center justify-center p-4 space-y-2 border border-gray-200 m-2 hover:shadow-lg transition-shadow"
-                  >
-                    <FaExchangeAlt className="text-white text-4xl" />
-                    <p className="text-white">Transferir</p>
-                  </Link>
-
-                  <Link
-                    to="/redeem"
-                    className="flex-1 bg-gradient-to-r from-cyan-400 to-cyan-600 rounded-lg flex flex-col items-center justify-center p-4 space-y-2 border border-gray-200 m-2 hover:shadow-lg transition-shadow"
-                  >
-                    <FaQrcode className="text-white text-4xl" />
-                    <p className="text-white">Canjear</p>
-                  </Link>
-                </div>
-              </div>
-            </div>
-
-            {/* Transactions Table */}
-            <div className="bg-white rounded-lg p-4 shadow-md my-4">
-              <table className="table-auto w-full">
-               
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
 
       {/* Fixed Footer */}
       <footer className="bg-white border-t border-gray-200 py-2 fixed bottom-0 left-0 right-0 z-10">
@@ -275,7 +215,7 @@ export const Sidebar = () => {
 
       {/* Mobile Overlay - Adjusted z-index */}
       {isOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black bg-opacity-50 z-15 lg:hidden"
           onClick={toggleSidebar}
         />

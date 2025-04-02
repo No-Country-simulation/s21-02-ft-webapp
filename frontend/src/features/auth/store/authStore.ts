@@ -1,6 +1,6 @@
 // 📄 authStore.ts
 import { create } from "zustand";
-import { AuthState } from "../../../types/authTypes";
+import { AuthState } from "../../../types/auth/authTypes";
 import {
   getUserFromStorage,
   getTokenFromStorage,
