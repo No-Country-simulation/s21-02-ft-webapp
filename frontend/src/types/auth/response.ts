@@ -8,6 +8,17 @@ export interface RegisterResponse {
       user: string;
   }
 
+  export type LoggedUserResponse = {
+    id: number;
+    fullName: string;
+    dni: string;
+    email: string;
+    phoneNumber: string;
+    createdAt: string;
+    updatedAt: string;
+    active: boolean;
+  };
+
   export interface LoginHookResponse {
     credentials: {
       email: string;

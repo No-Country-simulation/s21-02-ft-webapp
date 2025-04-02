@@ -1,6 +1,6 @@
 import {api} from '../../../services/api';
 import {LoginRequest, RegisterRequest} from '../../../types/auth/request';
-import {RegisterResponse, LoginResponse} from '../../../types/auth/response';
+import {RegisterResponse, LoginResponse, LoggedUserResponse} from '../../../types/auth/response';
 
 export const login = async (data: LoginRequest): Promise<LoginResponse> => {
   const response = await api.post('/auth/login', data);
@@ -24,4 +24,9 @@ export const register = async (data: RegisterRequest): Promise<RegisterResponse>
       token: response.data.token,
       user: response.data.fullName // Devuelve un RegisterResponse
   };
+};
+
+export const getLoggedUser = async (): Promise<LoggedUserResponse> => {
+  const response = await api.get('/users'); // Cambiado a endpoint específico
+  return response.data[0];
 };

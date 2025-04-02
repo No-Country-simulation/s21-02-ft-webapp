@@ -6,14 +6,17 @@ import {
   FaSignOutAlt, FaBell, FaBars,FaEnvelope, FaPhone, FaMapMarkerAlt
 } from 'react-icons/fa';
 import { useAuthStore } from '../../features/auth/store/authStore';
-import { LoginForm } from '../../features/auth/components/LoginForms';
+import { LoginForm } from '../../features/auth/components/LoginForm';
+import  UserOnline  from '../../features/auth/components/UserOnlineForm';
 
 export const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false);
   const { isAuthenticated, user, logout } = useAuthStore();
   const navigate = useNavigate();
 
   const toggleSidebar = () => setIsOpen(!isOpen);
+  const toggleProfileModal = () => setShowProfileModal(!showProfileModal);
 
   const handleLogout = () => {
     logout();

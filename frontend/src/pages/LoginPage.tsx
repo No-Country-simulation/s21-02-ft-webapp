@@ -1,5 +1,5 @@
 // src/pages/LoginPage.tsx
-import { LoginForm } from '../features/auth/components/LoginForms';
+import { LoginForm } from '../features/auth/components/LoginForm';
 
 export const LoginPage = () => {
   return (
