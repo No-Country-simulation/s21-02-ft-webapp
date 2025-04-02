@@ -1,13 +1,9 @@
-// src/components/layout/Sidebar.tsx
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
-  FaHome, FaWallet, FaExchangeAlt, FaUser,
-  FaSignOutAlt, FaBell, FaBars,
-  FaEnvelope,
-  FaPhone, FaMapMarkerAlt,
-  FaQuestionCircle, FaShieldAlt, FaLock,
-  FaFacebook, FaTwitter, FaInstagram, FaLinkedin
+  FaHome, FaWallet, FaExchangeAlt, FaMoneyBillWave, FaHandHoldingUsd, 
+  FaCreditCard, FaClipboardList, FaChartLine, FaUser, 
+  FaSignOutAlt, FaBell, FaBars,FaEnvelope, FaPhone, FaMapMarkerAlt
 } from 'react-icons/fa';
 import { useAuthStore } from '../../features/auth/store/authStore';
 import { LoginForm } from '../../features/auth/components/LoginForms';
@@ -28,12 +24,7 @@ export const Sidebar = () => {
     return (
       <div className="min-h-screen flex flex-col bg-gray-100">
         <div className="flex-grow flex items-center justify-center">
-          <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
             <LoginForm />
-            <div className="mt-4 text-center">
-              <p className="text-gray-600">¿No tienes cuenta? <Link to="/register" className="text-cyan-600 hover:underline">Regístrate</Link></p>
-            </div>
-          </div>
         </div>
         <div className="py-3 text-center text-xs text-gray-500 bg-white border-t">
           © {new Date().getFullYear()} POC WCS. Todos los derechos reservados.
@@ -44,19 +35,15 @@ export const Sidebar = () => {
 
   return (
     <div className="flex flex-col max-h-screen">
-      {/* Fixed Navbar - Height: 4rem (64px) */}
+      {/* Fixed Navbar */}
       <nav className="bg-white border-b border-gray-300 fixed w-full h-16 z-30">
         <div className="flex justify-between items-center h-full px-9">
           <button onClick={toggleSidebar} className="focus:outline-none">
             <FaBars className="text-cyan-500 text-lg" />
           </button>
 
-         <div className="ml-1">
-            <img
-              src="/src/assets/icons/logo.svg"  // Asegúrate de que la ruta sea correcta
-              alt="logo"
-              className="h-12"
-            />
+          <div className="ml-1">
+            <img src="/src/assets/icons/logo.svg" alt="logo" className="h-12" />
           </div>
 
           <div className="flex items-center space-x-4">
@@ -71,48 +58,66 @@ export const Sidebar = () => {
         </div>
       </nav>
 
-      {/* Fixed Sidebar - Starts right below navbar */}
+      {/* Sidebar */}
       <div className={`${isOpen ? 'block' : 'hidden'} lg:block bg-white w-64 fixed top-16 left-0 bottom-0 z-20 border-r border-gray-200 overflow-y-auto`}>
         <div className="p-4 space-y-4">
-          {/* Main Navigation Links */}
-          <Link
-            to="/dashboard"
-            className="relative px-4 py-3 flex items-center space-x-4 rounded-lg text-white bg-gradient-to-r from-sky-600 to-cyan-400"
-            onClick={() => setIsOpen(false)}
-          >
+          
+          {/* Menú de navegación */}
+          <Link to="/dashboard" className="relative px-4 py-3 flex items-center space-x-4 rounded-lg text-white bg-gradient-to-r from-sky-600 to-cyan-400"
+            onClick={() => setIsOpen(false)}>
             <FaHome className="text-white" />
             <span className="-mr-1 font-medium">Inicio</span>
           </Link>
 
-          <Link
-            to="/wallet"
-            className="px-4 py-3 flex items-center space-x-4 rounded-md text-gray-600 hover:bg-gray-100"
-            onClick={() => setIsOpen(false)}
-          >
+          <Link to="/wallet" className="px-4 py-3 flex items-center space-x-4 rounded-md text-gray-600 hover:bg-gray-100"
+            onClick={() => setIsOpen(false)}>
             <FaWallet />
-            <span>Billetera</span>
+            <span>Tu dinero</span>
           </Link>
 
-          <Link
-            to="/transactions"
-            className="px-4 py-3 flex items-center space-x-4 rounded-md text-gray-600 hover:bg-gray-100"
-            onClick={() => setIsOpen(false)}
-          >
+          <Link to="/transfer" className="px-4 py-3 flex items-center space-x-4 rounded-md text-gray-600 hover:bg-gray-100"
+            onClick={() => setIsOpen(false)}>
             <FaExchangeAlt />
+            <span>Transferir</span>
+          </Link>
+
+          <Link to="/deposit" className="px-4 py-3 flex items-center space-x-4 rounded-md text-gray-600 hover:bg-gray-100"
+            onClick={() => setIsOpen(false)}>
+            <FaHandHoldingUsd />
+            <span>Depositar</span>
+          </Link>
+
+          <Link to="/transactions" className="px-4 py-3 flex items-center space-x-4 rounded-md text-gray-600 hover:bg-gray-100"
+            onClick={() => setIsOpen(false)}>
+            <FaMoneyBillWave />
             <span>Transacciones</span>
           </Link>
 
-          <Link
-            to="/account"
-            className="px-4 py-3 flex items-center space-x-4 rounded-md text-gray-600 hover:bg-gray-100"
-            onClick={() => setIsOpen(false)}
-          >
-            <FaUser />
-            <span>Mi cuenta</span>
+          <Link to="/movements" className="px-4 py-3 flex items-center space-x-4 rounded-md text-gray-600 hover:bg-gray-100"
+            onClick={() => setIsOpen(false)}>
+            <FaClipboardList />
+            <span>Movimientos</span>
           </Link>
 
-          {/* Information Section */}
-          <div className="pt-4 border-t border-gray-200">
+          <Link to="/reservations" className="px-4 py-3 flex items-center space-x-4 rounded-md text-gray-600 hover:bg-gray-100"
+            onClick={() => setIsOpen(false)}>
+            <FaChartLine />
+            <span>Reservas</span>
+          </Link>
+
+          <Link to="/cards" className="px-4 py-3 flex items-center space-x-4 rounded-md text-gray-600 hover:bg-gray-100"
+            onClick={() => setIsOpen(false)}>
+            <FaCreditCard />
+            <span>Tarjetas</span>
+          </Link>
+
+          <Link to="/quote" className="px-4 py-3 flex items-center space-x-4 rounded-md text-gray-600 hover:bg-gray-100"
+            onClick={() => setIsOpen(false)}>
+            <FaChartLine />
+            <span>Cotización</span>
+          </Link>
+           {/* Information Section */}
+           <div className="pt-4 border-t border-gray-200">
             <h3 className="px-4 py-2 text-sm font-semibold text-gray-500 uppercase tracking-wider">
               Información
             </h3>
@@ -136,90 +141,16 @@ export const Sidebar = () => {
                   </li>
                 </ul>
               </div>
-
-              {/* Quick Links */}
-              <div className="px-4 py-2">
-                <h4 className="text-xs font-semibold text-gray-400 mb-1">Enlaces</h4>
-                <ul className="space-y-1">
-                  <li>
-                    <Link
-                      to="/faq"
-                      className="flex items-center text-gray-600 hover:text-cyan-500 text-sm"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      <FaQuestionCircle className="mr-2 text-gray-400 text-xs" />
-                      Preguntas Frecuentes
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/terms"
-                      className="flex items-center text-gray-600 hover:text-cyan-500 text-sm"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      <FaShieldAlt className="mr-2 text-gray-400 text-xs" />
-                      Términos y Condiciones
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/privacy"
-                      className="flex items-center text-gray-600 hover:text-cyan-500 text-sm"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      <FaLock className="mr-2 text-gray-400 text-xs" />
-                      Privacidad
-                    </Link>
-                  </li>
-                </ul>
+              </div>
               </div>
 
-              {/* Social Media */}
-              <div className="px-4 py-2">
-                <h4 className="text-xs font-semibold text-gray-400 mb-1">Redes Sociales</h4>
-                <div className="flex space-x-3">
-                  <a href="#" className="text-gray-400 hover:text-cyan-500">
-                    <FaFacebook size={14} />
-                  </a>
-                  <a href="#" className="text-gray-400 hover:text-cyan-500">
-                    <FaTwitter size={14} />
-                  </a>
-                  <a href="#" className="text-gray-400 hover:text-cyan-500">
-                    <FaInstagram size={14} />
-                  </a>
-                  <a href="#" className="text-gray-400 hover:text-cyan-500">
-                    <FaLinkedin size={14} />
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <button
-            onClick={handleLogout}
-            className="px-4 py-3 flex items-center space-x-4 rounded-md text-gray-600 hover:bg-gray-100 w-full text-left mt-4"
-          >
+          <button onClick={handleLogout} className="px-4 py-3 flex items-center space-x-4 rounded-md text-gray-600 hover:bg-gray-100 w-full text-left mt-4">
             <FaSignOutAlt />
             <span>Cerrar sesión</span>
           </button>
+          
         </div>
       </div>
-
-
-      {/* Fixed Footer */}
-      <footer className="bg-white border-t border-gray-200 py-2 fixed bottom-0 left-0 right-0 z-10">
-        <div className="text-center text-xs text-gray-500">
-          © {new Date().getFullYear()} POC WCS. Todos los derechos reservados.
-        </div>
-      </footer>
-
-      {/* Mobile Overlay - Adjusted z-index */}
-      {isOpen && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-15 lg:hidden"
-          onClick={toggleSidebar}
-        />
-      )}
     </div>
   );
 };

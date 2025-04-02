@@ -1,4 +1,3 @@
-// src/components/ui/Input.tsx
 import { twMerge } from 'tailwind-merge';
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -13,12 +12,12 @@ export const Input = ({
   ...props
 }: InputProps) => {
   const inputClasses = twMerge(
-    'mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200',
+    'mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-colors duration-200',
     className
   );
 
   return (
-    <div className={twMerge('space-y-1', containerClass)}>
+    <div className={twMerge('space-y-1 mb-4', containerClass)}>
       {label && (
         <label className="block text-sm font-medium text-gray-700">
           {label}
