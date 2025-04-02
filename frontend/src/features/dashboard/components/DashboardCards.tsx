@@ -1,6 +1,8 @@
 // src/components/dashboard/DashboardCards.tsx
 import { FaHandHoldingUsd, FaExchangeAlt, FaQrcode } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
+import walletIcon from '../../../assets/icons/wallet.png';
+
 
 export const DashboardCards = () => {
   return (
@@ -14,10 +16,10 @@ export const DashboardCards = () => {
             <p className="text-gray-500 text-sm md:text-base">25.365 $</p>
           </div>
           <img 
-            src="https://www.emprenderconactitud.com/img/Wallet.png" 
-            alt="wallet"
-            className="h-20 w-20 md:h-24 md:w-24"
-          />
+  src={walletIcon} 
+  alt="wallet"
+  className="h-20 w-20 md:h-24 md:w-24"
+/>
         </div>
       </div>
 

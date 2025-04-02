@@ -5,18 +5,18 @@ import {
   FaCreditCard, FaClipboardList, FaChartLine, FaUser, 
   FaSignOutAlt, FaBell, FaBars,FaEnvelope, FaPhone, FaMapMarkerAlt
 } from 'react-icons/fa';
-import { useAuthStore } from '../../features/auth/store/authStore';
+import { useAuthStore} from '../../features/auth/store/authStore';
 import { LoginForm } from '../../features/auth/components/LoginForm';
 import  UserOnline  from '../../features/auth/components/UserOnlineForm';
 
 export const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [showUserOnline, setShowUserOnline] = useState(false);
   const { isAuthenticated, user, logout } = useAuthStore();
   const navigate = useNavigate();
 
   const toggleSidebar = () => setIsOpen(!isOpen);
-  const toggleProfileModal = () => setShowProfileModal(!showProfileModal);
+  const toggleUserOnline = () => setShowUserOnline(!showUserOnline);
 
   const handleLogout = () => {
     logout();
@@ -49,14 +49,23 @@ export const Sidebar = () => {
             <img src="/src/assets/icons/logo.svg" alt="logo" className="h-12" />
           </div>
 
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-4 relative">
             <span className="text-sm font-medium text-gray-700">{user}</span>
             <button className="focus:outline-none">
               <FaBell className="text-cyan-500 text-lg" />
             </button>
-            <Link to="/profile" className="focus:outline-none">
+            <button onClick={toggleUserOnline} className="focus:outline-none relative">
               <FaUser className="text-cyan-500 text-lg" />
-            </Link>
+            </button>
+            {showUserOnline && (
+              <div className="absolute top-10 right-0 bg-white shadow-md p-2 rounded-md">
+                <UserOnline />
+                <button onClick={handleLogout} className="px-4 py-3 flex items-center space-x-4 rounded-md text-gray-600 hover:bg-gray-100 w-full text-left mt-4">
+            <FaSignOutAlt />
+            <span>Cerrar sesión</span>
+          </button>
+              </div>
+            )}
           </div>
         </div>
       </nav>
