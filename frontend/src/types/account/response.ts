@@ -1,4 +1,4 @@
-export interface Account {
+export interface AccountResponse {
     accountId: number;
     cbu: string;
     alias: string;

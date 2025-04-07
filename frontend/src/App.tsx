@@ -1,11 +1,11 @@
 import { Sidebar } from './components/layout/Sidebar';
 import { MainContent } from './components/layout/MainContent';
 import { DashboardCards } from './features/dashboard/components/DashboardCards';
+import { RegisterAccountPage } from './pages/RegisterAccountPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuthStore } from './features/auth/store/authStore';
 import { LoginPage } from './pages/LoginPage';
-import  UserOnline  from './features/auth/components/UserOnlineForm';
 
 function App() {
   const { isAuthenticated } = useAuthStore();
@@ -24,7 +24,7 @@ function App() {
         <Route path="/" element={isAuthenticated() ? (
             <MainContent>
               <DashboardCards />
-              <UserOnline />
+              <RegisterAccountPage/>
             </MainContent>
           ) : (
             <Navigate to="/login" replace />)} />
