@@ -87,7 +87,7 @@ export const Sidebar = () => {
             <span>Tu dinero</span>
           </Link>
 
-          <Link to="/transfer" className="px-4 py-3 flex items-center space-x-4 rounded-md text-gray-600 hover:bg-gray-100"
+         {/*  <Link to="/transfer" className="px-4 py-3 flex items-center space-x-4 rounded-md text-gray-600 hover:bg-gray-100"
             onClick={() => setIsOpen(false)}>
             <FaExchangeAlt />
             <span>Transferir</span>
@@ -97,7 +97,7 @@ export const Sidebar = () => {
             onClick={() => setIsOpen(false)}>
             <FaHandHoldingUsd />
             <span>Depositar</span>
-          </Link>
+          </Link> */}
 
           <Link to="/transactions" className="px-4 py-3 flex items-center space-x-4 rounded-md text-gray-600 hover:bg-gray-100"
             onClick={() => setIsOpen(false)}>

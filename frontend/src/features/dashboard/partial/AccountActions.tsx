@@ -1,3 +1,4 @@
+// src/features/Dashboard/partial/AccountActions.tsx
 import { Link } from 'react-router-dom';
 import { FaHandHoldingUsd, FaExchangeAlt } from 'react-icons/fa';
 import { FaRegCreditCard } from 'react-icons/fa6';
@@ -7,9 +8,19 @@ interface Props {
 }
 
 export const AccountActions = ({ currency }: Props) => {
+
+  const getAccountId = (currency: string) => {
+    const map: Record<string, number> = {
+      ARS: 1,
+      USD: 2
+    };
+    return map[currency] ?? 0; // 0 por defecto si no encuentra
+  };
+
+  const accountId = getAccountId(currency);
   const actions = [
-    { to: `/deposit?currency=${currency}`, icon: <FaHandHoldingUsd />, label: 'Depositar' },
-    { to: `/transfer?currency=${currency}`, icon: <FaExchangeAlt />, label: 'Transferir' },
+    { to: `/account/deposit?sourceAccountId=${accountId}`, icon: <FaHandHoldingUsd />, label: 'Depositar' },
+    { to: `/account/transfer?sourceAccountId=${accountId}`, icon: <FaExchangeAlt />, label: 'Transferir' },
     { to: '/redeem', icon: <FaRegCreditCard />, label: 'Tarjetas' },
   ];
 

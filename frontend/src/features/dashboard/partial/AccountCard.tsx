@@ -1,3 +1,4 @@
+// src/features/Dashboard/partial/AccountCard.tsx
 import {
     FaCopy,
     FaWallet,

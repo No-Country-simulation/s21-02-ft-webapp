@@ -6,3 +6,15 @@ export interface AuthState {
     isAuthenticated: () => boolean;
   }
   
+  export interface Account {
+    id: number;
+    currency: string;
+  }
+  
+  export interface User {
+    id: number;
+    name: string;
+    email: string;
+    accounts: Account[];
+    // otros campos que manejes
+  }

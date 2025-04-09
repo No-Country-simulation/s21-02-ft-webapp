@@ -12,3 +12,12 @@ export interface AccountResponse {
     label: string;
   }
   
+  export interface TransferResponse {
+    transactionId: number;
+    transactionDate: string;
+    sourceAccount: string;
+    destinationAccount: string;
+    amount: number;
+    reason: string;
+    transactionType: string;
+  }

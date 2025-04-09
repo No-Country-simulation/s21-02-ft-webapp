@@ -2,6 +2,7 @@ import { Sidebar } from './components/layout/Sidebar';
 import { MainContent } from './components/layout/MainContent';
 import { DashboardCards } from './features/dashboard/components/DashboardCards';
 import { RegisterAccountPage } from './pages/RegisterAccountPage';
+import { TransferPage } from './pages/TransferPage';
 import { RegisterUserPage } from './pages/RegisterUserPage';
 import { IndexPage } from './pages/IndexPage';
 import { Routes, Route, Navigate, Outlet } from 'react-router-dom';
@@ -34,6 +35,7 @@ function App() {
         <Route element={isAuthenticated() ? <ProtectedLayout /> : <Navigate to="/login" replace />}>
           <Route path="/" element={<IndexPage />} />
           <Route path="/account/create" element={<RegisterAccountPage />} />
+          <Route path="/account/transfer" element={<TransferPage />} />
           {/* Puedes añadir más rutas aquí que compartan el mismo layout */}
         </Route>
         
