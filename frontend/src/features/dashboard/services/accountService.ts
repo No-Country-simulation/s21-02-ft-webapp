@@ -4,5 +4,5 @@ import { AccountResponse} from '../../../types/account/response';
 
 export const fetchAccounts = async (): Promise<AccountResponse[]> => {
     const response = await api.get('/accounts'); 
-    return response.data;
+    return response.data || [];
 };

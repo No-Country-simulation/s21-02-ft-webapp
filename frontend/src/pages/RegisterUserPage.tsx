@@ -1,10 +1,11 @@
 // src/pages/LoginPage.tsx
-import { LoginForm } from '../features/auth/components/LoginForm';
+import { RegisterForm } from '../features/auth/components/RegisterForm';
 import { PageContainer } from '../components/ui/PageContainer';
-export const LoginPage = () => {
+
+export const RegisterUserPage = () => {
   return (
     <PageContainer>
-      <LoginForm />
+      <RegisterForm />
     </PageContainer>
   );
 };

@@ -155,12 +155,12 @@ export const Sidebar = () => {
               </div>
               </div>
               </div>
-
-          <button onClick={handleLogout} className="px-4 py-3 flex items-center space-x-4 rounded-md text-gray-600 hover:bg-gray-100 w-full text-left mt-4">
+              <div className="pt-4 border-t border-gray-200">
+          <button onClick={handleLogout} className="px-4 py-3 flex items-center space-x-4 rounded-md text-gray-600 hover:bg-gray-100 w-full text-left">
             <FaSignOutAlt />
             <span>Cerrar sesión</span>
           </button>
-          
+          </div>
         </div>
       </div>
     </div>

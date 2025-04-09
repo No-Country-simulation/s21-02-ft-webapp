@@ -11,7 +11,7 @@ export const createAccount = async (currency: string): Promise<AccountResponse> 
         throw new Error('No authentication token available');
     }
 
-    // Configurar los headers con el token de autenticación
+    // Configurar los headers con el token de autenticació
     const config = {
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -41,4 +41,26 @@ export const getAccounts = async (): Promise<AccountResponse[]> => {
 
     const response = await api.get('/accounts', config);
     return response.data;
+};
+
+export const getCurrencyTypeAccounts = async (): Promise<string[]> => {
+    const token = useAuthStore.getState().token;
+    
+    if (!token) {
+        throw new Error('No authentication token available');
+    }
+
+    const config = {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    };
+
+    try {
+        const response = await api.get('/accounts/currencies', config);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching currency types:', error);
+        throw new Error('No se pudieron cargar los tipos de moneda disponibles');
+    }
 };

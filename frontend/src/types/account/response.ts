@@ -6,4 +6,9 @@ export interface AccountResponse {
     balance: number;
     reservedBalance: number;
   }
+
+  export interface CurrencyOptionResponse {
+    value: string;
+    label: string;
+  }
   
