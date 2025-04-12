@@ -7,3 +7,9 @@ export interface TransferRequest {
     amount: number;
     reason: string;
   }
+
+  export interface TransferFormProps {
+    sourceAccountId: number;
+  }
+
+  

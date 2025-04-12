@@ -33,6 +33,6 @@ export const register = async (data: RegisterRequest): Promise<RegisterResponse>
 };
 
 export const getLoggedUser = async (): Promise<LoggedUserResponse> => {
-  const response = await api.get('/users/me'); // Endpoint que devuelve el usuario actual
-  return response.data;
+  const response = await api.get('/users'); // Endpoint que devuelve el usuario actual
+  return response.data[0];
 };

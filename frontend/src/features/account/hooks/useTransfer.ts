@@ -66,6 +66,27 @@ export const useTransfer = (sourceAccountId: number) => {
     return null;
   };
 
+
+  const fetchDestinationName = async (destination: string) => {
+    try {
+      const validation = await validateDestination(destination);
+      if (!validation.isValid) {
+        throw new Error('El CBU o Alias no existe');
+      }
+  
+      setState(prev => ({
+        ...prev,
+        destinationAccountName: validation.accountName ?? 'Desconocido'
+      }));
+  
+    } catch (err) {
+      setState(prev => ({
+        ...prev,
+        destinationAccountName: 'Desconocido'
+      }));
+    }
+  };
+
   const submitTransfer = async () => {
     const validationError = validateInputs();
     if (validationError) {
@@ -125,6 +146,7 @@ export const useTransfer = (sourceAccountId: number) => {
   return {
     ...state,
     handleChange,
-    submitTransfer
+    submitTransfer,
+    fetchDestinationName
   };
 };
