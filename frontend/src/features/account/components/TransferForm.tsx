@@ -36,8 +36,22 @@ export const TransferForm = ({ sourceAccountId }: Props) => {
     }
   }, [accounts, sourceAccountId]);
 
+  
   // Extraer propiedades del usuario
   const userName = user?.fullName || 'Cuenta';
+
+<div className="text-center mb-6">
+  <h2 className="text-2xl font-bold text-gray-800">Transferir {currentAccount?.currency}</h2>
+  <p className="text-gray-600 mt-2">Desde: {userName}</p>
+  {currentAccount?.balance !== null && (
+    <p className="text-sm text-gray-500 mt-1">
+      Saldo disponible: {currentAccount?.currency} {currentAccount?.balance.toLocaleString('es-AR', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      })}
+    </p>
+  )}
+</div>
 
   const {
     destinationIdentifier,
