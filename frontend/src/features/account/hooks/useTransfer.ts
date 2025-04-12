@@ -132,8 +132,8 @@ export const useTransfer = (sourceAccountId: number) => {
         isLoading: false,
         transactionDetails: result
       }));
-
-      setTimeout(() => navigate('/dashboard'), 5000);
+      
+  
     } catch (err) {
       setState(prev => ({
         ...prev,

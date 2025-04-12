@@ -12,4 +12,4 @@ export interface TransferRequest {
     sourceAccountId: number;
   }
 
-  
+  export type TransferField = 'destinationIdentifier' | 'amount' | 'reason';

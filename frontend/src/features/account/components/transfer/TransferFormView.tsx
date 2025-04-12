@@ -4,27 +4,31 @@ import { Card } from '../../../../components/ui/Card';
 import { Input } from '../../../../components/ui/Input';
 import { Textarea } from '../../../../components/ui/Textarea';
 import { AccountResponse } from '../../../../types/account/response';
-import { TransferConfirmationModal } from '../../components/transfer/TransferConfirmationModal';
+import { TransferConfirmationModal } from './TransferConfirmationModal';
+import { TransferField } from '../../../../types/account/request';
 
 interface TransferFormViewProps {
   currentAccount: AccountResponse;
   userName: string;
   transferError: string | null;
+  validationError: string | null;
   destinationIdentifier: string;
   amount: string;
   reason: string;
   isLoading: boolean;
   showConfirm: boolean;
   onFormSubmit: (e: React.FormEvent) => void;
-  onInputChange: (field: string, value: string) => void;
+  onInputChange: (field: TransferField, value: string) => void;
   onConfirmTransfer: () => void;
   onCloseModal: () => void;
+  destinationName?: string;
 }
 
 export const TransferFormView = ({
   currentAccount,
   userName,
   transferError,
+  validationError,
   destinationIdentifier,
   amount,
   reason,
@@ -34,6 +38,7 @@ export const TransferFormView = ({
   onInputChange,
   onConfirmTransfer,
   onCloseModal,
+  destinationName = '',
 }: TransferFormViewProps) => (
   <div className="flex flex-col items-center min-h-screen mt-10">
     <Card className="w-full max-w-md">
@@ -52,6 +57,7 @@ export const TransferFormView = ({
         </div>
 
         {transferError && <Alert message={transferError} variant="error" className="mb-4" />}
+        {validationError && <Alert message={validationError} variant="error" className="mb-4" />}
 
         <form onSubmit={onFormSubmit} className="space-y-4">
           <Input
@@ -102,6 +108,7 @@ export const TransferFormView = ({
       currency={currentAccount.currency}
       amount={amount}
       destinationIdentifier={destinationIdentifier}
+      destinationName={destinationName}
     />
   </div>
 );
