@@ -1,17 +1,18 @@
-import {
-  FaChevronDown,
-  FaChevronUp,
-  FaPlus,
-} from 'react-icons/fa';
+import { FaChevronDown, FaChevronUp, FaPlus } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
+import { useAccountStore } from '../../../features/account/stores/useAccountStore';
 import { useState } from 'react';
-import { useAccounts } from '../../../features/dashboard/hooks/useAccounts';
 import { Spinner } from '../../../components/ui/Spinner';
 import { AccountCard } from '../partial/AccountCard';
+import { useEffect } from 'react';
 
 export const DashboardCards = () => {
   const [showOtherAccounts, setShowOtherAccounts] = useState(false);
-  const { accounts, loading, error } = useAccounts();
+  const { accounts, loading, error, fetchAccounts } = useAccountStore();
+
+  useEffect(() => {
+    fetchAccounts();
+  }, [fetchAccounts]);
 
   const arsAccount = accounts.find(acc => acc.currency === 'ARS');
   const otherAccounts = accounts.filter(acc => acc.currency !== 'ARS');
@@ -28,7 +29,6 @@ export const DashboardCards = () => {
 
   return (
     <div className="space-y-6">
-      {/* Encabezado */}
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-semibold text-gray-700">Mis Cuentas</h2>
         <div className="flex gap-3">
@@ -51,13 +51,11 @@ export const DashboardCards = () => {
         </div>
       </div>
 
-      {/* Cuentas */}
       {arsAccount && <AccountCard account={arsAccount} />}
       {showOtherAccounts && otherAccounts.map(acc => (
         <AccountCard key={acc.currency} account={acc} />
       ))}
 
-      {/* Sin cuentas */}
       {!arsAccount && otherAccounts.length === 0 && (
         <div className="bg-yellow-50 border border-yellow-200 text-yellow-700 p-4 rounded-lg">
           No se encontraron cuentas disponibles

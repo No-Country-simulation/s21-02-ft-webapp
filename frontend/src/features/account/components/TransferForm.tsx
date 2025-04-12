@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuthStore } from '../../auth/store/authStore';
-import { useNavigate } from 'react-router-dom';
-import { useAccounts } from '../../dashboard/hooks/useAccounts';
+import { useAccountStore } from '../../account/stores/useAccountStore';
 import { useTransfer } from '../hooks/useTransfer';
 import { TransferFormProps, TransferField } from '../../../types/account/request';
 import { TransferSuccess } from './transfer/TransferSuccess';
@@ -12,9 +11,8 @@ import { Spinner } from '../../../components/ui/Spinner';
 import { validateDestination } from '../services/transferServices';
 
 export const TransferForm = ({ sourceAccountId }: TransferFormProps) => {
-  const navigate = useNavigate();
   const { user } = useAuthStore();
-  const { accounts, loading: accountsLoading, error: accountsError } = useAccounts();
+  const { accounts, loading, error, fetchAccounts } = useAccountStore();
   const [accountError, setAccountError] = useState<string | null>(null);
   const [currentAccount, setCurrentAccount] = useState<AccountResponse | null>(null);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -35,8 +33,12 @@ export const TransferForm = ({ sourceAccountId }: TransferFormProps) => {
   } = useTransfer(sourceAccountId);
 
   useEffect(() => {
+    fetchAccounts();
+  }, [fetchAccounts]);
+
+  useEffect(() => {
     if (accounts.length > 0) {
-      const foundAccount = accounts.find(account => account.accountId === sourceAccountId);
+      const foundAccount = accounts.find((account) => account.accountId === sourceAccountId);
       if (!foundAccount) {
         setAccountError('No puedes transferir desde una cuenta que no te pertenece');
         setCurrentAccount(null);
@@ -64,7 +66,6 @@ export const TransferForm = ({ sourceAccountId }: TransferFormProps) => {
   };
 
   const validateInputs = async (): Promise<boolean> => {
-    // Validación básica del formato
     if (!destinationIdentifier.trim()) {
       setValidationError('Ingrese un CBU o Alias válido');
       return false;
@@ -96,7 +97,6 @@ export const TransferForm = ({ sourceAccountId }: TransferFormProps) => {
       return false;
     }
 
-    // Validación en base de datos
     const isDestinationValid = await validateDestinationAccount();
     if (!isDestinationValid) {
       return false;
@@ -120,7 +120,7 @@ export const TransferForm = ({ sourceAccountId }: TransferFormProps) => {
   };
 
   const handleReturnToDashboard = () => {
-    navigate('/dashboard');
+    window.location.href = '/dashboard';
   };
 
   const handleInputChange = (field: TransferField, value: string) => {
@@ -134,7 +134,7 @@ export const TransferForm = ({ sourceAccountId }: TransferFormProps) => {
     }
   };
 
-  if (accountsLoading) {
+  if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <Spinner size="lg" />
@@ -142,11 +142,11 @@ export const TransferForm = ({ sourceAccountId }: TransferFormProps) => {
     );
   }
 
-  if (accountsError) {
+  if (error) {
     return (
       <div className="flex flex-col items-center min-h-screen mt-10">
         <TransferError 
-          message="Error al cargar tus cuentas" 
+          message={error} 
           onAction={() => window.location.reload()} 
           actionLabel="Reintentar" 
         />
