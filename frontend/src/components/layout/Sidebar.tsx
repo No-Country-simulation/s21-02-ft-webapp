@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
-  FaHome, FaWallet, FaExchangeAlt, FaMoneyBillWave, FaHandHoldingUsd, 
+  FaHome, FaWallet, FaMoneyBillWave, 
   FaCreditCard, FaClipboardList, FaChartLine, FaUser, 
   FaSignOutAlt, FaBell, FaBars,FaEnvelope, FaPhone, FaMapMarkerAlt
 } from 'react-icons/fa';
@@ -50,7 +50,7 @@ export const Sidebar = () => {
           </div>
 
           <div className="flex items-center space-x-4 relative">
-            <span className="text-sm font-medium text-gray-700">{user}</span>
+            <span className="text-sm font-medium text-gray-700">{user?.fullName}</span>
             <button className="focus:outline-none">
               <FaBell className="text-cyan-500 text-lg" />
             </button>

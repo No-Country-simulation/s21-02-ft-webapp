@@ -36,3 +36,29 @@ export const makeTransfer = async (
     const response = await api.get(`/accounts/validate?destination=${destination}`);
     return response.data;
   };
+
+  // src/features/transfer/services/transferService.ts
+export const checkAccountBalance = async (
+  accountId: number,
+  amount: number
+): Promise<{
+  hasEnoughBalance: boolean;
+  currentBalance: number;
+}> => {
+  const token = useAuthStore.getState().token;
+  
+  if (!token) {
+    throw new Error('No authentication token available');
+  }
+
+  const response = await api.get(
+    `/accounts/${accountId}/check-balance?amount=${amount}`,
+    {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    }
+  );
+
+  return response.data;
+};

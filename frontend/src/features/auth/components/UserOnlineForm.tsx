@@ -13,6 +13,7 @@ const UserOnline = () => {
         <p className="mt-2">Por favor inicia sesión para ver esta información</p>
       )}
     </div>
+    
   );
 
   if (!user) return <div className="p-4">No se encontraron datos de usuario</div>;

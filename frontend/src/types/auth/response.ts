@@ -1,11 +1,17 @@
 export interface RegisterResponse {
     token: string;
-    user: string;
+    user: {
+      fullName: string,
+      email: string
+    }
   }
   
   export interface LoginResponse {
       token: string;
-      user: string;
+      user: {
+        fullName: string,
+        email: string
+      }
   }
 
   export type LoggedUserResponse = {

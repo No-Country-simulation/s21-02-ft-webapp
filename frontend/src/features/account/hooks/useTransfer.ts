@@ -1,7 +1,7 @@
 // src/features/transfer/hooks/useTransfer.ts
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { makeTransfer, validateDestination } from '../services/transferServices';
+import { makeTransfer, validateDestination, checkAccountBalance } from '../services/transferServices';
 import { TransferRequest } from '../../../types/account/request';
 import { TransferResponse } from '../../../types/account/response';
 import { useAuthStore } from '../../../features/auth/store/authStore';
@@ -76,12 +76,22 @@ export const useTransfer = (sourceAccountId: number) => {
     setState(prev => ({ ...prev, isLoading: true, error: null }));
 
     try {
+      // 1. Validar destino primero
       const validation = await validateDestination(state.destinationIdentifier);
       if (!validation.isValid) {
         throw new Error('El CBU o Alias no existe');
       }
 
-      // ✅ Aseguramos que siempre sea string
+      // 2. Validar saldo suficiente (nueva función)
+      const balanceCheck = await checkAccountBalance(
+        sourceAccountId, 
+        parseFloat(state.amount)
+      );
+      
+      if (!balanceCheck.hasEnoughBalance) {
+        throw new Error(`Saldo insuficiente. Disponible: ${balanceCheck.currentBalance}`);
+      }
+
       setState(prev => ({ 
         ...prev, 
         destinationAccountName: validation.accountName ?? '' 
