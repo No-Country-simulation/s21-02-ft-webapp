@@ -14,6 +14,7 @@ export const makeTransfer = async (
       throw new Error('No authentication token available');
     }
   
+    try {
     const response = await api.post(
       `/accounts/transfer?sourceAccountId=${sourceAccountId}`,
       data,
@@ -24,9 +25,19 @@ export const makeTransfer = async (
         }
       }
     );
-  
     return response.data;
-  };
+  } catch (error: any) {
+    if (error.response) {
+      // Extrae el mensaje del error 422 del backend
+      if (error.response.status === 422) {
+        throw new Error(error.response.data.message);
+      }
+      // Maneja otros códigos de error
+      throw new Error(error.response.data.message || 'Error al procesar la transferencia');
+    }
+    throw new Error('Error de conexión con el servidor');
+  }
+};
   
   export const validateDestination = async (destination: string): Promise<{
     isValid: boolean;

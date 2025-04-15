@@ -4,6 +4,7 @@ import { DashboardCards } from './features/dashboard/components/DashboardCards';
 import { RegisterAccountPage } from './pages/RegisterAccountPage';
 import { TransferPage } from './pages/TransferPage';
 import { DepositPage } from './pages/DepositPage';
+import { CardUserPage } from './pages/CardPage';
 import { RegisterUserPage } from './pages/RegisterUserPage';
 import { IndexPage } from './pages/IndexPage';
 import { Routes, Route, Navigate, Outlet } from 'react-router-dom';
@@ -38,6 +39,7 @@ function App() {
           <Route path="/account/create" element={<RegisterAccountPage />} />
           <Route path="/account/transfer" element={<TransferPage />} />
           <Route path="/account/deposit" element={<DepositPage />} />
+          <Route path="/cards" element={<CardUserPage />} />
           {/* Puedes añadir más rutas aquí que compartan el mismo layout */}
         </Route>
         

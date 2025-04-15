@@ -108,6 +108,7 @@ export const TransferForm = ({ sourceAccountId }: TransferFormProps) => {
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setValidationError(null);
     const isValid = await validateInputs();
     if (isValid) {
       setShowConfirm(true);
@@ -205,6 +206,7 @@ export const TransferForm = ({ sourceAccountId }: TransferFormProps) => {
       onInputChange={handleInputChange}
       onConfirmTransfer={confirmTransfer}
       onCloseModal={() => setShowConfirm(false)}
+      destinationName={destinationName}
     />
   );
 };

@@ -6,7 +6,7 @@ import { AccountResponse } from '../../../types/account/response';
 interface AccountState {
   accounts: AccountResponse[];
   loading: boolean;
-  error: string | null;
+  error: string | null; // si
   fetchAccounts: () => Promise<void>;
   updateAccountBalance: (accountId: number, newBalance: number) => void;
 }

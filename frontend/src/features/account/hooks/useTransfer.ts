@@ -111,10 +111,10 @@ export const useTransfer = (sourceAccountId: number) => {
         transactionDetails: result
       }));
 
-    } catch (err) {
+    } catch (err: any) {
       setState(prev => ({
         ...prev,
-        error: err instanceof Error ? err.message : 'Error desconocido',
+        error: err.message, // Esto capturará el mensaje del error 422
         isLoading: false
       }));
     }
