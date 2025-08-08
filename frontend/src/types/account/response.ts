@@ -39,3 +39,9 @@ export interface TransferState {
   transactionDetails: TransferDetails | null;
   destinationAccountName: string;
 }
+
+export interface DepositResponse {
+  amount: number;       
+  newBalance: number;   
+  message: string;
+}

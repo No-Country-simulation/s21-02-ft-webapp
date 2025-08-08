@@ -18,7 +18,8 @@ const banks = [
 ];
 
 export const CardForm = ({ onSuccess }: { onSuccess?: () => void }) => {
-  const { addCard, isLoading, error } = useCard();
+  const { addCard, isLoading, error, fetchCards } = useCard(); // Añadimos fetchCards
+
   const [formData, setFormData] = useState<CardFormValues>({
     number: '',
     type: 'DEBIT',
@@ -30,9 +31,7 @@ export const CardForm = ({ onSuccess }: { onSuccess?: () => void }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     try {
-
       await addCard({
         encryptedNumber: formData.number,
         type: formData.type,
@@ -41,8 +40,8 @@ export const CardForm = ({ onSuccess }: { onSuccess?: () => void }) => {
         encryptedCvv: formData.cvv,
         balance: formData.balance || 0
       });
-
-      onSuccess?.();
+      await fetchCards(); // Actualiza la lista después de agregar
+      onSuccess?.(); // Cierra el modal
     } catch (err) {
       console.error('Error al agregar tarjeta:', err);
     }
@@ -118,7 +117,7 @@ export const CardForm = ({ onSuccess }: { onSuccess?: () => void }) => {
       />
 
       <Button type="submit" isLoading={isLoading} fullWidth>
-        Agregar Tarjeta
+        Asociar Tarjeta
       </Button>
     </form>
   );

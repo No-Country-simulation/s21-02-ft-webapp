@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react';
 import { useCard } from '../hooks/useCards';
 import { FaEye, FaEyeSlash, FaMicrochip, FaCcVisa } from 'react-icons/fa6';
 import { useAuthStore } from '../../../features/auth/store/authStore';
+import { useCardStore } from '../store/useCardStore'; // Importa el store
 
 export const CardList = () => {
   const { user } = useAuthStore();
-  const { cards, isLoading, error, fetchCards } = useCard();
+  const { isLoading, error, fetchCards } = useCard();
+  const cards = useCardStore((state) => state.cards); // Obtiene las tarjetas del store
   const [visibleCvv, setVisibleCvv] = useState<{ [key: string]: boolean }>({});
 
   useEffect(() => {

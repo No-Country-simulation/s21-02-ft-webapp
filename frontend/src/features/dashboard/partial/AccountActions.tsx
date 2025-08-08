@@ -20,7 +20,7 @@ export const AccountActions = ({ currency }: Props) => {
   const actions = [
     { to: `/account/deposit?sourceAccountId=${accountId}`, icon: <FaHandHoldingUsd />, label: 'Depositar' },
     { to: `/account/transfer?sourceAccountId=${accountId}`, icon: <FaExchangeAlt />, label: 'Transferir' },
-    { to: '/redeem', icon: <FaRegCreditCard />, label: 'Tarjetas' },
+    { to: '/cards', icon: <FaRegCreditCard />, label: 'Tarjetas' },
   ];
 
   return (

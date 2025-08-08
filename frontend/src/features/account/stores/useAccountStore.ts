@@ -6,7 +6,7 @@ import { AccountResponse } from '../../../types/account/response';
 interface AccountState {
   accounts: AccountResponse[];
   loading: boolean;
-  error: string | null; // si
+  error: string | null;
   fetchAccounts: () => Promise<void>;
   updateAccountBalance: (accountId: number, newBalance: number) => void;
 }
@@ -16,6 +16,7 @@ export const useAccountStore = create<AccountState>((set) => ({
   loading: false,
   error: null,
 
+  // Cargar cuentas desde la API
   fetchAccounts: async () => {
     set({ loading: true, error: null });
     try {
@@ -26,7 +27,7 @@ export const useAccountStore = create<AccountState>((set) => ({
         },
       });
       set({ accounts: response.data, loading: false });
-    } catch (error) {
+    } catch (error: any) {
       set({
         error: error instanceof Error ? error.message : 'Error al cargar cuentas',
         loading: false,
@@ -34,11 +35,12 @@ export const useAccountStore = create<AccountState>((set) => ({
     }
   },
 
+  // Actualiza el balance de la cuenta especificada con el nuevo saldo
   updateAccountBalance: (accountId: number, newBalance: number) => {
     set((state) => ({
       accounts: state.accounts.map((account) =>
         account.accountId === accountId
-          ? { ...account, balance: newBalance }
+          ? { ...account, balance: newBalance }  // 🟢 Actualiza solo esa cuenta
           : account
       ),
     }));
