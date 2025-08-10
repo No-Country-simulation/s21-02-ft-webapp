@@ -7,6 +7,7 @@ import {
   saveAuthToStorage,
   clearAuthStorage,
 } from "./authStorage";
+import { getLoggedUser } from "../services/authService";
 
 export const useAuthStore = create<AuthState>((set, get) => ({
   user: getUserFromStorage(),
@@ -23,4 +24,14 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
 
   isAuthenticated: () => !!get().token,
+
+  fetchUser: async () => {
+    try {
+      const user = await getLoggedUser();
+      set({ user });
+    } catch (error) {
+      console.error("Error obteniendo usuario:", error);
+      set({ user: null, token: null });
+    }
+  }
 }));

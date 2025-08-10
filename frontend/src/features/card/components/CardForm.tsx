@@ -4,7 +4,6 @@ import { Input } from '../../../components/ui/Input';
 import { Select } from '../../../components/ui/Select';
 import { CardFormValues } from '../../../types/card/cardFormValues';
 import { useCard } from '../hooks/useCards';
-import { encryptData } from '../../../utils/encryption';
 
 const banks = [
   'Banco Santander',
@@ -18,7 +17,7 @@ const banks = [
 ];
 
 export const CardForm = ({ onSuccess }: { onSuccess?: () => void }) => {
-  const { addCard, isLoading, error, fetchCards } = useCard(); // Añadimos fetchCards
+  const { addCard, isLoading, error, fetchCards } = useCard();
 
   const [formData, setFormData] = useState<CardFormValues>({
     number: '',
@@ -40,8 +39,8 @@ export const CardForm = ({ onSuccess }: { onSuccess?: () => void }) => {
         encryptedCvv: formData.cvv,
         balance: formData.balance || 0
       });
-      await fetchCards(); // Actualiza la lista después de agregar
-      onSuccess?.(); // Cierra el modal
+      await fetchCards();
+      onSuccess?.();
     } catch (err) {
       console.error('Error al agregar tarjeta:', err);
     }
@@ -58,7 +57,6 @@ export const CardForm = ({ onSuccess }: { onSuccess?: () => void }) => {
           {error}
         </div>
       )}
-
       <Input
         label="Número de tarjeta"
         value={formData.number}
@@ -68,7 +66,6 @@ export const CardForm = ({ onSuccess }: { onSuccess?: () => void }) => {
         pattern="\d{16}"
         title="Ingrese 16 dígitos sin espacios"
       />
-
       <Select
         label="Tipo de tarjeta"
         value={formData.type}
@@ -79,7 +76,6 @@ export const CardForm = ({ onSuccess }: { onSuccess?: () => void }) => {
         ]}
         required
       />
-
       <Select
         label="Banco emisor"
         value={formData.issuingBank}
@@ -87,7 +83,6 @@ export const CardForm = ({ onSuccess }: { onSuccess?: () => void }) => {
         options={banks.map(bank => ({ value: bank, label: bank }))}
         required
       />
-
       <Input
         label="Fecha de expiración (MM/AA)"
         value={formData.expirationDate}
@@ -96,7 +91,6 @@ export const CardForm = ({ onSuccess }: { onSuccess?: () => void }) => {
         required
         pattern="\d{2}/\d{2}"
       />
-
       <Input
         label="CVV"
         value={formData.cvv}
@@ -106,7 +100,6 @@ export const CardForm = ({ onSuccess }: { onSuccess?: () => void }) => {
         pattern="\d{3}"
         type="password"
       />
-
       <Input
         label="Saldo inicial"
         value={formData.balance?.toString() || ''}
@@ -115,7 +108,6 @@ export const CardForm = ({ onSuccess }: { onSuccess?: () => void }) => {
         min="0"
         step="0.01"
       />
-
       <Button type="submit" isLoading={isLoading} fullWidth>
         Asociar Tarjeta
       </Button>

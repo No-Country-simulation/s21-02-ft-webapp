@@ -21,7 +21,7 @@ export const useLogin = (): LoginHookResponse  => {
     try {
       const { user, token } = await loginService({email, password});
       login(user, token);
-      navigate('/dashboard');
+      navigate('/');
     } catch (err) {
       setError('Credenciales incorrectas');
       console.error('Login error:', err);
