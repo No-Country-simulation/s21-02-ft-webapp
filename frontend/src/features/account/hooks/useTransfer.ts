@@ -1,9 +1,8 @@
 import { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import {useLocation } from 'react-router-dom';
 import { makeTransfer, validateDestination, checkAccountBalance } from '../services/transferServices';
 import { TransferRequest } from '../../../types/account/request';
-import { TransferResponse } from '../../../types/account/response';
-import { useAuthStore } from '../../../features/auth/store/authStore';
+import { TransactionResponse } from '../../../types/account/response';
 import { useAccountStore } from '../../account/stores/useAccountStore';
 
 type TransferState = {
@@ -14,14 +13,12 @@ type TransferState = {
   isLoading: boolean;
   error: string | null;
   success: boolean;
-  transactionDetails: TransferResponse | null;
+  transactionDetails: TransactionResponse | null;
   destinationAccountName: string;
 };
 
 export const useTransfer = (sourceAccountId: number) => {
   const location = useLocation();
-  const navigate = useNavigate();
-  const { user } = useAuthStore();
   const { updateAccountBalance } = useAccountStore();
   const queryParams = new URLSearchParams(location.search);
 

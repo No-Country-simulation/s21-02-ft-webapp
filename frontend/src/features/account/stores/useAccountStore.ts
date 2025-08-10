@@ -9,9 +9,11 @@ interface AccountState {
   error: string | null;
   fetchAccounts: () => Promise<void>;
   updateAccountBalance: (accountId: number, newBalance: number) => void;
+   // Nuevo selector para obtener cuenta por id
+  getAccountById: (accountId: number) => AccountResponse | undefined;
 }
 
-export const useAccountStore = create<AccountState>((set) => ({
+export const useAccountStore = create<AccountState>((set, get) => ({
   accounts: [],
   loading: false,
   error: null,
@@ -22,9 +24,7 @@ export const useAccountStore = create<AccountState>((set) => ({
     try {
       const token = useAuthStore.getState().token;
       const response = await api.get<AccountResponse[]>('/accounts', {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
+        headers: {'Authorization': `Bearer ${token}`,},
       });
       set({ accounts: response.data, loading: false });
     } catch (error: any) {
@@ -45,4 +45,9 @@ export const useAccountStore = create<AccountState>((set) => ({
       ),
     }));
   },
+
+   // Selector para obtener cuenta por id
+  getAccountById: (accountId: number) =>
+    get().accounts.find((account: AccountResponse) => account.accountId === accountId),
 }));
+

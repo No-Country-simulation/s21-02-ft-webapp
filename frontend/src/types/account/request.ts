@@ -8,7 +8,7 @@ export interface TransferRequest {
     reason: string;
   }
 
-  export interface TransferFormProps {
+  export interface TransactionFormProps {
     sourceAccountId: number;
   }
 
@@ -18,3 +18,4 @@ export interface TransferRequest {
   }
 
   export type TransferField = 'destinationIdentifier' | 'amount' | 'reason';
+  export type DepositField =  'amount' | 'cardNumber';

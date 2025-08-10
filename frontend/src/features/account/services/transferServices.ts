@@ -1,13 +1,13 @@
 // src/features/transfer/services/transferService.ts
 import { api } from '../../../services/api';
 import { useAuthStore } from '../../../features/auth/store/authStore';
-import {  TransferResponse } from '../../../types/account/response';
+import {  TransactionResponse } from '../../../types/account/response';
 import {  TransferRequest } from '../../../types/account/request';
 
 export const makeTransfer = async (
     sourceAccountId: number,
     data: TransferRequest
-  ): Promise<TransferResponse> => {
+  ): Promise<TransactionResponse> => {
     const token = useAuthStore.getState().token;
     
     if (!token) {

@@ -13,7 +13,7 @@ export interface CurrencyOptionResponse {
   label: string;
 }
 
-export interface TransferResponse {
+export interface TransactionResponse {
   transactionId: number;
   transactionDate: string;
   sourceAccount: string;
@@ -22,7 +22,7 @@ export interface TransferResponse {
   reason: string;
   transactionType: string;
 }
-export interface TransferDetails {
+export interface TransactionDetails {
   transactionId: number;
   transactionDate: string;
   sourceAccount: string;
@@ -36,12 +36,7 @@ export interface TransferState {
   isLoading: boolean;
   error: string | null;
   success: boolean;
-  transactionDetails: TransferDetails | null;
+  transactionDetails: TransactionDetails | null;
   destinationAccountName: string;
 }
 
-export interface DepositResponse {
-  amount: number;       
-  newBalance: number;   
-  message: string;
-}

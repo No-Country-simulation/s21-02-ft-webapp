@@ -1,11 +1,11 @@
-import { Alert } from '../../../../components/ui/Alert';
-import { Button } from '../../../../components/ui/Button';
-import { Card } from '../../../../components/ui/Card';
-import { Input } from '../../../../components/ui/Input';
-import { Textarea } from '../../../../components/ui/Textarea';
-import { AccountResponse } from '../../../../types/account/response';
-import { TransferConfirmationModal } from './TransferConfirmationModal';
-import { TransferField } from '../../../../types/account/request';
+import { Alert } from '../../../components/ui/Alert';
+import { Button } from '../../../components/ui/Button';
+import { Card } from '../../../components/ui/Card';
+import { Input } from '../../../components/ui/Input';
+import { Textarea } from '../../../components/ui/Textarea';
+import { AccountResponse } from '../../../types/account/response';
+import { TransactionConfirmationModal } from './shared/TransactionConfirmationModal';
+import { TransferField } from '../../../types/account/request';
 
 interface TransferFormViewProps {
   currentAccount: AccountResponse;
@@ -101,14 +101,15 @@ export const TransferFormView = ({
       </div>
     </Card>
 
-    <TransferConfirmationModal
-      isOpen={showConfirm}
-      onClose={onCloseModal}
-      onConfirm={onConfirmTransfer}
-      currency={currentAccount.currency}
-      amount={amount}
-      destinationIdentifier={destinationIdentifier}
-      destinationName={destinationName}
-    />
+  <TransactionConfirmationModal
+  isOpen={showConfirm}
+  onClose={onCloseModal}
+  onConfirm={onConfirmTransfer}
+  currency={currentAccount.currency}
+  amount={amount}
+  destinationIdentifier={destinationIdentifier}
+  destinationName={destinationName || ''}
+/>
+
   </div>
 );

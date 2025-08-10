@@ -2,22 +2,26 @@ import { useState, useEffect } from 'react';
 import { useAuthStore } from '../../auth/store/authStore';
 import { useAccountStore } from '../../account/stores/useAccountStore';
 import { useTransfer } from '../hooks/useTransfer';
-import { TransferFormProps, TransferField } from '../../../types/account/request';
-import { TransferSuccess } from './transfer/TransferSuccess';
-import { TransferError } from './transfer/TransferError';
-import { TransferFormView } from './transfer/TransferFormView';
-import { AccountResponse } from '../../../types/account/response';
+import { TransactionFormProps, TransferField } from '../../../types/account/request';
+import { TransactionSuccess } from './shared/TransactionSuccess';
+import { TransactionError } from './shared/TransactionError';
+import { TransferFormView } from './TransferFormView';
 import { Spinner } from '../../../components/ui/Spinner';
 import { validateDestination } from '../services/transferServices';
-
-export const TransferForm = ({ sourceAccountId }: TransferFormProps) => {
+export const TransferForm = ({ sourceAccountId }: TransactionFormProps) => {
   const { user } = useAuthStore();
-  const { accounts, loading, error, fetchAccounts } = useAccountStore();
+
+  // Consumo del estado global de cuentas
+  const accounts = useAccountStore(state => state.accounts);
+  const loading = useAccountStore(state => state.loading);
+  const error = useAccountStore(state => state.error);
+  const fetchAccounts = useAccountStore(state => state.fetchAccounts);
+  const currentAccount = useAccountStore(state => state.getAccountById(sourceAccountId));
+
+  // --- Estados locales para control puntual y UI ---
   const [accountError, setAccountError] = useState<string | null>(null);
-  const [currentAccount, setCurrentAccount] = useState<AccountResponse | null>(null);
   const [showConfirm, setShowConfirm] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
-  const [destinationValid, setDestinationValid] = useState<boolean>(false);
   const [destinationName, setDestinationName] = useState<string>('');
 
   const {
@@ -32,22 +36,22 @@ export const TransferForm = ({ sourceAccountId }: TransferFormProps) => {
     submitTransfer,
   } = useTransfer(sourceAccountId);
 
+  // --- Efectos ---
   useEffect(() => {
-    fetchAccounts();
-  }, [fetchAccounts]);
+    if (accounts.length === 0) {
+      fetchAccounts();
+    }
+  }, [accounts.length, fetchAccounts]);
 
   useEffect(() => {
-    if (accounts.length > 0) {
-      const foundAccount = accounts.find((account) => account.accountId === sourceAccountId);
-      if (!foundAccount) {
-        setAccountError('No puedes transferir desde una cuenta que no te pertenece');
-        setCurrentAccount(null);
-      } else {
-        setAccountError(null);
-        setCurrentAccount(foundAccount);
-      }
+    if (accounts.length > 0 && !currentAccount) {
+      setAccountError('No puedes transferir desde una cuenta que no te pertenece');
+    } else {
+      setAccountError(null);
     }
-  }, [accounts, sourceAccountId]);
+  }, [accounts.length, currentAccount]);
+
+  // --- Funciones para validaciones ---
 
   const validateDestinationAccount = async (): Promise<boolean> => {
     try {
@@ -57,9 +61,9 @@ export const TransferForm = ({ sourceAccountId }: TransferFormProps) => {
         return false;
       }
       setDestinationName(result.accountName || 'Cuenta válida');
-      setDestinationValid(true);
+      // setDestinationValid(true);  <-- esta línea no aporta y puede eliminarse
       return true;
-    } catch (error) {
+    } catch {
       setValidationError('Error al validar el destino');
       return false;
     }
@@ -87,7 +91,8 @@ export const TransferForm = ({ sourceAccountId }: TransferFormProps) => {
       return false;
     }
 
-    if (currentAccount?.balance !== null && amountValue > currentAccount!!.balance) {
+    // Usar operador seguro para balance, chequea que exista y compara monto
+    if (currentAccount?.balance !== undefined && amountValue > currentAccount.balance) {
       setValidationError('Saldo insuficiente para realizar la transferencia');
       return false;
     }
@@ -105,6 +110,8 @@ export const TransferForm = ({ sourceAccountId }: TransferFormProps) => {
     setValidationError(null);
     return true;
   };
+
+  // --- Handlers ---
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -126,14 +133,17 @@ export const TransferForm = ({ sourceAccountId }: TransferFormProps) => {
 
   const handleInputChange = (field: TransferField, value: string) => {
     handleChange(field, value);
-    if (validationError) {
-      setValidationError(null);
-    }
+
+    if (validationError) setValidationError(null);
+
+    // Al cambiar destino, reseteamos nombre destino
     if (field === 'destinationIdentifier') {
-      setDestinationValid(false);
       setDestinationName('');
+      // setDestinationValid(false);  <-- eliminar porque no se usa
     }
   };
+
+  // --- Renderizado condicional ---
 
   if (loading) {
     return (
@@ -146,11 +156,7 @@ export const TransferForm = ({ sourceAccountId }: TransferFormProps) => {
   if (error) {
     return (
       <div className="flex flex-col items-center min-h-screen mt-10">
-        <TransferError 
-          message={error} 
-          onAction={() => window.location.reload()} 
-          actionLabel="Reintentar" 
-        />
+        <TransactionError message={error} onAction={() => window.location.reload()} actionLabel="Reintentar" />
       </div>
     );
   }
@@ -158,11 +164,7 @@ export const TransferForm = ({ sourceAccountId }: TransferFormProps) => {
   if (accountError) {
     return (
       <div className="flex flex-col items-center min-h-screen mt-10">
-        <TransferError 
-          message={accountError} 
-          onAction={handleReturnToDashboard} 
-          actionLabel="Volver al dashboard" 
-        />
+        <TransactionError message={accountError} onAction={handleReturnToDashboard} actionLabel="Volver al dashboard" />
       </div>
     );
   }
@@ -170,7 +172,7 @@ export const TransferForm = ({ sourceAccountId }: TransferFormProps) => {
   if (success && transactionDetails && currentAccount) {
     return (
       <div className="flex flex-col items-center min-h-screen mt-10">
-        <TransferSuccess
+        <TransactionSuccess
           userName={user?.fullName || 'Cuenta'}
           currency={currentAccount.currency}
           amount={amount}
@@ -191,6 +193,7 @@ export const TransferForm = ({ sourceAccountId }: TransferFormProps) => {
     );
   }
 
+  // Renderizado principal con componente visual pasándole todos los props necesarios
   return (
     <TransferFormView
       currentAccount={currentAccount}
@@ -210,3 +213,4 @@ export const TransferForm = ({ sourceAccountId }: TransferFormProps) => {
     />
   );
 };
+
