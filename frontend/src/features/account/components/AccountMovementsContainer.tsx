@@ -1,9 +1,9 @@
-import { useEffect } from 'react';
-import { useAccountStore } from '../../account/stores/useAccountStore';
-import TransactionListForm from './TransactionListForm';
+import {useEffect} from "react";
+import {useAccountStore} from "../stores/useAccountStore";
+import MovementListForm from "./MovementListForm";
 
-export const AccountTransactionsContainer = () => {
-    const {
+export const AccountMovementsContainer = () => {
+    const{
         accounts,
         loading,
         error,
@@ -31,9 +31,9 @@ export const AccountTransactionsContainer = () => {
         setActiveAccountId(arsAccount.accountId);
     }, [accounts, activeAccountId, setActiveAccountId]);
 
-    if (loading) return <div className="p-4 text-center text-gray-700">Cargando cuentas...</div>;
-    if (error) return <div className="p-4 text-center text-red-600">{error}</div>;
-    if (!accounts || accounts.length === 0) return <div className="p-4 text-center text-gray-500">No tienes cuentas</div>;
+    if (loading) return <div className="p-4 text-center text-gray-700">Cargando movimientos...</div>;
+    if (error) return <div className="p-4 text-center text-red-600">Error: {error}</div>;
+    if (!accounts || accounts.length === 0) return <div className="p-4 text-center text-gray-700">No se encontraron movimientos</div>;
 
     return (
         <div className="w-full px-4 sm:px-6 lg:px-8">
@@ -58,9 +58,9 @@ export const AccountTransactionsContainer = () => {
 
             {activeAccountId !== null && (
                 <div className="max-w-7xl mx-auto">
-                    <TransactionListForm sourceAccountId={activeAccountId} />
+                    <MovementListForm sourceAccountId={activeAccountId} />
                 </div>
             )}
         </div>
     );
-};
+};  

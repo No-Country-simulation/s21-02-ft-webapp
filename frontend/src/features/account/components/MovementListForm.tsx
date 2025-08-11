@@ -1,42 +1,42 @@
 import { useState, useMemo } from 'react';
-import { useTransactions } from '../hooks/useTransactions';
+import { useMovements } from '../hooks/useMovements';
 import { Card } from '../../../components/ui/Card';
 
 type Props = {
     sourceAccountId: number;
 };
 
-const TransactionListForm = ({ sourceAccountId }: Props) => {
-    const { transactions, loading, error } = useTransactions(sourceAccountId);
+const MovementListForm = ({ sourceAccountId }: Props) => {
+    const { movements, loading, error } = useMovements(sourceAccountId);
 
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const pageSize = 10;
 
-    const filteredTransactions = useMemo(() => {
-        if (!searchTerm.trim()) return transactions;
+    const filteredMovements = useMemo(() => {
+        if (!searchTerm.trim()) return movements;
         const lowered = searchTerm.toLowerCase();
-        return transactions.filter(tx =>
-            tx.transactionId.toString().includes(searchTerm) ||
-            (tx.transactionType && tx.transactionType.toLowerCase().includes(lowered)) 
+        return movements.filter(tx =>
+            tx.movementId.toString().includes(searchTerm) ||
+            (tx.transactionType && tx.transactionType.toLowerCase().includes(lowered))
         );
-    }, [transactions, searchTerm]);
+    }, [movements, searchTerm]);
 
-    const pagedTransactions = useMemo(() => {
+    const pagedMovements = useMemo(() => {
         const start = (currentPage - 1) * pageSize;
-        return filteredTransactions.slice(start, start + pageSize);
-    }, [filteredTransactions, currentPage]);
+        return filteredMovements.slice(start, start + pageSize);
+    }, [filteredMovements, currentPage]);
 
-    const totalPages = Math.max(1, Math.ceil(filteredTransactions.length / pageSize));
+    const totalPages = Math.max(1, Math.ceil(filteredMovements.length / pageSize));
 
     const goToPage = (page: number) => {
         if (page < 1 || page > totalPages) return;
         setCurrentPage(page);
     };
 
-    if (loading) return <div className="p-4 text-center text-gray-700">Cargando transacciones...</div>;
+    if (loading) return <div className="p-4 text-center text-gray-700">Cargando movimientos...</div>;
     if (error) return <div className="p-4 text-center text-red-600">Error: {error}</div>;
-    if (transactions.length === 0) return <div className="p-4 text-center text-gray-500">No hay transacciones para esta cuenta.</div>;
+    if (!movements || movements.length === 0) return <div className="p-4 text-center text-gray-700">No hay movimientos</div>;
 
     return (
         <div className="flex flex-col items-center">
@@ -44,8 +44,8 @@ const TransactionListForm = ({ sourceAccountId }: Props) => {
                 {/* Header */}
                 <div className="w-full flex justify-between items-center mb-3 mt-1 px-3">
                     <div>
-                        <h3 className="text-lg font-semibold text-slate-800">Transacciones</h3>
-                        <p className="text-slate-500">Resumen de las transacciones de la cuenta seleccionada.</p>
+                        <h3 className="text-lg font-semibold text-slate-800">Movimientos</h3>
+                        <p className="text-slate-500">Resumen de las movimientos de la cuenta seleccionada.</p>
                     </div>
 
                     <div className="ml-3">
@@ -55,7 +55,7 @@ const TransactionListForm = ({ sourceAccountId }: Props) => {
                                 value={searchTerm}
                                 onChange={e => { setSearchTerm(e.target.value); setCurrentPage(1); }}
                                 className="bg-white w-full pr-11 h-10 pl-3 py-2 placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded transition duration-200 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm"
-                                placeholder="Buscar transacción..."
+                                placeholder="Buscar movimiento..."
                             />
                             <button
                                 className="absolute h-8 w-8 right-1 top-1 my-auto px-2 flex items-center bg-white rounded"
@@ -73,7 +73,7 @@ const TransactionListForm = ({ sourceAccountId }: Props) => {
 
                 {/* Tabla con scroll horizontal */}
                 <div className="overflow-x-auto w-full">
-                    <table className="min-w-[1000px] w-full text-left table-auto border-collapse">
+                    <table className="min-w-[850px] w-full text-left table-auto border-collapse">
                         <thead>
                             <tr className="bg-slate-50">
                                 <th className="p-4 border-b border-slate-200 text-sm text-slate-500">Fecha</th>
@@ -85,7 +85,7 @@ const TransactionListForm = ({ sourceAccountId }: Props) => {
                         </thead>
 
                         <tbody>
-                            {pagedTransactions.map(tx => {
+                            {pagedMovements.map(tx => {
                                 const isPositive = tx.amount > 0;
                                 const amountText = isPositive ? `+${tx.amount.toFixed(2)}` : tx.amount.toFixed(2);
 
@@ -105,9 +105,9 @@ const TransactionListForm = ({ sourceAccountId }: Props) => {
                                 const typeLabel = tx.transactionType ? String(tx.transactionType) : '-';
 
                                 return (
-                                    <tr key={tx.transactionId} className="hover:bg-slate-50 border-b border-slate-200">
+                                    <tr key={tx.movementId} className="hover:bg-slate-50 border-b border-slate-200">
                                         <td className="p-4 py-5 text-sm text-slate-500">
-                                            {new Date(tx.transactionDate).toLocaleString(undefined, {
+                                            {new Date(tx.movementDate).toLocaleString(undefined, {
                                                 day: '2-digit',
                                                 month: '2-digit',
                                                 year: '2-digit',
@@ -124,8 +124,7 @@ const TransactionListForm = ({ sourceAccountId }: Props) => {
                                                 {arrow}
                                             </div>
                                         </td>
-                                        <td className="p-4 py-5 text-sm text-slate-500">{tx.destinationAccount ?? '-'}</td>
-                                        <td className="p-4 py-5 text-sm text-slate-500 whitespace-normal">{tx.reason || '-'}</td>
+                                        <td className="p-4 py-5 text-sm text-slate-500 whitespace-normal">{tx.description || '-'}</td>
                                     </tr>
                                 );
                             })}
@@ -137,7 +136,7 @@ const TransactionListForm = ({ sourceAccountId }: Props) => {
                 <div className="flex justify-between items-center px-4 py-3 mt-3">
                     <div className="text-sm text-slate-500">
                         Mostrando <b>{(currentPage - 1) * pageSize + 1}</b>-
-                        <b>{Math.min(currentPage * pageSize, filteredTransactions.length)}</b> de <b>{filteredTransactions.length}</b>
+                        <b>{Math.min(currentPage * pageSize, filteredMovements.length)}</b> de <b>{filteredMovements.length}</b>
                     </div>
 
                     <div className="flex items-center space-x-2">
@@ -176,4 +175,4 @@ const TransactionListForm = ({ sourceAccountId }: Props) => {
     );
 };
 
-export default TransactionListForm;
+export default MovementListForm;

@@ -10,6 +10,7 @@ import { IndexPage } from './pages/IndexPage';
 import { Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { useAuthStore } from './features/auth/store/authStore';
 import { LoginPage } from './pages/LoginPage';
+import {MovementListPage} from './pages/MovementListPage';
 import {TransactionListPage} from './pages/TransactionListPage';
 // Layout para rutas protegidas que incluye Dashboard
 const ProtectedLayout = () => {
@@ -42,6 +43,7 @@ function App() {
           <Route path="/account/deposit" element={<DepositPage />} />
           <Route path="/cards" element={<CardUserPage />} />
           <Route path="/account/:accountId/transactions" element={<TransactionListPage />} />
+          <Route path="/account/:accountId/movements" element={<MovementListPage />} />
           {/* Puedes añadir más rutas aquí que compartan el mismo layout */}
         </Route>
         
