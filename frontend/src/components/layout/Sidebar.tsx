@@ -8,15 +8,16 @@ import {
 import { useAuthStore} from '../../features/auth/store/authStore';
 import { LoginForm } from '../../features/auth/components/LoginForm';
 import  UserOnline  from '../../features/auth/components/UserOnlineForm';
+import { useAccountStore } from '../../features/account/stores/useAccountStore';
 
 export const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [showUserOnline, setShowUserOnline] = useState(false);
   const { isAuthenticated, user, logout } = useAuthStore();
   const navigate = useNavigate();
-
   const toggleSidebar = () => setIsOpen(!isOpen);
   const toggleUserOnline = () => setShowUserOnline(!showUserOnline);
+  const { activeAccountId } = useAccountStore();
 
   const handleLogout = () => {
     logout();
@@ -99,7 +100,7 @@ export const Sidebar = () => {
             <span>Depositar</span>
           </Link> */}
 
-          <Link to="/transactions" className="px-4 py-3 flex items-center space-x-4 rounded-md text-gray-600 hover:bg-gray-100"
+          <Link to={`/account/${activeAccountId}/transactions`}  className="px-4 py-3 flex items-center space-x-4 rounded-md text-gray-600 hover:bg-gray-100"
             onClick={() => setIsOpen(false)}>
             <FaMoneyBillWave />
             <span>Transacciones</span>

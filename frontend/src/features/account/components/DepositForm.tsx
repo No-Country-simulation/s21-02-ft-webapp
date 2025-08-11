@@ -41,7 +41,7 @@ export const DepositForm = ({ sourceAccountId }: TransactionFormProps) => {
 
   // Estados locales para UI específica
   const [showConfirm, setShowConfirm] = useState(false);
-  const [accountError, setAccountError] = useState<string | null>(null);
+  const [accountError] = useState<string | null>(null);
   const [validationError, setValidationError] = useState<string | null>(null);
 
   // Filtrar sólo tarjetas débito

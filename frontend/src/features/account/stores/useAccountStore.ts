@@ -7,6 +7,8 @@ interface AccountState {
   accounts: AccountResponse[];
   loading: boolean;
   error: string | null;
+  activeAccountId: number | null;  // <--- NUEVO: cuenta activa
+  setActiveAccountId: (id: number) => void; // función para cambiar cuenta activa
   fetchAccounts: () => Promise<void>;
   updateAccountBalance: (accountId: number, newBalance: number) => void;
    // Nuevo selector para obtener cuenta por id
@@ -17,6 +19,9 @@ export const useAccountStore = create<AccountState>((set, get) => ({
   accounts: [],
   loading: false,
   error: null,
+  activeAccountId: null,
+
+setActiveAccountId: (id: number) => set({ activeAccountId: id }),
 
   // Cargar cuentas desde la API
   fetchAccounts: async () => {
@@ -27,6 +32,9 @@ export const useAccountStore = create<AccountState>((set, get) => ({
         headers: {'Authorization': `Bearer ${token}`,},
       });
       set({ accounts: response.data, loading: false });
+      if(response.data.length > 0) {
+        set({ activeAccountId: response.data[1].accountId });
+      }
     } catch (error: any) {
       set({
         error: error instanceof Error ? error.message : 'Error al cargar cuentas',
