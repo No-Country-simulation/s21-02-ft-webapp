@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { getMovementsByAccount } from "../services/movementService";
-import { MovementResponseDTO } from "../../../types/account/response";
+import { getMovementsByAccount } from "../service/movementService";
+import { MovementResponseDTO } from "../../../types/movement/response";
 
 export const useMovements = (accountId: number) => {
     const [movements, setMovements] = useState<MovementResponseDTO[]>([]);

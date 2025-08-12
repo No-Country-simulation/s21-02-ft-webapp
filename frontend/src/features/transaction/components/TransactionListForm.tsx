@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { useTransactions } from '../hooks/useTransactions';
+import { useTransactions } from '../hook/useTransactions';
 import { Card } from '../../../components/ui/Card';
 
 type Props = {

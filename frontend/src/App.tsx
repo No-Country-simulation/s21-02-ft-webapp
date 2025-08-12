@@ -12,6 +12,7 @@ import { useAuthStore } from './features/auth/store/authStore';
 import { LoginPage } from './pages/LoginPage';
 import {MovementListPage} from './pages/MovementListPage';
 import {TransactionListPage} from './pages/TransactionListPage';
+import {ReserveListPage} from './pages/ReserveListPage';
 // Layout para rutas protegidas que incluye Dashboard
 const ProtectedLayout = () => {
   return (
@@ -44,6 +45,7 @@ function App() {
           <Route path="/cards" element={<CardUserPage />} />
           <Route path="/account/:accountId/transactions" element={<TransactionListPage />} />
           <Route path="/account/:accountId/movements" element={<MovementListPage />} />
+          <Route path="/account/:accountId/reservations" element={<ReserveListPage />} />
           {/* Puedes añadir más rutas aquí que compartan el mismo layout */}
         </Route>
         

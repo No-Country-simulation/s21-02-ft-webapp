@@ -1,5 +1,5 @@
 import { PageContainer } from '../components/ui/PageContainer';
-import { AccountTransactionsContainer } from '../features/account/components/AccountTransactionsContainer';
+import { AccountTransactionsContainer } from '../features/transaction/components/AccountTransactionsContainer';
 
 export const TransactionListPage = () => {
   return (

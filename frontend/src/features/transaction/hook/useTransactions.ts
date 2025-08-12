@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { getTransactionsByAccount } from '../services/transactionService';
-import { TransactionResponseDTO } from '../../../types/account/response';
+import { getTransactionsByAccount } from '../service/transactionService';
+import { TransactionResponseDTO } from '../../../types/transaction/response';
 
 export const useTransactions = (accountId: number) => {
   const [transactions, setTransactions] = useState<TransactionResponseDTO[]>([]);

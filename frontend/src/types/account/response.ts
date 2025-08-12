@@ -39,21 +39,3 @@ export interface TransferState {
   transactionDetails: TransactionDetails | null;
   destinationAccountName: string;
 }
-
-export interface TransactionResponseDTO {
-  transactionId: number;
-  transactionDate: string;          // ISO date string
-  reason: string;
-  amount: number;
-  destinationAccount: string;
-  transactionType: string
-}
-
-export interface MovementResponseDTO {
-  movementId: number;
-  movementDate: string;          // ISO date string
-  description: string;
-  amount: number;
-  destinationAccount: string;
-  transactionType: string
-}

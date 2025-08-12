@@ -1,5 +1,5 @@
 import {useEffect} from "react";
-import {useAccountStore} from "../stores/useAccountStore";
+import {useAccountStore} from "../../account/stores/useAccountStore";
 import MovementListForm from "./MovementListForm";
 
 export const AccountMovementsContainer = () => {
