@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -103,6 +104,7 @@ public class TransactionService implements ITransactionService {
 
         return transactions.stream()
                 .filter(transaction -> transaction.getType() == TransactionType.TRANSFER || transaction.getType() == TransactionType.DEPOSIT)
+                .sorted(Comparator.comparing(Transaction::getTransactionDateTime).reversed())
                 .map(transaction -> {
                     BigDecimal amount = transaction.getAmount();
                     if (!transaction.getSourceAccount().getUser().equals(this.userContextService.getAuthenticatedUser())) {

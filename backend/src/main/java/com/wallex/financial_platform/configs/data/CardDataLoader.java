@@ -56,7 +56,7 @@ public class CardDataLoader {
                 CardType.DEBIT,
                 bankName,
                 expiryDate,
-                passwordEncoder.encode(CardDataLoader.PASSWORD_DEBIT),
+                encryptionService.encrypt(CardDataLoader.PASSWORD_DEBIT),
                 BigDecimal.valueOf(initialBalance),
                 LocalDateTime.now()
         );

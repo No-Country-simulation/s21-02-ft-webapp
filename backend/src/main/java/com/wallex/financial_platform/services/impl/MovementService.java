@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -132,6 +133,7 @@ public class MovementService implements IMovementService {
 
     private List<MovementResponseDTO> mapMovementsToDTOs(List<Movement> movements) {
         return movements.stream()
+                .sorted(Comparator.comparing(Movement::getMovementDate).reversed())
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
     }

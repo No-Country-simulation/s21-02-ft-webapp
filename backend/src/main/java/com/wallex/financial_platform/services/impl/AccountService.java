@@ -4,21 +4,20 @@ import com.wallex.financial_platform.dtos.requests.AccountRequestDTO;
 import com.wallex.financial_platform.dtos.requests.DepositRequestDTO;
 import com.wallex.financial_platform.dtos.requests.ReservationRequestDTO;
 import com.wallex.financial_platform.dtos.requests.TransferRequestDTO;
-import com.wallex.financial_platform.dtos.responses.AccountResponseDTO;
-import com.wallex.financial_platform.dtos.responses.ReservationResponseDTO;
-import com.wallex.financial_platform.dtos.responses.TransactionResponseDTO;
+import com.wallex.financial_platform.dtos.responses.*;
 import com.wallex.financial_platform.entities.Account;
 import com.wallex.financial_platform.entities.Card;
 import com.wallex.financial_platform.entities.User;
 import com.wallex.financial_platform.entities.enums.CurrencyType;
 import com.wallex.financial_platform.exceptions.account.AccountErrorException;
 import com.wallex.financial_platform.exceptions.account.AccountNotFoundException;
-import com.wallex.financial_platform.exceptions.auth.UserNotFoundException;
+import com.wallex.financial_platform.exceptions.account.CurrencyMismatchException;
 import com.wallex.financial_platform.exceptions.transaction.InsufficientFundsException;
 import com.wallex.financial_platform.repositories.AccountRepository;
 import com.wallex.financial_platform.services.IAccountService;
 import com.wallex.financial_platform.services.utils.EncryptionService;
 import com.wallex.financial_platform.services.utils.UserContextService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +40,7 @@ public class AccountService implements IAccountService {
     private final EncryptionService encryptionService;
     private final NotificationService notificationService;
     private final ReservationService reservationService;
+    private static long cbuCounter = 7;
 
     @Override
     @Transactional(readOnly = true)
@@ -117,6 +117,48 @@ public class AccountService implements IAccountService {
         return transactionService.releaseReservationTransaction(account, reservationResponseDTO);
     }
 
+    @Override
+    @Transactional
+    public ValidateTransferResultResponseDTO validateAccountIdentifier(String identifier) {
+        // Validación CBU (22 dígitos)
+        if (identifier.length() == 22 && identifier.matches("[0-9]+")) {
+            return accountRepository.findByCbuOrAlias(identifier, null)
+                    .map(account -> new ValidateTransferResultResponseDTO(
+                            true,
+                            account.getUser().getFullName(),
+                            "CBU"))
+                    .orElse(new ValidateTransferResultResponseDTO(false, null, null));
+        }
+
+        // Validación Alias (6-20 caracteres alfanuméricos o puntos)
+        if (identifier.length() >= 6 && identifier.length() <= 20 &&
+                identifier.matches("[a-zA-Z0-9.]+")) {
+            return accountRepository.findByCbuOrAlias(null, identifier.toLowerCase())
+                    .map(account -> new ValidateTransferResultResponseDTO(
+                            true,
+                            account.getUser().getFullName(),
+                            "Alias"))
+                    .orElse(new ValidateTransferResultResponseDTO(false, null, null));
+        }
+
+        return new ValidateTransferResultResponseDTO(false, null, null);
+    }
+
+    @Override
+    @Transactional
+    public BalanceCheckResponseDTO checkAccountBalance(Long accountId, BigDecimal amount) {
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new EntityNotFoundException("Cuenta no encontrada"));
+
+        boolean hasEnoughBalance = account.getAvailableBalance().compareTo(amount) >= 0;
+
+        return new BalanceCheckResponseDTO(
+                hasEnoughBalance,
+                account.getAvailableBalance(),
+                account.getCurrency().name()
+        );
+    }
+
     private void validateReservation(Account account, @NotNull @Positive BigDecimal amount) {
         validateAccountOwnership(account);
         validateAccountStatus(account);
@@ -152,13 +194,13 @@ public class AccountService implements IAccountService {
 
     private void validateSameAccount(Account sourceAccount, Account destinationAccount) {
         if (sourceAccount.getAccountId().equals(destinationAccount.getAccountId())) {
-            throw new AccountErrorException("No puedes transferir a la misma cuenta");
+            throw new CurrencyMismatchException("No puedes transferir a la misma cuenta");
         }
     }
 
     private void validateAccountOwnership(Account account) {
         if (!account.getUser().getId().equals(userContextService.getAuthenticatedUser().getId())) {
-            throw new UserNotFoundException("No autorizado para operar esta cuenta");
+            throw new CurrencyMismatchException("No autorizado para operar esta cuenta");
         }
     }
 
@@ -228,7 +270,7 @@ public class AccountService implements IAccountService {
         account.setActive(true);
         account.setUser(user);
         account.setAlias(generateAlias(faker));
-        account.setCbu(generateCbu(faker));
+        account.setCbu(generateCbu());
         account.setSourceTransactions(new ArrayList<>());
         account.setDestinationTransactions(new ArrayList<>());
         account.setReservations(new ArrayList<>());
@@ -239,8 +281,11 @@ public class AccountService implements IAccountService {
         return (faker.animal().name() + "." + faker.construction().materials() + "." + faker.commerce().material()).toLowerCase();
     }
 
-    private String generateCbu(Faker faker) {
-        return faker.numerify("CBU0000351Ø000000#######Ø");
+    private String generateCbu() {
+        String base = "1231234900000000000"; // parte fija del CBU
+        String sequence = String.format("%03d", cbuCounter); // rellena con ceros a la izquierda
+        cbuCounter++;
+        return base + sequence;
     }
 
     private List<AccountResponseDTO> mapAccountsToDto(List<Account> accounts) {

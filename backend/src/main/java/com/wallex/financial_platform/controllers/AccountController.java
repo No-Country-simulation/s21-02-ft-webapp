@@ -1,5 +1,6 @@
 package com.wallex.financial_platform.controllers;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 
@@ -8,7 +9,6 @@ import com.wallex.financial_platform.dtos.requests.DepositRequestDTO;
 import com.wallex.financial_platform.dtos.requests.ReservationRequestDTO;
 import com.wallex.financial_platform.dtos.requests.TransferRequestDTO;
 import com.wallex.financial_platform.dtos.responses.*;
-import com.wallex.financial_platform.services.impl.MovementService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -69,5 +69,21 @@ public class AccountController {
     public ResponseEntity<List<String>> getCurrencies() {
         List<String> currencies = this.accountService.getCurrencies();
         return ResponseEntity.ok(currencies);
+    }
+
+    @GetMapping("/validate")
+    public ResponseEntity<ValidateTransferResultResponseDTO> validateDestination(
+            @RequestParam String destination) {
+        ValidateTransferResultResponseDTO result = accountService.validateAccountIdentifier(destination);
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/{accountId}/check-balance")
+    public ResponseEntity<BalanceCheckResponseDTO> checkBalance(
+            @PathVariable Long accountId,
+            @RequestParam BigDecimal amount) {
+
+        BalanceCheckResponseDTO response = accountService.checkAccountBalance(accountId, amount);
+        return ResponseEntity.ok(response);
     }
 }

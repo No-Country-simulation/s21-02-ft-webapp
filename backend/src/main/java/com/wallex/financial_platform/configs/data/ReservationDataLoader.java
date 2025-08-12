@@ -21,13 +21,13 @@ public class ReservationDataLoader {
     private final AccountRepository accountRepository;
 
     public void load() {
-        Account account1 = accountRepository.findById(1L).orElseThrow();
+        Account account1 = accountRepository.findById(2L).orElseThrow();
         Account account3 = accountRepository.findById(3L).orElseThrow();
 
         Reservation reservation1 = new Reservation(
                 null,
                 account1,
-                new BigDecimal("500.00"),
+                new BigDecimal("50000.00"),
                 LocalDateTime.now(),
                 ReservationStatus.ACTIVE,
                 TypeReservation.COMIDA
@@ -35,13 +35,22 @@ public class ReservationDataLoader {
 
         Reservation reservation2 = new Reservation(
                 null,
+                account1,
+                new BigDecimal("20000.00"),
+                LocalDateTime.now(),
+                ReservationStatus.ACTIVE,
+                TypeReservation.EDUCACION
+        );
+
+        Reservation reservation3 = new Reservation(
+                null,
                 account3,
-                new BigDecimal("100.00"),
+                new BigDecimal("10000.00"),
                 LocalDateTime.now(),
                 ReservationStatus.ACTIVE,
                 TypeReservation.VACACIONES_FAMILIARES
         );
 
-        reservationRepository.saveAll(List.of(reservation1, reservation2));
+        reservationRepository.saveAll(List.of(reservation1, reservation2, reservation3));
     }
 }
