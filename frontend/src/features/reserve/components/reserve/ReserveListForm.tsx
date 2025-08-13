@@ -1,4 +1,4 @@
-import { useReserves } from '../hook/useReserve';
+import { useReserves } from '../../hook/useReserve';
 
 type Props = {
     sourceAccountId: number;

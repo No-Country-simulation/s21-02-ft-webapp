@@ -1,3 +1,4 @@
+// src/features/account/stores/useAccountStore.ts
 import { create } from 'zustand';
 import { api } from '../../../services/api';
 import { useAuthStore } from '../../../features/auth/store/authStore';
@@ -7,11 +8,10 @@ interface AccountState {
   accounts: AccountResponse[];
   loading: boolean;
   error: string | null;
-  activeAccountId: number | null;  // <--- NUEVO: cuenta activa
-  setActiveAccountId: (id: number) => void; // función para cambiar cuenta activa
+  activeAccountId: number | null; 
+  setActiveAccountId: (id: number) => void; 
   fetchAccounts: () => Promise<void>;
   updateAccountBalance: (accountId: number, newBalance: number) => void;
-   // Nuevo selector para obtener cuenta por id
   getAccountById: (accountId: number) => AccountResponse | undefined;
 }
 
@@ -21,9 +21,8 @@ export const useAccountStore = create<AccountState>((set, get) => ({
   error: null,
   activeAccountId: null,
 
-setActiveAccountId: (id: number) => set({ activeAccountId: id }),
+  setActiveAccountId: (id: number) => set({ activeAccountId: id }),
 
-  // Cargar cuentas desde la API
   fetchAccounts: async () => {
     set({ loading: true, error: null });
     try {
@@ -31,10 +30,21 @@ setActiveAccountId: (id: number) => set({ activeAccountId: id }),
       const response = await api.get<AccountResponse[]>('/accounts', {
         headers: {'Authorization': `Bearer ${token}`,},
       });
-      set({ accounts: response.data, loading: false });
-      if(response.data.length > 0) {
-        set({ activeAccountId: response.data[1].accountId });
+      
+      const fetchedAccounts = response.data;
+      set({ accounts: fetchedAccounts, loading: false });
+
+      if (fetchedAccounts.length > 0) {
+        // Buscar la cuenta de pesos (ARS)
+        const arsAccount = fetchedAccounts.find(account => account.currency.toUpperCase() === 'ARS');
+
+        // Establecer la cuenta activa: la de pesos si existe, de lo contrario la primera de la lista
+        const accountToActivate = arsAccount ? arsAccount.accountId : fetchedAccounts[0].accountId;
+        set({ activeAccountId: accountToActivate });
+      } else {
+        set({ activeAccountId: null });
       }
+
     } catch (error: any) {
       set({
         error: error instanceof Error ? error.message : 'Error al cargar cuentas',
@@ -43,19 +53,16 @@ setActiveAccountId: (id: number) => set({ activeAccountId: id }),
     }
   },
 
-  // Actualiza el balance de la cuenta especificada con el nuevo saldo
   updateAccountBalance: (accountId: number, newBalance: number) => {
     set((state) => ({
       accounts: state.accounts.map((account) =>
         account.accountId === accountId
-          ? { ...account, balance: newBalance }  // 🟢 Actualiza solo esa cuenta
+          ? { ...account, balance: newBalance }
           : account
       ),
     }));
   },
 
-   // Selector para obtener cuenta por id
   getAccountById: (accountId: number) =>
     get().accounts.find((account: AccountResponse) => account.accountId === accountId),
 }));
-

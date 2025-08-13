@@ -1,12 +1,13 @@
+// src/features/account/components/AccountReservesContainer.tsx
 import { useEffect, useMemo } from "react";
-import { useAccountStore } from "../../account/stores/useAccountStore";
+import { useAccountStore } from "../../../account/stores/useAccountStore";
 import { ReserveList } from "./ReserveListForm";
 import { AccountReservesHeader } from "./AccountReservesHeader";
-import { useReserves } from "../hook/useReserve"; 
-import { useDolarOfficial } from "../hook/useDolarOfficial"; // Nuevo hook importado
-import { Card } from "../../../components/ui/Card";
+import { useReserves } from "../../hook/useReserve";
+import { useDolarOfficial } from "../../hook/useDolarOfficial";
 
 export const AccountReservesContainer = () => {
+    // Se elimina el estado del modal (isModalOpen) y el componente <Modal />
     const {
         accounts,
         loading: accountsLoading,
@@ -48,10 +49,8 @@ export const AccountReservesContainer = () => {
         return reserves.reduce((sum, reserve) => sum + (reserve.reservedAmount || 0), 0);
     }, [reserves]);
     
-    // Calcula el rendimiento en base a la variación del dólar
     const yieldPercentage = useMemo(() => {
-        // Asume un valor base del dólar para calcular la diferencia
-        const baseDolarPrice = 1200; // Valor de ejemplo, podrías obtenerlo de otro lugar
+        const baseDolarPrice = 1200;
         if (!dolarData || dolarData.venta <= baseDolarPrice) return 0;
 
         const difference = dolarData.venta - baseDolarPrice;
@@ -75,9 +74,7 @@ export const AccountReservesContainer = () => {
     }
 
     return (
-        
-       <div className="flex flex-col items-center">
-            <Card className="max-w-md mx-auto mt-8">
+        <div className="w-full px-4 mt-10 sm:px-6 lg:px-8">
             <AccountReservesHeader
                 totalReserved={totalReservedAmount}
                 yieldPercentage={yieldPercentage}
@@ -88,7 +85,6 @@ export const AccountReservesContainer = () => {
                     <ReserveList sourceAccountId={activeAccountId} />
                 </div>
             )}
-            </Card>
         </div>
     );
 };
