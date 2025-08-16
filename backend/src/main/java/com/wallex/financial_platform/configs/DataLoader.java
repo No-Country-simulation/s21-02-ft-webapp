@@ -13,19 +13,22 @@ public class DataLoader {
                                       AccountDataLoader accountDataLoader,
                                       NotificationDataLoader notificationDataLoader,
                                       CardDataLoader cardDataLoader,
+                                      ReservationTypeDataLoader reservationTypeDataLoader, // <-- acá
                                       ReservationDataLoader reservationDataLoader,
-                                     TransactionDataLoader transactionDataLoader,
-                                     MovementDataLoader movementDataLoader
-                                      ) {
-
+                                      TransactionDataLoader transactionDataLoader,
+                                      MovementDataLoader movementDataLoader) {
         return args -> {
             userDataLoader.load();
             accountDataLoader.load();
             notificationDataLoader.load();
             cardDataLoader.load();
             transactionDataLoader.load();
-            reservationDataLoader.load();
+
+            reservationTypeDataLoader.load();   // <-- Cargar tipos de reserva primero
+            reservationDataLoader.load();       // <-- Luego cargar reservas
+
             movementDataLoader.load();
         };
     }
+
 }

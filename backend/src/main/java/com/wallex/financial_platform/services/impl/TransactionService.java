@@ -65,13 +65,13 @@ public class TransactionService implements ITransactionService {
     @Override
     @Transactional
     public TransactionResponseDTO createReservationTransaction(Account account, ReservationRequestDTO reservationRequestDTO) {
-        Transaction transaction = this.saveTransaction(account,account,reservationRequestDTO.reservedAmount(), "Reservo dinero para "+ reservationRequestDTO.type().name(), TransactionType.RESERVE);
+        Transaction transaction = this.saveTransaction(account,account,reservationRequestDTO.reservedAmount(), "Reservo dinero para "+ reservationRequestDTO.type().getName(), TransactionType.RESERVE);
         createReservationMovement(account,transaction,reservationRequestDTO.reservedAmount().negate());
 
         notificationService.notifyUser(
                 account.getUser(),
                 "💰 La reserva se realizado con éxito",
-                "🎉 Has reservado " + reservationRequestDTO.reservedAmount() + " " + account.getCurrency() + " para " + reservationRequestDTO.type().name() + "."
+                "🎉 Has reservado " + reservationRequestDTO.reservedAmount() + " " + account.getCurrency() + " para " + reservationRequestDTO.type().getName() + "."
         );
         return mapToDTO(transaction);
     }
@@ -79,13 +79,13 @@ public class TransactionService implements ITransactionService {
     @Override
     @Transactional
     public TransactionResponseDTO releaseReservationTransaction(Account account, ReservationResponseDTO reservationResponseDTO) {
-        Transaction transaction = this.saveTransaction(account,account, reservationResponseDTO.reservedAmount(), " Elimino reserva " + reservationResponseDTO.type().name(),TransactionType.RELEASE);
+        Transaction transaction = this.saveTransaction(account,account, reservationResponseDTO.reservedAmount(), " Elimino reserva " + reservationResponseDTO.reservationType().getName(),TransactionType.RELEASE);
         createReservationMovement(account,transaction,reservationResponseDTO.reservedAmount());
 
         notificationService.notifyUser(
                 account.getUser(),
                 "💰 La liberación de reserva se realizado con éxito",
-                "🎉 Has liberado la reservada para " +  reservationResponseDTO.type().name() + "."
+                "🎉 Has liberado la reservada para " +  reservationResponseDTO.reservationType().getName() + "."
         );
         return mapToDTO(transaction);
     }

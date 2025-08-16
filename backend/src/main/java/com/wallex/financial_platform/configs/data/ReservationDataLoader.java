@@ -2,10 +2,11 @@ package com.wallex.financial_platform.configs.data;
 
 import com.wallex.financial_platform.entities.Account;
 import com.wallex.financial_platform.entities.Reservation;
+import com.wallex.financial_platform.entities.ReservationType;
 import com.wallex.financial_platform.entities.enums.ReservationStatus;
-import com.wallex.financial_platform.entities.enums.TypeReservation;
 import com.wallex.financial_platform.repositories.AccountRepository;
 import com.wallex.financial_platform.repositories.ReservationRepository;
+import com.wallex.financial_platform.repositories.ReservationTypeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -19,10 +20,19 @@ public class ReservationDataLoader {
 
     private final ReservationRepository reservationRepository;
     private final AccountRepository accountRepository;
+    private final ReservationTypeRepository reservationTypeRepository;
 
     public void load() {
         Account account1 = accountRepository.findById(2L).orElseThrow();
         Account account3 = accountRepository.findById(3L).orElseThrow();
+
+        // Cargar ReservationType existentes
+        ReservationType comidaType = reservationTypeRepository.findById(1L)
+                .orElseThrow(() -> new RuntimeException("ReservationType 'Comida' no encontrado"));
+        ReservationType educacionType = reservationTypeRepository.findById(2L)
+                .orElseThrow(() -> new RuntimeException("ReservationType 'Educacion' no encontrado"));
+        ReservationType vacacionesType = reservationTypeRepository.findById(3L)
+                .orElseThrow(() -> new RuntimeException("ReservationType 'Vacaciones Familiares' no encontrado"));
 
         Reservation reservation1 = new Reservation(
                 null,
@@ -30,7 +40,7 @@ public class ReservationDataLoader {
                 new BigDecimal("50000.00"),
                 LocalDateTime.now(),
                 ReservationStatus.ACTIVE,
-                TypeReservation.COMIDA
+                comidaType
         );
 
         Reservation reservation2 = new Reservation(
@@ -39,7 +49,7 @@ public class ReservationDataLoader {
                 new BigDecimal("20000.00"),
                 LocalDateTime.now(),
                 ReservationStatus.ACTIVE,
-                TypeReservation.EDUCACION
+                educacionType
         );
 
         Reservation reservation3 = new Reservation(
@@ -48,7 +58,7 @@ public class ReservationDataLoader {
                 new BigDecimal("10000.00"),
                 LocalDateTime.now(),
                 ReservationStatus.ACTIVE,
-                TypeReservation.VACACIONES_FAMILIARES
+                vacacionesType
         );
 
         reservationRepository.saveAll(List.of(reservation1, reservation2, reservation3));
