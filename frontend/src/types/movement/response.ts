@@ -3,6 +3,6 @@ export interface MovementResponseDTO {
   movementDate: string;          // ISO date string
   description: string;
   amount: number;
-  destinationAccount: string;
+  userName: string;
   transactionType: string
 }

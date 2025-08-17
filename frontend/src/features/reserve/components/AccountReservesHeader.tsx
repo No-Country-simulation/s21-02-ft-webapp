@@ -1,26 +1,35 @@
 // src/features/account/components/AccountReservesHeader.tsx
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 type Props = {
     totalReserved: number;
     yieldPercentage: number;
-    // Se elimina onOpenCreateModal porque ya no se usa un modal.
 };
 
 export const AccountReservesHeader = ({ totalReserved, yieldPercentage }: Props) => {
     const navigate = useNavigate();
 
     const handleCreateClick = () => {
-        navigate('/reservations/create-type');
+        navigate('/reservations/create/name');
     };
+
+ const handleReserveClick = () => {
+    navigate('/reservations/select'); // en lugar de crear directamente
+};
 
     return (
         <div className="max-w-md mx-auto p-4 bg-white rounded-lg">
             <h2 className="text-xl font-light text-gray-800">Total reservado</h2>
             <div className="flex items-center mt-2">
-                <span className="text-4xl font-bold text-gray-800">${totalReserved.toFixed(2)}</span>
+                <span className="text-4xl font-bold text-gray-800">
+                    {new Intl.NumberFormat("es-AR", {
+                        style: "currency",
+                        currency: "ARS",
+                        minimumFractionDigits: 2,
+                    }).format(totalReserved)}
+                </span>
             </div>
+
             <div className="flex items-center mt-2 text-green-600">
                 <span className="inline-block bg-green-100 rounded-full p-1 mr-2">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -39,7 +48,7 @@ export const AccountReservesHeader = ({ totalReserved, yieldPercentage }: Props)
                     </div>
                     <span className="mt-2 text-sm text-gray-600">Crear</span>
                 </button>
-                <button className="flex flex-col items-center">
+                <button className="flex flex-col items-center" onClick={handleReserveClick}>
                     <div className="bg-blue-100 rounded-full w-12 h-12 flex items-center justify-center text-blue-500">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />

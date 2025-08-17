@@ -1,7 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useMovements } from '../hook/useMovements';
 import { Card } from '../../../components/ui/Card';
-
 type Props = {
     sourceAccountId: number;
 };
@@ -124,6 +123,7 @@ const MovementListForm = ({ sourceAccountId }: Props) => {
                                                 {arrow}
                                             </div>
                                         </td>
+                                        <td className="p-4 py-5 text-sm text-slate-500">{tx.userName || '-'}</td>
                                         <td className="p-4 py-5 text-sm text-slate-500 whitespace-normal">{tx.description || '-'}</td>
                                     </tr>
                                 );

@@ -1,12 +1,12 @@
 // src/features/reservation/service/reservationTypeService.ts
 import { api } from '../../../services/api';
 import { useAuthStore } from '../../auth/store/authStore';
-import { ReservationTypeResponseDTO } from '../../../types/reserve/response';
+import { SuggestedReserveResponseDTO } from '../../../types/reserve/response';
 
-export const createReservationType = async (
+export const createSuggestedReserve = async (
   name: string,
   icon: File
-): Promise<ReservationTypeResponseDTO> => {
+): Promise<SuggestedReserveResponseDTO> => {
   const token = useAuthStore.getState().token;
   if (!token) {
     throw new Error('No authentication token available');
@@ -24,7 +24,7 @@ export const createReservationType = async (
   formData.append('icon', icon);
 
   try {
-    const response = await api.post('/typeReservations', formData, config);
+    const response = await api.post('/suggestedReserve', formData, config);
     return response.data;
   } catch (error) {
     console.error('Error creating reservation type:', error);
@@ -32,8 +32,7 @@ export const createReservationType = async (
   }
 };
 
-// Nueva función para obtener todos los tipos de reserva
-export const getAllReservationTypes = async (): Promise<ReservationTypeResponseDTO[]> => {
+export const getAllSuggestedReserves = async (): Promise<SuggestedReserveResponseDTO[]> => {
   const token = useAuthStore.getState().token;
   if (!token) {
     throw new Error('No authentication token available');
@@ -46,7 +45,7 @@ export const getAllReservationTypes = async (): Promise<ReservationTypeResponseD
   };
 
   try {
-    const response = await api.get('/typeReservations', config);
+    const response = await api.get('/suggestedReserve', config);
     return response.data;
   } catch (error) {
     console.error('Error fetching reservation types:', error);

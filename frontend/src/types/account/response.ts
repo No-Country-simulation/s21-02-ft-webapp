@@ -14,14 +14,15 @@ export interface CurrencyOptionResponse {
 }
 
 export interface TransactionResponse {
-  transactionId: number;
-  transactionDate: string;
+  transactionId: number;          // número, igual que API
+  transactionDate: string;        // string ISO
   sourceAccount: string;
   destinationAccount: string;
   amount: number;
   reason: string;
-  transactionType: string;
+  transactionType: "RESERVE";     // opcionalmente literal
 }
+
 export interface TransactionDetails {
   transactionId: number;
   transactionDate: string;

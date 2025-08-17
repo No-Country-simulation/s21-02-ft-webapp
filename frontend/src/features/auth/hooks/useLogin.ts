@@ -13,22 +13,34 @@ export const useLogin = (): LoginHookResponse  => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError('');
-    
-    try {
-      const { user, token } = await loginService({email, password});
-      login(user, token);
-      navigate('/');
-    } catch (err) {
-      setError('Credenciales incorrectas');
-      console.error('Login error:', err);
-    } finally {
-      setIsLoading(false);
+const handleLogin = async (e: React.FormEvent) => {
+  e.preventDefault(); // 
+  setIsLoading(true);
+  setError('');
+
+  try {
+    const { user, token } = await loginService({ email, password });
+    login(user, token);
+    navigate('/');
+  } catch (err: any) {
+    switch (true) {
+      case !err.response:
+        setError('No se pudo conectar con el servidor. Verifica tu conexión a internet.');
+        break;
+
+      case err.response?.status === 401:
+        setError('Credenciales incorrectas');
+        break;
+
+      default:
+        setError('Ocurrió un error inesperado. Inténtalo más tarde.');
+        break;
     }
-  };
+    console.error('Login error:', err);
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   const handleRegisterRedirect = () => {
     navigate('/register');

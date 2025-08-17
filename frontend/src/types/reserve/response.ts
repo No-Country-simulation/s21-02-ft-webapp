@@ -1,15 +1,12 @@
 export interface ReserveResponseDTO {
-    reservationId: number;
+    transactionId: number;
     accountId: number;
     reservedAmount: number;
     creationDate: string;
     status: string;
-    type: string
+    reason: string;
 }
-// src/types/reserve/response.ts
-
-// This is an example of what your DTO type should look like
-export type ReservationTypeResponseDTO = {
+export type SuggestedReserveResponseDTO = {
     id: number;
     name: string;
     iconUrl: string; // The URL of the icon from the API

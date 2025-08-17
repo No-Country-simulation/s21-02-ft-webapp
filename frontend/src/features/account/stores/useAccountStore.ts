@@ -35,10 +35,7 @@ export const useAccountStore = create<AccountState>((set, get) => ({
       set({ accounts: fetchedAccounts, loading: false });
 
       if (fetchedAccounts.length > 0) {
-        // Buscar la cuenta de pesos (ARS)
         const arsAccount = fetchedAccounts.find(account => account.currency.toUpperCase() === 'ARS');
-
-        // Establecer la cuenta activa: la de pesos si existe, de lo contrario la primera de la lista
         const accountToActivate = arsAccount ? arsAccount.accountId : fetchedAccounts[0].accountId;
         set({ activeAccountId: accountToActivate });
       } else {

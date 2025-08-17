@@ -1,10 +1,10 @@
 // src/features/account/components/AccountReservesContainer.tsx
 import { useEffect, useMemo } from "react";
-import { useAccountStore } from "../../../account/stores/useAccountStore";
+import { useAccountStore } from "../../account/stores/useAccountStore";
 import { ReserveList } from "./ReserveListForm";
 import { AccountReservesHeader } from "./AccountReservesHeader";
-import { useReserves } from "../../hook/useReserve";
-import { useDolarOfficial } from "../../hook/useDolarOfficial";
+import { useReserves } from "../hook/useReserve";
+import { useDolarOfficial } from "../hook/useDolarOfficial";
 
 export const AccountReservesContainer = () => {
     // Se elimina el estado del modal (isModalOpen) y el componente <Modal />
@@ -46,7 +46,7 @@ export const AccountReservesContainer = () => {
 
     const totalReservedAmount = useMemo(() => {
         if (!reserves) return 0;
-        return reserves.reduce((sum, reserve) => sum + (reserve.reservedAmount || 0), 0);
+        return reserves.reduce((sum, reserve) => sum + (reserve.reservedAmount|| 0), 0);
     }, [reserves]);
     
     const yieldPercentage = useMemo(() => {
