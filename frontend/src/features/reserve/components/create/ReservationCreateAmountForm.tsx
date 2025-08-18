@@ -48,10 +48,10 @@ export const ReservationCreateAmountForm = () => {
       // Aseguramos que los campos tengan valor por defecto
       setSuccessData({
         transactionId: response.transactionId ?? "0",
-        transactionDate: response.creationDate ?? new Date().toISOString(),
+        transactionDate: response.transactionDate ?? new Date().toISOString(),
         sourceAccount: user?.fullName ?? "",
         destinationAccount: name,
-        amount: response.reservedAmount ?? amount ?? 0, 
+        amount: response.amount ?? amount ?? 0, 
         reason: response.reason ?? "",
         transactionType: "RESERVE",
       });

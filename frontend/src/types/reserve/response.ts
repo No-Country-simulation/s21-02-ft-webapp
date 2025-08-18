@@ -1,11 +1,22 @@
 export interface ReserveResponseDTO {
-    transactionId: number;
+    reservationId: number;
     accountId: number;
     reservedAmount: number;
     creationDate: string;
     status: string;
     reason: string;
 }
+
+export interface ReserveTransactionResponseDTO {
+    transactionId: number;
+    transactionDate: string;
+    sourceAccount: string;
+    destinationAccount: string;
+    amount: number;
+    reason: string;
+    transactionType: string;
+}
+
 export type SuggestedReserveResponseDTO = {
     id: number;
     name: string;

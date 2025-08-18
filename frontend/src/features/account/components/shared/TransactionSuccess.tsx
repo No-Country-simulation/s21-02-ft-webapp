@@ -67,6 +67,7 @@ export const TransactionSuccess = ({
             </span>
           </p>
           <p><span className="font-medium text-gray-700">Motivo:</span> <span className="text-gray-900">{reason}</span></p>
+           <p><span className="font-medium text-gray-700">Tipo:</span> <span className="text-gray-900">{reason}</span></p>
         </div>
 
         {/* Botón de retorno */}

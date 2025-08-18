@@ -1,4 +1,6 @@
-// src/features/account/components/AccountReservesHeader.tsx
+import { useState } from 'react';
+import { ReserveListModal } from '../../reserve/components/ReserveListModal';
+import { useAccountStore } from '../../account/stores/useAccountStore';
 import { useNavigate } from 'react-router-dom';
 
 type Props = {
@@ -7,15 +9,26 @@ type Props = {
 };
 
 export const AccountReservesHeader = ({ totalReserved, yieldPercentage }: Props) => {
+    const [modalOpen, setModalOpen] = useState(false);
+    const [actionType, setActionType] = useState<'add' | 'release' | null>(null);
     const navigate = useNavigate();
 
-    const handleCreateClick = () => {
+    // obtener cuenta activa
+    const sourceAccountId = useAccountStore((state) => state.activeAccountId);
+
+     const handleCreateReserveClick = () => {
         navigate('/reservations/create/name');
     };
 
- const handleReserveClick = () => {
-    navigate('/reservations/select'); // en lugar de crear directamente
-};
+    const handleAddFundsClick = () => {
+        setActionType('add');
+        setModalOpen(true);
+    };
+
+    const handleReleaseFundsClick = () => {
+        setActionType('release');
+        setModalOpen(true);
+    };
 
     return (
         <div className="max-w-md mx-auto p-4 bg-white rounded-lg">
@@ -39,8 +52,9 @@ export const AccountReservesHeader = ({ totalReserved, yieldPercentage }: Props)
                 </span>
                 <span className="text-sm font-semibold">Rinde {yieldPercentage.toFixed(2)}%</span>
             </div>
+
             <div className="flex justify-around items-center mt-6 space-x-2">
-                <button className="flex flex-col items-center" onClick={handleCreateClick}>
+                <button className="flex flex-col items-center" onClick={handleCreateReserveClick}>
                     <div className="bg-blue-500 rounded-full w-12 h-12 flex items-center justify-center text-white">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -48,7 +62,8 @@ export const AccountReservesHeader = ({ totalReserved, yieldPercentage }: Props)
                     </div>
                     <span className="mt-2 text-sm text-gray-600">Crear</span>
                 </button>
-                <button className="flex flex-col items-center" onClick={handleReserveClick}>
+
+                <button className="flex flex-col items-center" onClick={handleAddFundsClick}>
                     <div className="bg-blue-100 rounded-full w-12 h-12 flex items-center justify-center text-blue-500">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -56,7 +71,8 @@ export const AccountReservesHeader = ({ totalReserved, yieldPercentage }: Props)
                     </div>
                     <span className="mt-2 text-sm text-gray-600">Reservar</span>
                 </button>
-                <button className="flex flex-col items-center">
+
+                <button className="flex flex-col items-center" onClick={handleReleaseFundsClick}>
                     <div className="bg-blue-100 rounded-full w-12 h-12 flex items-center justify-center text-blue-500">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
@@ -65,6 +81,16 @@ export const AccountReservesHeader = ({ totalReserved, yieldPercentage }: Props)
                     <span className="mt-2 text-sm text-gray-600">Retirar</span>
                 </button>
             </div>
+
+            {/* Modal para seleccionar reservas */}
+            {modalOpen && actionType && sourceAccountId && (
+                <ReserveListModal
+                    isOpen={modalOpen}
+                    actionType={actionType}
+                    sourceAccountId={sourceAccountId}
+                    onClose={() => setModalOpen(false)}
+                />
+            )}
         </div>
     );
 };

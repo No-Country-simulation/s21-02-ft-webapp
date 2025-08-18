@@ -15,7 +15,6 @@ import {TransactionListPage} from './pages/TransactionListPage';
 import {ReserveListPage} from './pages/ReserveListPage';
 import {ReserveCreateNamePage} from './pages/ReserveCreateNamePage';
 import {ReserveCreateAmountPage} from './pages/ReserveCreateAmountPage';
-import {SelectReservePage} from './pages/SelectedReservePage';
 // Layout para rutas protegidas que incluye Dashboard
 const ProtectedLayout = () => {
   return (
@@ -51,8 +50,7 @@ function App() {
           <Route path="/account/:accountId/reservations" element={<ReserveListPage />} />
           <Route path="/reservations/create/name" element={<ReserveCreateNamePage />} />
           <Route path="/reservations/create/amount" element={<ReserveCreateAmountPage />} />
-          <Route path="/reservations/select" element={<SelectReservePage />} />
-        
+      
         </Route>
         
         {/* Redirección para rutas no encontradas */}

@@ -1,35 +1,50 @@
 import { useEffect, useState } from "react";
-import { getReservesByAccount } from "../service/reserveService";
-import { ReserveResponseDTO } from "../../../types/reserve/response";
+import { getReservesByAccount, releaseReservation } from "../service/reserveService";
+import { ReserveResponseDTO, ReserveTransactionResponseDTO } from "../../../types/reserve/response";
 
-// Se actualiza la firma para aceptar activeAccountId como number | null
-export const useReserves = (activeAccountId: number | null) => {
+export const useReserves = (accountId?: number) => {
   const [reserves, setReserves] = useState<ReserveResponseDTO[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    // Solo se llama a la API si activeAccountId no es null
-    if (activeAccountId === null) {
-      setReserves([]); // Limpiar reservas si no hay cuenta activa
+  const fetchReserves = async () => {
+    if (accountId === undefined) {
+      setReserves([]);
       return;
     }
 
-    const fetchReserves = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const data = await getReservesByAccount(activeAccountId); // activeAccountId ahora es definitivamente un número aquí
-        setReserves(data);
-      } catch (err: any) {
-        setError(err.message || 'Error cargando reservas');
-      } finally {
-        setLoading(false);
-      }
-    };
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await getReservesByAccount(accountId);
+      setReserves(data);
+    } catch (err: any) {
+      setError(err.message || "Error cargando reservas");
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  const releaseReserve = async (reservationId: number): Promise<ReserveTransactionResponseDTO  | null> => {
+  if (!accountId) return null;
+  setLoading(true);
+  try {
+    const response = await releaseReservation(accountId, reservationId); // llama al service
+    await fetchReserves(); // actualiza la lista
+    return response; // 🚀 devuelve la transacción para el modal
+  } catch (err: any) {
+    setError(err.message || "Error al liberar reserva");
+    return null;
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+
+  useEffect(() => {
     fetchReserves();
-  }, [activeAccountId]);
+  }, [accountId]);
 
-  return { reserves, loading, error };
+  return { reserves, loading, error, releaseReserve, fetchReserves };
 };
