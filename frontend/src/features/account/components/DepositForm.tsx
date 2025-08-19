@@ -147,13 +147,14 @@ export const DepositForm = ({ sourceAccountId }: TransactionFormProps) => {
     return (
       <div className="flex flex-col items-center min-h-screen mt-10">
       <TransactionSuccess
-        userName={user?.fullName || 'Cuenta'}
+        userName={`Tarjeta ****${cardNumber.slice(-4)}`}
         currency={currentAccount.currency}
         amount={amount}
         reason="Depósito"
         transactionDetails={transactionDetails}
-        destinationAccountName={`Tarjeta ****${cardNumber.slice(-4)}`}
+        destinationAccountName={user?.fullName || 'Cuenta'}
         onReturn={handleReturnToDashboard}
+        type="DEPOSIT"
         // Si en TransactionSuccess tienes definida esta prop y la usas:
         // isOwnCard={isOwnCard} 
         // Si no la usas en TransactionSuccess la puedes quitar.

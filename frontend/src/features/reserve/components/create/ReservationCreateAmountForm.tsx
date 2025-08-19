@@ -12,7 +12,7 @@ export const ReservationCreateAmountForm = () => {
   const { name } = location.state || {};
 
   const { activeAccountId } = useAccountStore();
-  const { user } = useAuthStore(); // usuario logueado
+  const { user } = useAuthStore();
 
   const [amount, setAmount] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
@@ -35,50 +35,63 @@ export const ReservationCreateAmountForm = () => {
   };
 
   const handleConfirmReservation = async () => {
-    setShowConfirmModal(false);
-    setLoading(true);
-    setError(null);
+  setShowConfirmModal(false);
+  setLoading(true);
+  setError(null);
 
-    try {
-      const response = await createReservation(activeAccountId, {
-        reservedAmount: amount ?? 0,
-        reason: name,
-      });
+  try {
+    const response = await createReservation(activeAccountId, {
+      reservedAmount: amount ?? 0,
+      reason: name,
+    });
 
-      // Aseguramos que los campos tengan valor por defecto
-      setSuccessData({
-        transactionId: response.transactionId ?? "0",
-        transactionDate: response.transactionDate ?? new Date().toISOString(),
-        sourceAccount: user?.fullName ?? "",
-        destinationAccount: name,
-        amount: response.amount ?? amount ?? 0, 
-        reason: response.reason ?? "",
-        transactionType: "RESERVE",
-      });
-    } catch (err: any) {
-      setError(err.message || "Error al crear la reserva.");
-    } finally {
-      setLoading(false);
-    }
-  };
+    // 🔹 Obtener el saldo actual de la cuenta
+    const currentAccount = useAccountStore.getState().getAccountById(activeAccountId);
+    const currentBalance = currentAccount?.balance ?? 0;
+
+    // 🔹 Calcular el nuevo saldo
+    const newBalance = currentBalance - (amount ?? 0); // Para RESERVE
+    // Para RELEASE, sería currentBalance + releasedAmount
+
+    // 🔹 Actualizar en el store
+    useAccountStore.getState().updateAccountBalance(activeAccountId, newBalance);
+
+    setSuccessData({
+      transactionId: response.transactionId ?? 0,
+      transactionDate: response.transactionDate ?? new Date().toISOString(),
+      sourceAccount: user?.fullName ?? "",
+      destinationAccount: name,
+      amount: response.amount ?? amount ?? 0,
+      reason: response.reason ?? "",
+      transactionType: "RESERVE",
+    });
+  } catch (err: any) {
+    setError(err.message || "Error al crear la reserva.");
+  } finally {
+    setLoading(false);
+  }
+};
+
+
 
   if (successData) {
     return (
       <TransactionSuccess
         userName={user?.fullName ?? "Tú"}
         currency="ARS"
-        amount={(successData?.amount ?? 0).toString()}
-        reason={successData?.reason ?? ""}
+        amount={(successData.amount ?? 0).toString()}
+        reason={successData.reason ?? ""}
         transactionDetails={{
-          transactionId: Number(successData?.transactionId ?? 0),
-          transactionDate: (successData?.transactionDate ?? new Date()),
-          sourceAccount: successData?.sourceAccount ?? "",
-          destinationAccount: successData?.destinationAccount ?? "",
+          transactionId: Number(successData.transactionId ?? 0),
+          transactionDate: successData.transactionDate,
+          sourceAccount: successData.sourceAccount ?? "",
+          destinationAccount: successData.destinationAccount ?? "",
         }}
-        destinationAccountName={successData?.destinationAccount ?? ""}
-        onReturn={() => navigate("/dashboard")}
-        isOwnCard
+        destinationAccountName={successData.destinationAccount ?? ""}
+        onReturn={() => navigate(`/account/${activeAccountId}/reservations`)}  // ✅ acá la ruta correcta
+        type="RESERVE"
       />
+
     );
   }
 
@@ -99,11 +112,10 @@ export const ReservationCreateAmountForm = () => {
           <button
             key={val}
             onClick={() => setAmount(val)}
-            className={`px-4 py-2 rounded-lg border ${
-              amount === val
+            className={`px-4 py-2 rounded-lg border ${amount === val
                 ? "bg-blue-500 text-white border-blue-500"
                 : "bg-white text-gray-800 border-gray-300"
-            }`}
+              }`}
           >
             ${val}
           </button>
@@ -121,9 +133,8 @@ export const ReservationCreateAmountForm = () => {
       <button
         onClick={handleSubmit}
         disabled={loading || !amount}
-        className={`w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline transition-colors ${
-          !amount ? "opacity-50 cursor-not-allowed" : ""
-        }`}
+        className={`w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline transition-colors ${!amount ? "opacity-50 cursor-not-allowed" : ""
+          }`}
       >
         {loading ? "Guardando..." : "Confirmar reserva"}
       </button>

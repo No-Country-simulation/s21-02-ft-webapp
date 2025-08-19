@@ -6,3 +6,7 @@ export interface TransactionResponseDTO {
   destinationAccount: string;
   transactionType: string
 }
+
+export interface TransactionTypeProps {
+  type: 'TRANSFER' | 'DEPOSIT' | 'RESERVE' | 'RELEASE';
+}

@@ -177,6 +177,7 @@ export const TransferForm = ({ sourceAccountId }: TransactionFormProps) => {
           currency={currentAccount.currency}
           amount={amount}
           reason={reason}
+          type="TRANSFER"
           transactionDetails={transactionDetails}
           destinationAccountName={destinationName}
           onReturn={handleReturnToDashboard}
