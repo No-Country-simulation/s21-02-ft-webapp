@@ -1,9 +1,7 @@
 package com.wallex.financial_platform.controllers;
 
 import com.wallex.financial_platform.dtos.requests.ReservationRequestDTO;
-import com.wallex.financial_platform.dtos.requests.ReservationTypeRequestDTO;
 import com.wallex.financial_platform.dtos.responses.ReservationResponseDTO;
-import com.wallex.financial_platform.dtos.responses.ReservationTypeResponseDTO;
 import com.wallex.financial_platform.dtos.responses.TransactionResponseDTO;
 import com.wallex.financial_platform.services.impl.AccountService;
 import com.wallex.financial_platform.services.impl.ReservationService;
@@ -28,10 +26,14 @@ public class ReservationController {
     }
 
     @PostMapping()
-    public ResponseEntity<TransactionResponseDTO> reservation(@RequestParam Long sourceAccountId, @Valid @RequestBody ReservationRequestDTO reservationRequestDTO) {
-        TransactionResponseDTO responseDTO = accountService.createReservation(sourceAccountId, reservationRequestDTO);
+    public ResponseEntity<TransactionResponseDTO> reservation(
+            @PathVariable Long accountId,
+            @Valid @RequestBody ReservationRequestDTO reservationRequestDTO
+    ) {
+        TransactionResponseDTO responseDTO = accountService.createReservation(accountId, reservationRequestDTO);
         return ResponseEntity.ok(responseDTO);
     }
+
 
     @PostMapping("/{reservationId}/release")
     public ResponseEntity<TransactionResponseDTO> releaseReservation(@PathVariable Long reservationId, @PathVariable Long accountId) {

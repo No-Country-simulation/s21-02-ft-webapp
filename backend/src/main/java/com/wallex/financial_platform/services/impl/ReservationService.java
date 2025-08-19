@@ -1,12 +1,12 @@
 package com.wallex.financial_platform.services.impl;
 
 import com.wallex.financial_platform.dtos.requests.ReservationRequestDTO;
-import com.wallex.financial_platform.dtos.requests.ReservationTypeRequestDTO;
+import com.wallex.financial_platform.dtos.requests.SuggestedReserveRequestDTO;
 import com.wallex.financial_platform.dtos.responses.ReservationResponseDTO;
-import com.wallex.financial_platform.dtos.responses.ReservationTypeResponseDTO;
+import com.wallex.financial_platform.dtos.responses.SuggestedReserveResponseDTO;
 import com.wallex.financial_platform.entities.Account;
 import com.wallex.financial_platform.entities.Reservation;
-import com.wallex.financial_platform.entities.ReservationType;
+import com.wallex.financial_platform.entities.SuggestedReserve;
 import com.wallex.financial_platform.entities.User;
 import com.wallex.financial_platform.entities.enums.ReservationStatus;
 import com.wallex.financial_platform.exceptions.account.AccountErrorException;
@@ -15,7 +15,7 @@ import com.wallex.financial_platform.exceptions.reservation.ReservationNotFoundE
 import com.wallex.financial_platform.exceptions.transaction.InsufficientFundsException;
 import com.wallex.financial_platform.repositories.AccountRepository;
 import com.wallex.financial_platform.repositories.ReservationRepository;
-import com.wallex.financial_platform.repositories.ReservationTypeRepository;
+import com.wallex.financial_platform.repositories.SuggestedReserveRepository;
 import com.wallex.financial_platform.services.IReservationService;
 import com.wallex.financial_platform.services.api.ImageService;
 import com.wallex.financial_platform.services.utils.UserContextService;
@@ -36,7 +36,7 @@ public class ReservationService implements IReservationService {
     private final ReservationRepository reservationRepository;
     private final AccountRepository accountRepository;
     private final UserContextService userContextService;
-    private final ReservationTypeRepository reservationTypeRepository;
+    private final SuggestedReserveRepository suggestedReserveRepository;
     private final ImageService imageService;
 
     @Transactional
@@ -46,9 +46,16 @@ public class ReservationService implements IReservationService {
         this.validateAccountOwnership(account);
         this.validateSufficientFunds(account, reservationRequestDTO.reservedAmount());
 
-        Reservation reservation = this.findExistingReservation(accountId, reservationRequestDTO.type())
-                .map(res -> this.updateReservationAmount(res, reservationRequestDTO.reservedAmount()))
-                .orElseGet(() -> this.createNewReservation(account, reservationRequestDTO));
+        // La lógica ha sido refactorizada para no mezclar los tipos de entidad
+        Optional<Reservation> optionalReservation = findExistingActiveReservationByReason(accountId, reservationRequestDTO.reason());
+
+        Reservation reservation;
+        if (optionalReservation.isPresent()) {
+            reservation = optionalReservation.get();
+            reservation.setReservedAmount(reservation.getReservedAmount().add(reservationRequestDTO.reservedAmount()));
+        } else {
+            reservation = createNewReservation(account, reservationRequestDTO);
+        }
 
         this.updateAccountBalance(account, reservationRequestDTO.reservedAmount().negate());
         reservation = this.saveReservation(reservation);
@@ -82,22 +89,22 @@ public class ReservationService implements IReservationService {
     }
 
     @Override
-    public ReservationTypeResponseDTO createTypeReservation(ReservationTypeRequestDTO reservationTypeRequestDTO) {
+    public SuggestedReserveResponseDTO createSuggestedReservations(SuggestedReserveRequestDTO reservationTypeRequestDTO) {
         validateNameUnique(reservationTypeRequestDTO.name());
         String iconUrl = uploadIcon(reservationTypeRequestDTO.icon());
-        ReservationType entity = buildReservationTypeEntity(reservationTypeRequestDTO.name(), iconUrl);
+        SuggestedReserve entity = buildReservationTypeEntity(reservationTypeRequestDTO.name(), iconUrl);
 
-        ReservationType saved = reservationTypeRepository.save(entity);
+        SuggestedReserve saved = suggestedReserveRepository.save(entity);
 
-        return new ReservationTypeResponseDTO(saved.getReservationTypeId(), saved.getName(), saved.getIconUrl());
+        return new SuggestedReserveResponseDTO(saved.getSuggestedReserveId(), saved.getName(), saved.getIconUrl());
     }
 
     @Override
-    public List<ReservationTypeResponseDTO> getAllReservationTypes() {
-        List<ReservationType> types = reservationTypeRepository.findAll();
+    public List<SuggestedReserveResponseDTO> getAllSuggestedReservations() {
+        List<SuggestedReserve> types = suggestedReserveRepository.findAll();
 
         return types.stream()
-                .map(type -> new ReservationTypeResponseDTO(type.getReservationTypeId(), type.getName(), type.getIconUrl()))
+                .map(type -> new SuggestedReserveResponseDTO(type.getSuggestedReserveId(), type.getName(), type.getIconUrl()))
                 .collect(Collectors.toList());
     }
 
@@ -141,18 +148,18 @@ public class ReservationService implements IReservationService {
     }
 
     private void validateNameUnique(@NotBlank(message = "El nombre es obligatorio") String name) {
-        if (reservationTypeRepository.existsByName(name)) {
+        if (suggestedReserveRepository.existsByName(name)) {
             throw new IllegalArgumentException("El tipo de reserva ya existe");
         }
     }
 
     // ========== Métodos de Búsqueda ==========
 
-    private Optional<Reservation> findExistingReservation(Long accountId, ReservationType type) {
-        ReservationType reservationType = reservationTypeRepository.findById(type.getReservationTypeId())
-                .orElseThrow(() -> new IllegalArgumentException("Tipo de reserva no encontrado"));
-
-        return reservationRepository.findByAccount_AccountIdAndReservationTypeAndStatus(accountId, reservationType, ReservationStatus.ACTIVE);
+    // Este es el método refactorizado. Ahora solo busca una Reservation
+    private Optional<Reservation> findExistingActiveReservationByReason(Long accountId, String reason) {
+        return reservationRepository.findByAccount_AccountIdAndReasonAndStatus(
+                accountId, reason, ReservationStatus.ACTIVE
+        );
     }
 
     private List<Reservation> findActiveReservationsByAccount(Long accountId) {
@@ -166,13 +173,8 @@ public class ReservationService implements IReservationService {
                 .account(account)
                 .reservedAmount(reservationRequestDTO.reservedAmount())
                 .status(ReservationStatus.ACTIVE)
-                .reservationType(reservationRequestDTO.type())
+                .reason(reservationRequestDTO.reason())
                 .build();
-    }
-
-    private Reservation updateReservationAmount(Reservation reservation, BigDecimal amount) {
-        reservation.setReservedAmount(reservation.getReservedAmount().add(amount));
-        return reservation;
     }
 
     private void updateAccountBalance(Account account, BigDecimal amount) {
@@ -191,8 +193,8 @@ public class ReservationService implements IReservationService {
         return null;
     }
 
-    private ReservationType buildReservationTypeEntity(String name, String iconUrl) {
-        ReservationType reservationType = new ReservationType();
+    private SuggestedReserve buildReservationTypeEntity(String name, String iconUrl) {
+        SuggestedReserve reservationType = new SuggestedReserve();
         reservationType.setName(name);
         reservationType.setIconUrl(iconUrl);
         return reservationType;
@@ -207,7 +209,7 @@ public class ReservationService implements IReservationService {
                 reservation.getReservedAmount(),
                 reservation.getCreationDate(),
                 reservation.getStatus(),
-                reservation.getReservationType()
+                reservation.getReason()
         );
     }
 

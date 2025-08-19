@@ -1,7 +1,6 @@
 package com.wallex.financial_platform.configs;
 
 import com.wallex.financial_platform.configs.data.*;
-import com.wallex.financial_platform.repositories.TransactionRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,7 +12,7 @@ public class DataLoader {
                                       AccountDataLoader accountDataLoader,
                                       NotificationDataLoader notificationDataLoader,
                                       CardDataLoader cardDataLoader,
-                                      ReservationTypeDataLoader reservationTypeDataLoader, // <-- acá
+                                      SuggestedReserveDataLoader reservationTypeDataLoader, // <-- acá
                                       ReservationDataLoader reservationDataLoader,
                                       TransactionDataLoader transactionDataLoader,
                                       MovementDataLoader movementDataLoader) {

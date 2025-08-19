@@ -1,6 +1,6 @@
 package com.wallex.financial_platform.dtos.responses;
 
-import com.wallex.financial_platform.entities.ReservationType;
+import com.wallex.financial_platform.entities.SuggestedReserve;
 import com.wallex.financial_platform.entities.enums.ReservationStatus;
 
 import java.math.BigDecimal;
@@ -12,6 +12,6 @@ public record ReservationResponseDTO(
         BigDecimal reservedAmount,
         LocalDateTime creationDate,
         ReservationStatus status,
-        ReservationType reservationType
+        String reason
 ) {
 }

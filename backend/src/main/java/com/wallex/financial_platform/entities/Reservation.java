@@ -1,7 +1,6 @@
 package com.wallex.financial_platform.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.wallex.financial_platform.entities.enums.ReservationStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -29,17 +28,15 @@ public class Reservation {
     @Column( nullable = false)
     private BigDecimal reservedAmount;
 
+    @Column(nullable = false)
+    private String reason;
+
     @Column( nullable = false)
     private LocalDateTime creationDate;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ReservationStatus status;
-
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "reservation_type_id", nullable = false)
-    @JsonManagedReference
-    private ReservationType reservationType;
 
     @PrePersist
     protected void onCreate() {
