@@ -1,8 +1,10 @@
-import { PageContainer } from '../components/ui/PageContainer';
-    export const IndexPage = () => {
-      return (
-        <PageContainer>
-         <h1>Index</h1>
-        </PageContainer>
-      );
-    };
+import { PageContainer } from "../components/ui/PageContainer";
+import { HomeContent } from "../features/home/components/HomeContent";
+
+export const IndexPage = () => {
+  return (
+    <PageContainer>
+      <HomeContent />
+    </PageContainer>
+  );
+};

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
-  FaHome, FaWallet, FaMoneyBillWave, 
+  FaHome, FaWallet, FaMoneyBillWave,FaExchangeAlt, 
   FaCreditCard, FaClipboardList, FaChartLine, FaUser, 
   FaSignOutAlt, FaBell, FaBars,FaEnvelope, FaPhone, FaMapMarkerAlt
 } from 'react-icons/fa';
@@ -76,59 +76,61 @@ export const Sidebar = () => {
         <div className="p-4 space-y-4">
           
           {/* Menú de navegación */}
-          <Link to="/dashboard" className="relative px-4 py-3 flex items-center space-x-4 rounded-lg text-white bg-gradient-to-r from-sky-600 to-cyan-400"
-            onClick={() => setIsOpen(false)}>
-            <FaHome className="text-white" />
-            <span className="-mr-1 font-medium">Inicio</span>
-          </Link>
+          {/* Menú de navegación */}
+<Link 
+  to="/dashboard" 
+  className="relative px-4 py-3 flex items-center space-x-4 rounded-lg text-white bg-gradient-to-r from-sky-600 to-cyan-400"
+  onClick={() => setIsOpen(false)}
+>
+  <FaHome className="text-white" />
+  <span className="-mr-1 font-medium">Inicio</span>
+</Link>
 
-          <Link to="/wallet" className="px-4 py-3 flex items-center space-x-4 rounded-md text-gray-600 hover:bg-gray-100"
-            onClick={() => setIsOpen(false)}>
-            <FaWallet />
-            <span>Tu dinero</span>
-          </Link>
+<Link 
+  to={`/account/${activeAccountId}/transactions`}  
+  className="px-4 py-3 flex items-center space-x-4 rounded-md text-gray-600 hover:bg-gray-100"
+  onClick={() => setIsOpen(false)}
+>
+  <FaExchangeAlt />
+  <span>Transacciones</span>
+</Link>
 
-         {/*  <Link to="/transfer" className="px-4 py-3 flex items-center space-x-4 rounded-md text-gray-600 hover:bg-gray-100"
-            onClick={() => setIsOpen(false)}>
-            <FaExchangeAlt />
-            <span>Transferir</span>
-          </Link>
+<Link 
+  to={`/account/${activeAccountId}/movements`}  
+  className="px-4 py-3 flex items-center space-x-4 rounded-md text-gray-600 hover:bg-gray-100"
+  onClick={() => setIsOpen(false)}
+>
+  <FaMoneyBillWave />
+  <span>Movimientos</span>
+</Link>
 
-          <Link to="/deposit" className="px-4 py-3 flex items-center space-x-4 rounded-md text-gray-600 hover:bg-gray-100"
-            onClick={() => setIsOpen(false)}>
-            <FaHandHoldingUsd />
-            <span>Depositar</span>
-          </Link> */}
+<Link 
+  to={`/account/${activeAccountId}/reservations`} 
+  className="px-4 py-3 flex items-center space-x-4 rounded-md text-gray-600 hover:bg-gray-100"
+  onClick={() => setIsOpen(false)}
+>
+  <FaClipboardList />
+  <span>Reservas</span>
+</Link>
 
-          <Link to={`/account/${activeAccountId}/transactions`}  className="px-4 py-3 flex items-center space-x-4 rounded-md text-gray-600 hover:bg-gray-100"
-            onClick={() => setIsOpen(false)}>
-            <FaMoneyBillWave />
-            <span>Transacciones</span>
-          </Link>
+<Link 
+  to="/cards" 
+  className="px-4 py-3 flex items-center space-x-4 rounded-md text-gray-600 hover:bg-gray-100"
+  onClick={() => setIsOpen(false)}
+>
+  <FaCreditCard />
+  <span>Tarjetas</span>
+</Link>
 
-          <Link to={`/account/${activeAccountId}/movements`}  className="px-4 py-3 flex items-center space-x-4 rounded-md text-gray-600 hover:bg-gray-100"
-            onClick={() => setIsOpen(false)}>
-            <FaClipboardList />
-            <span>Movimientos</span>
-          </Link>
+<Link 
+  to="/dolar" 
+  className="px-4 py-3 flex items-center space-x-4 rounded-md text-gray-600 hover:bg-gray-100"
+  onClick={() => setIsOpen(false)}
+>
+  <FaChartLine />
+  <span>Cotización</span>
+</Link>
 
-          <Link to={`/account/${activeAccountId}/reservations`} className="px-4 py-3 flex items-center space-x-4 rounded-md text-gray-600 hover:bg-gray-100"
-            onClick={() => setIsOpen(false)}>
-            <FaChartLine />
-            <span>Reservas</span>
-          </Link>
-
-          <Link to="/cards" className="px-4 py-3 flex items-center space-x-4 rounded-md text-gray-600 hover:bg-gray-100"
-            onClick={() => setIsOpen(false)}>
-            <FaCreditCard />
-            <span>Tarjetas</span>
-          </Link>
-
-          <Link to="/dolar" className="px-4 py-3 flex items-center space-x-4 rounded-md text-gray-600 hover:bg-gray-100"
-            onClick={() => setIsOpen(false)}>
-            <FaChartLine />
-            <span>Cotización</span>
-          </Link>
            {/* Information Section */}
            <div className="pt-4 border-t border-gray-200">
             <h3 className="px-4 py-2 text-sm font-semibold text-gray-500 uppercase tracking-wider">
@@ -142,7 +144,7 @@ export const Sidebar = () => {
                 <ul className="space-y-1 text-gray-600">
                   <li className="flex items-center">
                     <FaEnvelope className="mr-2 text-gray-400 text-xs" />
-                    <span className="text-sm">contacto@empresa.com</span>
+                    <span className="text-sm">contacto@wallex.com</span>
                   </li>
                   <li className="flex items-center">
                     <FaPhone className="mr-2 text-gray-400 text-xs" />
@@ -150,7 +152,7 @@ export const Sidebar = () => {
                   </li>
                   <li className="flex items-center">
                     <FaMapMarkerAlt className="mr-2 text-gray-400 text-xs" />
-                    <span className="text-sm">Ciudad, País</span>
+                    <span className="text-sm">Buenos Aires, Argentina</span>
                   </li>
                 </ul>
               </div>

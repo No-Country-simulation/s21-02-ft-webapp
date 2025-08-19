@@ -9,7 +9,7 @@ interface CardProps {
 
 export const Card = ({ children, className = '', withShadow = true }: CardProps) => {
   const mergedClasses = twMerge(
-    'bg-white p-6 rounded-lg border border-gray-200 mb-4 lg:mb-0 shadow-md lg:w-[35%]',
+    'bg-white p-6 rounded-lg border border-gray-200 mb-4 lg:mb-0 shadow-md lg:w-[100%]',
     withShadow ? 'shadow-md' : '',
     className
   );

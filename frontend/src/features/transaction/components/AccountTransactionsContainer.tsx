@@ -37,30 +37,35 @@ export const AccountTransactionsContainer = () => {
 
     return (
         <div className="w-full px-4 sm:px-6 lg:px-8">
-            <div className="max-w-md mx-auto mb-6 flex flex-col items-center">
-                <label htmlFor="accountSelect" className="block text-sm font-bold text-slate-700 mb-2 mt-4 text-left w-full">
-                    Seleccione cuenta:
-                </label>
-                <select
-                    id="accountSelect"
-                    value={activeAccountId ?? ''}
-                    onChange={e => setActiveAccountId(Number(e.target.value))}
-                    className="w-full max-w-md p-2 border border-slate-200 rounded bg-white focus:outline-none focus:ring-1 focus:ring-slate-200"
-                >
-
-                    {accounts.map(acc => (
-                        <option key={acc.accountId} value={acc.accountId}>
-                            {acc.currency} — Saldo: {typeof acc.balance === 'number' ? acc.balance.toFixed(2) : '0.00'}
-                        </option>
-                    ))}
-                </select>
-            </div>
-
-            {activeAccountId !== null && (
-                <div className="max-w-7xl mx-auto">
-                    <TransactionListForm sourceAccountId={activeAccountId} />
+            {/* Contenedor principal centrado que ahora envuelve ambos elementos para una alineación consistente */}
+            <div className="max-w-4xl mx-auto">
+                {/* Selector de cuenta */}
+                {/* Se eliminó max-w-md del div contenedor. Se cambió items-center a items-start. */}
+                <div className="mb-6 flex flex-col items-start w-full">
+                    <label htmlFor="accountSelect" className="block text-sm font-bold text-slate-700 mb-2 mt-4 text-left w-full">
+                        Seleccione cuenta:
+                    </label>
+                    <select
+                        id="accountSelect"
+                        value={activeAccountId ?? ''}
+                        onChange={e => setActiveAccountId(Number(e.target.value))}
+                        // Se eliminó max-w-md y se ajustó el padding a pl-4 py-2 para alinear con el contenido de la tabla
+                        className="w-full pl-4 py-2 border border-slate-200 rounded bg-white focus:outline-none focus:ring-1 focus:ring-slate-200"
+                    >
+                        {accounts.map(acc => (
+                            <option key={acc.accountId} value={acc.accountId}>
+                                {acc.currency} — Saldo: {typeof acc.balance === 'number' ? acc.balance.toFixed(2) : '0.00'}
+                            </option>
+                        ))}
+                    </select>
                 </div>
-            )}
+
+                {/* Lista de transacciones */}
+                {activeAccountId !== null && (
+                    // El TransactionListForm ahora estará dentro del mismo max-w-4xl mx-auto
+                    <TransactionListForm sourceAccountId={activeAccountId} />
+                )}
+            </div>
         </div>
     );
 };

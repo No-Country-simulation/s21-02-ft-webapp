@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useMovements } from '../hook/useMovements';
-import { Card } from '../../../components/ui/Card';
+import { Card } from '../../../components/ui/Card'; // Assuming Card component path
 type Props = {
     sourceAccountId: number;
 };
@@ -10,7 +10,7 @@ const MovementListForm = ({ sourceAccountId }: Props) => {
 
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
-    const pageSize = 10;
+    const pageSize = 5;
 
     const filteredMovements = useMemo(() => {
         if (!searchTerm.trim()) return movements;
@@ -38,8 +38,9 @@ const MovementListForm = ({ sourceAccountId }: Props) => {
     if (!movements || movements.length === 0) return <div className="p-4 text-center text-gray-700">No hay movimientos</div>;
 
     return (
-        <div className="flex flex-col items-center">
-            <Card className="w-full max-w-full">
+        // Changed items-center to items-start for left alignment
+        <div className="flex flex-col items-start w-full">
+            <Card className="w-full">
                 {/* Header */}
                 <div className="w-full flex justify-between items-center mb-3 mt-1 px-3">
                     <div>
@@ -71,8 +72,8 @@ const MovementListForm = ({ sourceAccountId }: Props) => {
                 </div>
 
                 {/* Tabla con scroll horizontal */}
-                <div className="overflow-x-auto w-full">
-                    <table className="min-w-[850px] w-full text-left table-auto border-collapse">
+                <div className=" w-full overflow-x-auto">
+                    <table className="min-w-[1050px] w-full text-left table-auto border-collapse">
                         <thead>
                             <tr className="bg-slate-50">
                                 <th className="p-4 border-b border-slate-200 text-sm text-slate-500">Fecha</th>
