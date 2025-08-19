@@ -15,6 +15,8 @@ import {TransactionListPage} from './pages/TransactionListPage';
 import {ReserveListPage} from './pages/ReserveListPage';
 import {ReserveCreateNamePage} from './pages/ReserveCreateNamePage';
 import {ReserveCreateAmountPage} from './pages/ReserveCreateAmountPage';
+import {DolarQuotesPage} from './pages/DolarQuotesPage';
+import { DolarQuotes } from "./features/dolar/components/DolarQuotes";
 // Layout para rutas protegidas que incluye Dashboard
 const ProtectedLayout = () => {
   return (
@@ -50,7 +52,7 @@ function App() {
           <Route path="/account/:accountId/reservations" element={<ReserveListPage />} />
           <Route path="/reservations/create/name" element={<ReserveCreateNamePage />} />
           <Route path="/reservations/create/amount" element={<ReserveCreateAmountPage />} />
-      
+          <Route path="/dolar" element={<DolarQuotesPage />} />
         </Route>
         
         {/* Redirección para rutas no encontradas */}

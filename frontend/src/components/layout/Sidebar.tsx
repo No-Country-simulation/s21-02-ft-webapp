@@ -124,7 +124,7 @@ export const Sidebar = () => {
             <span>Tarjetas</span>
           </Link>
 
-          <Link to="/quote" className="px-4 py-3 flex items-center space-x-4 rounded-md text-gray-600 hover:bg-gray-100"
+          <Link to="/dolar" className="px-4 py-3 flex items-center space-x-4 rounded-md text-gray-600 hover:bg-gray-100"
             onClick={() => setIsOpen(false)}>
             <FaChartLine />
             <span>Cotización</span>

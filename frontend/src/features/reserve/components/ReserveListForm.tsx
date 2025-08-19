@@ -48,7 +48,7 @@ export const ReserveList = ({ sourceAccountId }: Props) => {
       </div>
 
       <div className="text-right">
-        <span className="text-lg font-semibold text-gray-800">
+        <span className="text-lg font-semibold text-gray-600">
           {new Intl.NumberFormat("es-AR", {
             style: "currency",
             currency: "ARS",

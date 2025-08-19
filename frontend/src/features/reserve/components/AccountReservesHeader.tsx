@@ -34,7 +34,7 @@ export const AccountReservesHeader = ({ totalReserved, yieldPercentage }: Props)
         <div className="max-w-md mx-auto p-4 bg-white rounded-lg">
             <h2 className="text-xl font-light text-gray-800">Total reservado</h2>
             <div className="flex items-center mt-2">
-                <span className="text-4xl font-bold text-gray-800">
+                <span className="text-4xl font-bold text-gray-600">
                     {new Intl.NumberFormat("es-AR", {
                         style: "currency",
                         currency: "ARS",
