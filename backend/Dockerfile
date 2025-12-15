@@ -2,22 +2,29 @@
 FROM eclipse-temurin:21-jdk AS build
 WORKDIR /app
 
-# Copia el pom.xml y descarga dependencias (caching)
-COPY pom.xml .
-RUN apt-get update -qq && apt-get install -y -qq maven && mvn dependency:go-offline
+# 1. Copia archivos necesarios
+COPY pom.xml mvnw ./
+COPY .mvn .mvn
+RUN chmod +x mvnw
 
-# Copia el código fuente
+# 2. Descarga dependencias
+RUN ./mvnw dependency:go-offline -B
+
+# 3. Copia código
 COPY src ./src
 
-# Compila el proyecto
-RUN mvn clean compile -DskipTests -DskipTests
+# 4. COMPILA sin tests (SKIP completo)
+RUN ./mvnw clean compile -DskipTests
+
+# 5. CREA JAR sin tests
+RUN ./mvnw package -DskipTests -Dmaven.test.skip=true -Dmaven.test.failure.ignore=true
 
 # Etapa 2: Runtime
 FROM eclipse-temurin:21-jre
 WORKDIR /app
 
-# Copia el jar desde el build stage
+# Copia el jar
 COPY --from=build /app/target/*.jar app.jar
 
-# Comando para ejecutar la app
+# Puerto de Render
 ENTRYPOINT ["sh", "-c", "java -Dserver.port=${PORT} -jar app.jar"]
