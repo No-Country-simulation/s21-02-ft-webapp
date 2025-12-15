@@ -10,7 +10,7 @@ RUN apt-get update -qq && apt-get install -y -qq maven && mvn dependency:go-offl
 COPY src ./src
 
 # Compila el proyecto
-RUN mvn clean compile -DskipTests -DskipTests
+RUN mvn clean package -DskipTests
 
 # Etapa 2: Runtime
 FROM eclipse-temurin:21-jre

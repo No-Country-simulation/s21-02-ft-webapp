@@ -152,7 +152,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-					<mainClass>com.wallex.financialplatform.FinancialPlatformApplication</mainClass>
+					<mainClass>com.wallex.financial_platform.FinancialPlatformApplication</mainClass>
 					<excludes>
 						<!-- Excluir en producción -->
 						<exclude>
