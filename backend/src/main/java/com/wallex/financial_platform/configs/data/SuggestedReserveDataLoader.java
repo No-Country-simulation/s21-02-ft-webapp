@@ -5,48 +5,88 @@ import com.wallex.financial_platform.repositories.SuggestedReserveRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
+import java.util.*;
 
 @Component
 @RequiredArgsConstructor
 public class SuggestedReserveDataLoader {
 
-    private final SuggestedReserveRepository reservationSuggestedReserveRepository;
+    private final SuggestedReserveRepository suggestedReserveRepository;
+
+    // Record para almacenar datos de reservas
+    private record ReserveData(String name, String iconUrl, Integer order) {}
+
+    // Datos de reservas con orden sugerido
+    private static final List<ReserveData> DEFAULT_RESERVES = Arrays.asList(
+            new ReserveData("Alimentación", "https://res.cloudinary.com/dtyp7s5ql/image/upload/v1755022242/dieta_hcx3xj.png", 1),
+            new ReserveData("Educación", "https://res.cloudinary.com/dtyp7s5ql/image/upload/v1755274789/aula_1_t93iue.png", 2),
+            new ReserveData("Vacaciones", "https://res.cloudinary.com/dtyp7s5ql/image/upload/v1755022397/summer_5127274_nr1l3h.png", 3),
+            new ReserveData("Salud", "https://res.cloudinary.com/dtyp7s5ql/image/upload/v1755274745/latido-del-corazon_ulcgif.png", 4),
+            new ReserveData("Regalo", "https://res.cloudinary.com/dtyp7s5ql/image/upload/v1755274769/caja-de-regalo_ejkygl.png", 5),
+            new ReserveData("Deporte", "https://res.cloudinary.com/dtyp7s5ql/image/upload/v1755057681/images-play-attention/ufddjzbucebhafumupv6.png", 6),
+            new ReserveData("Ocio y Esparcimiento", "https://res.cloudinary.com/dtyp7s5ql/image/upload/v1755273173/images-play-attention/rpx4o2nwlx2yioiadghw.png", 7),
+            new ReserveData("Servicios", "https://res.cloudinary.com/dtyp7s5ql/image/upload/v1755274834/canal_brcawd.png", 8)
+    );
 
     public void load() {
-        if (reservationSuggestedReserveRepository.count() == 0) {
-            SuggestedReserve alimentacion = new SuggestedReserve();
-            alimentacion.setName("Alimentación");
-            alimentacion.setIconUrl("https://res.cloudinary.com/dtyp7s5ql/image/upload/v1755022242/dieta_hcx3xj.png");
+        long existingCount = suggestedReserveRepository.count();
 
-            SuggestedReserve educacion = new SuggestedReserve();
-            educacion.setName("Educación");
-            educacion.setIconUrl("https://res.cloudinary.com/dtyp7s5ql/image/upload/v1755274789/aula_1_t93iue.png");
+        if (existingCount >= DEFAULT_RESERVES.size()) {
+            System.out.println("📝 Las reservas sugeridas ya están cargadas");
+            return;
+        }
 
-            SuggestedReserve vacaciones = new SuggestedReserve();
-            vacaciones.setName("Vacaciones");
-            vacaciones.setIconUrl("https://res.cloudinary.com/dtyp7s5ql/image/upload/v1755022397/summer_5127274_nr1l3h.png");
+        System.out.println("🔄 Cargando reservas sugeridas...");
+        List<SuggestedReserve> reservesToCreate = new ArrayList<>();
+        int created = 0;
 
-            SuggestedReserve salud = new SuggestedReserve();
-            salud.setName("Salud");
-            salud.setIconUrl("https://res.cloudinary.com/dtyp7s5ql/image/upload/v1755274745/latido-del-corazon_ulcgif.png");
+        for (ReserveData reserveData : DEFAULT_RESERVES) {
+            // Verificar por nombre (case insensitive)
+            boolean exists = suggestedReserveRepository.existsByNameIgnoreCase(reserveData.name);
 
-            SuggestedReserve regalos = new SuggestedReserve();
-            regalos.setName("Regalo");
-            regalos.setIconUrl("https://res.cloudinary.com/dtyp7s5ql/image/upload/v1755274769/caja-de-regalo_ejkygl.png");
+            if (!exists) {
+                SuggestedReserve suggestedReserve = new SuggestedReserve();
+                suggestedReserve.setName(reserveData.name);
+                suggestedReserve.setIconUrl(reserveData.iconUrl);
 
-            SuggestedReserve deporte = new SuggestedReserve();
-            deporte.setName("Deporte");
-            deporte.setIconUrl("https://res.cloudinary.com/dtyp7s5ql/image/upload/v1755057681/images-play-attention/ufddjzbucebhafumupv6.png");
+                // Si el modelo tiene campo de orden
+                trySetOrder(suggestedReserve, reserveData.order);
 
-            SuggestedReserve ocio = new SuggestedReserve();
-            ocio.setName("Ocio y Esparcimiento");
-            ocio.setIconUrl("https://res.cloudinary.com/dtyp7s5ql/image/upload/v1755273173/images-play-attention/rpx4o2nwlx2yioiadghw.png");
+                reservesToCreate.add(suggestedReserve);
+                created++;
+            }
+        }
 
-            SuggestedReserve servicios = new SuggestedReserve();
-            servicios.setName("Servicios");
-            servicios.setIconUrl("https://res.cloudinary.com/dtyp7s5ql/image/upload/v1755274834/canal_brcawd.png");
-            reservationSuggestedReserveRepository.saveAll(List.of(alimentacion, educacion, vacaciones, salud, regalos, deporte, ocio, servicios));
+        if (!reservesToCreate.isEmpty()) {
+            suggestedReserveRepository.saveAll(reservesToCreate);
+            System.out.println("✅ " + created + " reservas sugeridas creadas");
+        } else {
+            System.out.println("📝 No se necesitó crear nuevas reservas");
+        }
+    }
+
+    private void trySetOrder(SuggestedReserve reserve, Integer order) {
+        try {
+            // Intentar establecer el orden si el campo existe
+            var orderField = reserve.getClass().getDeclaredField("displayOrder");
+            orderField.setAccessible(true);
+            orderField.set(reserve, order);
+        } catch (NoSuchFieldException e) {
+            // Campo no existe, ignorar
+        } catch (Exception e) {
+            System.err.println("⚠️ No se pudo establecer orden para reserva: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Método para verificar el estado de las reservas
+     */
+    public void checkStatus() {
+        long total = suggestedReserveRepository.count();
+        System.out.println("📊 Estado de reservas sugeridas: " + total + " registros");
+
+        if (total < DEFAULT_RESERVES.size()) {
+            System.out.println("⚠️ Faltan " + (DEFAULT_RESERVES.size() - total) + " reservas por cargar");
         }
     }
 }

@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -20,47 +21,71 @@ public class NotificationDataLoader {
     private final UserRepository userRepository;
 
     public void load() {
-        User user1 = userRepository.findById(1L).orElseThrow();
-        User user2 = userRepository.findById(2L).orElseThrow();
-        User user3 = userRepository.findById(4L).orElseThrow();
+        // Buscar usuarios por email en lugar de asumir que existen
+        List<User> users = findUsersForNotifications();
 
-        Notification notification1 = new Notification(
-                null,
-                user1,
-                NotificationType.EMAIL,
-                "Este es un mensaje informativo",
-                LocalDateTime.now(),
-                NotificationStatus.READ
-        );
+        if (users.isEmpty()) {
+            System.out.println("⚠️ No se encontraron usuarios para crear notificaciones");
+            return;
+        }
 
-        Notification notification2 = new Notification(
-                null,
-                user1,
-                NotificationType.SMS,
-                "Este es un mensaje de alerta",
-                LocalDateTime.now(),
-                NotificationStatus.SENT
-        );
+        List<Notification> notifications = new ArrayList<>();
 
-        // Crear las notificaciones para el usuario 2
-        Notification notification3 = new Notification(
-                null,
-                user2,
-                NotificationType.EMAIL,
-                "Este es un mensaje de advertencia",
-                LocalDateTime.now(),
-                NotificationStatus.SENT
-        );
+        // Crear notificaciones para los usuarios encontrados
+        for (int i = 0; i < Math.min(users.size(), 3); i++) {
+            User user = users.get(i);
 
-        Notification notification4 = new Notification(
-                null,
-                user3,
-                NotificationType.EMAIL,
-                "Este es otro mensaje informativo",
-                LocalDateTime.now(),
-                NotificationStatus.SENT
-        );
+            notifications.add(new Notification(
+                    null,
+                    user,
+                    NotificationType.EMAIL,
+                    "Mensaje informativo para " + user.getFullName(),
+                    LocalDateTime.now(),
+                    NotificationStatus.SENT
+            ));
 
-        notificationRepository.saveAll(List.of(notification1, notification2, notification3, notification4));
+            if (i == 0) { // Primer usuario adicional
+                notifications.add(new Notification(
+                        null,
+                        user,
+                        NotificationType.SMS,
+                        "Mensaje de alerta para " + user.getFullName(),
+                        LocalDateTime.now(),
+                        NotificationStatus.READ
+                ));
+            }
+        }
+
+        if (!notifications.isEmpty()) {
+            notificationRepository.saveAll(notifications);
+            System.out.println("✅ " + notifications.size() + " notificaciones creadas");
+        }
+    }
+
+    private List<User> findUsersForNotifications() {
+        List<User> users = new ArrayList<>();
+
+        // Emails de usuarios de prueba (puedes mover esto a properties)
+        String[] testEmails = {
+                "jindrg@gmail.com",
+                "gusti.paz11@gmail.com",
+                "gastongomez2014@hotmail.com",
+                "sebastian.tournier11@gmail.com",
+                "luis.mendez@dominio.com",
+                "tesoreria@wallex.com"
+        };
+
+        for (String email : testEmails) {
+            userRepository.findByEmail(email)
+                    .ifPresent(users::add);
+        }
+
+        // Si no encontramos usuarios por email, tomamos los primeros disponibles
+        if (users.isEmpty()) {
+            List<User> firstUsers = userRepository.findFirst3ByOrderByCreatedAtAsc();
+            users.addAll(firstUsers);
+        }
+
+        return users;
     }
 }

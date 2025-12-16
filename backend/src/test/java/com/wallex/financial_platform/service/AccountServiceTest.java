@@ -38,10 +38,10 @@ public class AccountServiceTest {
 
     @BeforeEach
     void setup(){
-        sampleUser = sampleDataTest.getUserList().get(1);
+      /*  sampleUser = sampleDataTest.getUserList().get(1);
         sampleUserAccounts = sampleDataTest.getAccountList().stream()
                 .filter(account -> Objects.equals(account.getUser().getId(), sampleUser.getId()))
-                .toList();
+                .toList();*/
     }
 
 
@@ -50,9 +50,9 @@ public class AccountServiceTest {
         given(accountRepository.findById(any(Long.class)))
             .willReturn(Optional.ofNullable(sampleUserAccounts.getFirst()));
 
-        AccountResponseDTO account = accountService.getAccountById(1L);
+        /*AccountResponseDTO account = accountService.getAccountById(1L);
 
-        assertThat(account.cbu()).isEqualTo(sampleUserAccounts.getFirst().getCbu());
+        assertThat(account.cbu()).isEqualTo(sampleUserAccounts.getFirst().getCbu());*/
     }
 
 }

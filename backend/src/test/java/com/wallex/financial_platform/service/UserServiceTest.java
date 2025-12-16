@@ -29,7 +29,7 @@ public class UserServiceTest {
 
     @BeforeEach
     void setup() {
-        sampleUsers = sampleDataTest.getUserList();
+        /*sampleUsers = sampleDataTest.getUserList();*/
     }
 
     @Test

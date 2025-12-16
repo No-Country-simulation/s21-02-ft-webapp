@@ -1,23 +1,45 @@
-# Etapa 1: Build
-FROM eclipse-temurin:21-jdk AS build
+# ============================================
+# DOCKERFILE OPTIMIZADO Y SIMPLE
+# ============================================
+
+# ---- ETAPA 1: Compilación ----
+FROM maven:3.9.8-eclipse-temurin-21 AS builder
+
+# Configurar zona horaria (IMPORTANTE para fechas)
+ENV TZ=America/Argentina/Buenos_Aires
+
+# Crear directorio de trabajo
 WORKDIR /app
 
-# Copia el pom.xml y descarga dependencias (caching)
+# 1. Copiar archivo de dependencias primero (optimización cache)
 COPY pom.xml .
-RUN apt-get update -qq && apt-get install -y -qq maven && mvn dependency:go-offline
+RUN mvn dependency:go-offline -B
 
-# Copia el código fuente
+# 2. Copiar código fuente
 COPY src ./src
 
-# Compila el proyecto
-RUN mvn clean package -DskipTests
+# 3. Descargar dependencias y compilar
+RUN mvn clean package -DskipTests -Dmaven.test.skip=true
 
-# Etapa 2: Runtime
-FROM eclipse-temurin:21-jre
+# ---- ETAPA 2: Ejecución ----
+FROM eclipse-temurin:21-jre-alpine
+
+# Configurar zona horaria en runtime también
+RUN apk add --no-cache tzdata
+ENV TZ=America/Argentina/Buenos_Aires
+
+# Directorio de trabajo
 WORKDIR /app
 
-# Copia el jar desde el build stage
-COPY --from=build /app/target/*.jar app.jar
+# Copiar JAR generado
+COPY --from=builder /app/target/*.jar app.jar
 
-# Comando para ejecutar la app
-ENTRYPOINT ["sh", "-c", "java -Dserver.port=${PORT} -jar app.jar"]
+# Puerto (8080 para local, Render usa 10000)
+EXPOSE 8080
+
+# HEALTHCHECK: Verifica cada 30s si la app responde
+HEALTHCHECK --interval=30s --timeout=3s --start-period=60s --retries=3 \
+  CMD wget --quiet --tries=1 --spider http://localhost:8080/actuator/health || exit 1
+
+# Comando de inicio
+ENTRYPOINT ["java", "-jar", "app.jar"]

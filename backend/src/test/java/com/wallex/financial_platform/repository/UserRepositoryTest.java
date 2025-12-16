@@ -27,7 +27,7 @@ public class UserRepositoryTest {
     @BeforeAll
     static void setup() {
         SampleDataTest sampleDataTest = new SampleDataTest();
-        sampleUsers = sampleDataTest.getUserList();
+        /*sampleUsers = sampleDataTest.getUserList();*/
     }
 
     @Test

@@ -21,7 +21,6 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
-import net.datafaker.Faker;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +28,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,6 +41,7 @@ public class AccountService implements IAccountService {
     private final NotificationService notificationService;
     private final ReservationService reservationService;
     private static long cbuCounter = 7;
+    private final Random random = new Random();
 
     @Override
     @Transactional(readOnly = true)
@@ -112,8 +113,8 @@ public class AccountService implements IAccountService {
     @Override
     @Transactional
     public TransactionResponseDTO releaseReservation(Long reservationId, Long accountId) {
-      ReservationResponseDTO reservationResponseDTO = reservationService.releaseReservation(reservationId, accountId);
-       Account account = getAccountById(accountId);
+        ReservationResponseDTO reservationResponseDTO = reservationService.releaseReservation(reservationId, accountId);
+        Account account = getAccountById(accountId);
         return transactionService.releaseReservationTransaction(account, reservationResponseDTO);
     }
 
@@ -262,14 +263,13 @@ public class AccountService implements IAccountService {
     }
 
     private Account buildNewAccount(User user, CurrencyType currency) {
-        Faker faker = new Faker();
         Account account = new Account();
         account.setReservedBalance(BigDecimal.ZERO);
         account.setAvailableBalance(BigDecimal.ZERO);
         account.setCurrency(currency);
         account.setActive(true);
         account.setUser(user);
-        account.setAlias(generateAlias(faker));
+        account.setAlias(generateAlias());
         account.setCbu(generateCbu());
         account.setSourceTransactions(new ArrayList<>());
         account.setDestinationTransactions(new ArrayList<>());
@@ -277,11 +277,23 @@ public class AccountService implements IAccountService {
         return account;
     }
 
-    private String generateAlias(Faker faker) {
-        return (faker.animal().name() + "." + faker.construction().materials() + "." + faker.commerce().material()).toLowerCase();
+    private String generateAlias() {
+        // Listas de palabras para generar alias aleatorios
+        String[] animals = {"leon", "tigre", "aguila", "delfin", "lobo", "halcon", "pantera", "condor", "ballena", "jaguar"};
+        String[] materials = {"oro", "plata", "bronce", "hierro", "acero", "cobre", "diamante", "rubi", "esmeralda", "zafiro"};
+        String[] colors = {"rojo", "azul", "verde", "amarillo", "negro", "blanco", "violeta", "naranja", "rosado", "gris"};
+
+        String animal = animals[random.nextInt(animals.length)];
+        String material = materials[random.nextInt(materials.length)];
+        String color = colors[random.nextInt(colors.length)];
+
+        // Formato: animal.material.color
+        return animal + "." + material + "." + color;
     }
 
     private String generateCbu() {
+        // Genera un CBU único (22 dígitos)
+        // Formato: 12312349 + 0000000000 + contador de 3 dígitos
         String base = "1231234900000000000"; // parte fija del CBU
         String sequence = String.format("%03d", cbuCounter); // rellena con ceros a la izquierda
         cbuCounter++;

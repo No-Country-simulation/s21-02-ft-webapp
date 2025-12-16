@@ -11,4 +11,5 @@ import java.util.Optional;
 public interface SuggestedReserveRepository extends JpaRepository<SuggestedReserve, Long> {
     boolean existsByName(String name);
     Optional<SuggestedReserve> findByName(String name);
+    boolean existsByNameIgnoreCase(String name);
 }

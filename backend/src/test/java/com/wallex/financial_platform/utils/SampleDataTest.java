@@ -14,7 +14,7 @@ import com.wallex.financial_platform.entities.Transaction;
 import com.wallex.financial_platform.entities.User;
 import com.wallex.financial_platform.entities.enums.TransactionType;
 
-import net.datafaker.Faker;
+
 
 
 @Getter

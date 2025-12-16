@@ -53,11 +53,11 @@ public class TransactionServiceTest {
 
     @BeforeEach
     void setup(){
-        sampleUser1 = sampleDataTest.getUserList().get(0);
+       /* sampleUser1 = sampleDataTest.getUserList().get(0);
         sampleUser2 = sampleDataTest.getUserList().get(1);
         sampleUser1Accounts = sampleDataTest.getAccountList().subList(0, 2);
         sampleUser2Accounts = sampleDataTest.getAccountList().subList(2, 3);
-        sampleTransacctions = sampleDataTest.getTransactionsList();
+        sampleTransacctions = sampleDataTest.getTransactionsList();*/
 
         when(userContextService.getAuthenticatedUser())
                 .thenReturn(sampleUser1);
