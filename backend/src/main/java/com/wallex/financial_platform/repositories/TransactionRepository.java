@@ -14,4 +14,5 @@ import java.util.Optional;
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
     List<Transaction> findBySourceAccountAccountIdOrDestinationAccountAccountId(Long accountId, Long accountId1);
+    List<Transaction> findAllWithAccounts();
 }

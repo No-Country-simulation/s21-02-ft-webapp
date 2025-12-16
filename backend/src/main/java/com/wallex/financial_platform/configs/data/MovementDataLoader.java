@@ -4,10 +4,14 @@ import com.wallex.financial_platform.entities.Account;
 import com.wallex.financial_platform.entities.Movement;
 import com.wallex.financial_platform.entities.Transaction;
 import com.wallex.financial_platform.entities.enums.TransactionType;
+import com.wallex.financial_platform.repositories.AccountRepository; // ← NUEVO
 import com.wallex.financial_platform.repositories.MovementRepository;
 import com.wallex.financial_platform.repositories.TransactionRepository;
+import jakarta.persistence.EntityManager; // ← NUEVO (opcional, para la solución 2)
 import lombok.RequiredArgsConstructor;
+import org.hibernate.Hibernate; // ← NUEVO
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -20,7 +24,9 @@ public class MovementDataLoader {
 
     private final MovementRepository movementRepository;
     private final TransactionRepository transactionRepository;
+    private final AccountRepository accountRepository; // ← INYECTAR AccountRepository
 
+    @Transactional
     public void load() {
         // Verificar si ya existen movimientos
         long existingMovements = movementRepository.count();
@@ -29,7 +35,11 @@ public class MovementDataLoader {
             return;
         }
 
-        List<Transaction> transactions = transactionRepository.findAll();
+        // Cargar transacciones con sus cuentas inicializadas
+        List<Transaction> transactions = transactionRepository.findAllWithAccounts(); // ← Método nuevo
+
+        // Si no tienes el método findAllWithAccounts, usa este:
+        // List<Transaction> transactions = loadTransactionsWithAccounts();
 
         if (transactions.isEmpty()) {
             System.out.println("⚠️ No hay transacciones para crear movimientos");
@@ -40,6 +50,12 @@ public class MovementDataLoader {
         int movementsCreated = 0;
 
         for (Transaction transaction : transactions) {
+            // Inicializar proxies ANTES de usarlos (solución alternativa)
+            initializeAccountProxy(transaction.getSourceAccount());
+            if (transaction.getDestinationAccount() != null) {
+                initializeAccountProxy(transaction.getDestinationAccount());
+            }
+
             // Validar que la transacción tiene cuentas válidas
             if (!isValidTransactionForMovements(transaction)) {
                 System.out.println("⚠️ Transacción " + transaction.getTransactionId() +
@@ -65,13 +81,56 @@ public class MovementDataLoader {
         }
     }
 
+    /**
+     * Método alternativo si no puedes modificar TransactionRepository
+     */
+    private List<Transaction> loadTransactionsWithAccounts() {
+        List<Transaction> transactions = transactionRepository.findAll();
+
+        // Para cada transacción, cargar las cuentas completas desde la BD
+        for (Transaction transaction : transactions) {
+            // Reemplazar proxies por entidades reales
+            Account sourceAccount = accountRepository.findById(
+                    transaction.getSourceAccount().getAccountId()
+            ).orElse(null);
+
+            if (sourceAccount != null) {
+                // Usar reflexión o setter para reemplazar la cuenta
+                transaction.setSourceAccount(sourceAccount);
+            }
+
+            if (transaction.getDestinationAccount() != null) {
+                Account destAccount = accountRepository.findById(
+                        transaction.getDestinationAccount().getAccountId()
+                ).orElse(null);
+
+                if (destAccount != null) {
+                    transaction.setDestinationAccount(destAccount);
+                }
+            }
+        }
+
+        return transactions;
+    }
+
+    /**
+     * Inicializa un proxy de Hibernate si es necesario
+     */
+    private void initializeAccountProxy(Account account) {
+        if (account != null) {
+            // Esto fuerza la inicialización del proxy
+            Hibernate.initialize(account);
+            // También puedes inicializar propiedades específicas
+            Hibernate.initialize(account.getAlias());
+        }
+    }
+
     private boolean isValidTransactionForMovements(Transaction transaction) {
         if (transaction == null) {
             return false;
         }
 
         Account sourceAccount = transaction.getSourceAccount();
-        Account destinationAccount = transaction.getDestinationAccount();
 
         if (sourceAccount == null) {
             return false;
@@ -85,7 +144,7 @@ public class MovementDataLoader {
         }
 
         // Para transferencias, necesitamos ambas cuentas
-        return destinationAccount != null;
+        return transaction.getDestinationAccount() != null;
     }
 
     private List<Movement> createMovementsForTransaction(Transaction transaction) {
@@ -131,14 +190,17 @@ public class MovementDataLoader {
                 );
                 movements.add(movement);
             } else {
+                // CORRECCIÓN: Asegurar que las cuentas están inicializadas
+                String destIdentifier = getAccountIdentifier(destinationAccount);
+                String sourceIdentifier = getAccountIdentifier(sourceAccount);
+
                 // Dos movimientos: débito y crédito
                 Movement debitMovement = new Movement(
                         null,
                         sourceAccount,
                         transaction,
-                        "Transferencia enviada a cuenta " +
-                                getAccountIdentifier(destinationAccount),
-                        amount.negate().abs(), // Monto negativo para salida
+                        "Transferencia enviada a cuenta " + destIdentifier,
+                        amount.negate(), // Simplificado: ya es negativo
                         LocalDateTime.now()
                 );
 
@@ -146,8 +208,7 @@ public class MovementDataLoader {
                         null,
                         destinationAccount,
                         transaction,
-                        "Transferencia recibida de cuenta " +
-                                getAccountIdentifier(sourceAccount),
+                        "Transferencia recibida de cuenta " + sourceIdentifier,
                         amount.abs(), // Monto positivo para entrada
                         LocalDateTime.now()
                 );
@@ -185,6 +246,14 @@ public class MovementDataLoader {
     }
 
     private String getAccountIdentifier(Account account) {
+        // Asegurar que el proxy está inicializado
+        if (account == null) {
+            return "Cuenta no disponible";
+        }
+
+        // Inicializar proxy si es necesario
+        initializeAccountProxy(account);
+
         if (account.getAlias() != null && !account.getAlias().isEmpty()) {
             return account.getAlias();
         } else if (account.getCbu() != null) {
