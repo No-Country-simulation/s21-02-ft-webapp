@@ -41,7 +41,7 @@ public class AccountRepositoryTest {
 
     @BeforeEach
     void setup(){
-        accountsList = sampleDataTest.getAccountList();
+        /*accountsList = sampleDataTest.getAccountList();*/
         sampleAccount1 = accountsList.get(0);
         sampleAccount1.setSourceTransactions(new ArrayList<>());
         sampleAccount1.setDestinationTransactions(new ArrayList<>());

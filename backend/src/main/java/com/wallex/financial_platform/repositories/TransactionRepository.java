@@ -14,4 +14,9 @@ import java.util.Optional;
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
     List<Transaction> findBySourceAccountAccountIdOrDestinationAccountAccountId(Long accountId, Long accountId1);
+
+    @Query("SELECT DISTINCT t FROM Transaction t " +
+            "LEFT JOIN FETCH t.sourceAccount " +
+            "LEFT JOIN FETCH t.destinationAccount")
+    List<Transaction> findAllWithAccounts();
 }

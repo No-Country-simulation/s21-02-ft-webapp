@@ -32,8 +32,11 @@ public class User {
     @Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message = "El email debe seguir el formato: ejemplo@dominio.com")
     private String email;
 
-    @Column(nullable = true, unique = true, length = 20)
-    @Pattern(regexp = "^\\+54\\d{10}$", message = "El teléfono debe seguir el formato: +54XXXXXXXXXX")
+    @Pattern(
+            regexp = "^\\+549\\d{10}$",
+            message = "El teléfono debe seguir el formato: +549XXXXXXXXXX"
+    )
+    @Column(nullable = false, unique = true, length = 14)
     private String phoneNumber;
 
     @Column(nullable = false)

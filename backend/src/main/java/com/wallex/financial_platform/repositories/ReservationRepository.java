@@ -2,8 +2,6 @@ package com.wallex.financial_platform.repositories;
 
 import com.wallex.financial_platform.entities.Reservation;
 import com.wallex.financial_platform.entities.enums.ReservationStatus;
-import com.wallex.financial_platform.entities.enums.TypeReservation;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,5 +12,7 @@ import java.util.Optional;
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
     List<Reservation> findByAccount_AccountId(Long accountId);
     List<Reservation> findByAccount_AccountIdAndStatus(Long accountId, ReservationStatus status);
-    Optional<Reservation> findByAccount_AccountIdAndTypeAndStatus(Long accountId, TypeReservation type, ReservationStatus reservationStatus);
+    Optional<Reservation> findByAccount_AccountIdAndReasonAndStatus(Long accountId, String reason, ReservationStatus status);
+
 }
+

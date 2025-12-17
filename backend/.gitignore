@@ -31,6 +31,18 @@ target/
 build/
 !**/src/main/**/build/
 !**/src/test/**/build/
+*.jar
+*.war
+*.zip
 
 ### VS Code ###
 .vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log

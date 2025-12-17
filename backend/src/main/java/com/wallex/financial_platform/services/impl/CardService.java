@@ -7,6 +7,7 @@ import com.wallex.financial_platform.entities.Card;
 import com.wallex.financial_platform.entities.User;
 import com.wallex.financial_platform.entities.enums.CardType;
 import com.wallex.financial_platform.exceptions.card.CardAlreadyExistsException;
+import com.wallex.financial_platform.exceptions.card.CardExpiredException;
 import com.wallex.financial_platform.exceptions.card.CardNotFoundException;
 import com.wallex.financial_platform.exceptions.card.UnauthorizedCardDeletionException;
 import com.wallex.financial_platform.repositories.CardRepository;
@@ -18,6 +19,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -98,7 +102,7 @@ public class CardService implements ICardService {
         card.setType(cardRequestDTO.type());
         card.setIssuingBank(cardRequestDTO.issuingBank());
         card.setExpirationDate(cardRequestDTO.expirationDate());
-        card.setEncryptedCvv(passwordEncoder.encode(cardRequestDTO.encryptedCvv()));
+        card.setEncryptedCvv(encryptionService.encrypt(cardRequestDTO.encryptedCvv()));
         card.setBalance(cardRequestDTO.balance());
         card.setUser(user);
         return card;
@@ -108,6 +112,7 @@ public class CardService implements ICardService {
         User authenticatedUser = userContextService.getAuthenticatedUser();
         if (authenticatedUser != null && authenticatedUser.getId().equals(card.getUser().getId())) {
             card.setEncryptedNumber(encryptionService.decrypt(card.getEncryptedNumber()));
+            card.setEncryptedCvv(encryptionService.decrypt(card.getEncryptedCvv()));
         }
         return card;
     }
@@ -126,6 +131,7 @@ public class CardService implements ICardService {
                 card.getIssuingBank(),
                 card.getExpirationDate(),
                 card.getBalance(),
+                card.getEncryptedCvv(),
                 card.getRegistrationDate()
         );
     }

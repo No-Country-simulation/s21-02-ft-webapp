@@ -2,10 +2,12 @@ package com.wallex.financial_platform.exceptions;
 
 import com.wallex.financial_platform.exceptions.account.AccountErrorException;
 import com.wallex.financial_platform.exceptions.account.AccountNotFoundException;
+import com.wallex.financial_platform.exceptions.account.CurrencyMismatchException;
 import com.wallex.financial_platform.exceptions.auth.InvalidCredentialsException;
 import com.wallex.financial_platform.exceptions.auth.UserAlreadyExistsException;
 import com.wallex.financial_platform.exceptions.auth.UserNotFoundException;
 import com.wallex.financial_platform.exceptions.card.CardAlreadyExistsException;
+import com.wallex.financial_platform.exceptions.card.CardExpiredException;
 import com.wallex.financial_platform.exceptions.card.CardNotFoundException;
 import com.wallex.financial_platform.exceptions.card.UnauthorizedCardDeletionException;
 import com.wallex.financial_platform.exceptions.movement.MovementNotFoundException;
@@ -63,11 +65,21 @@ public class GlobalExceptionHandler {
         return buildResponseEntity(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
+    @ExceptionHandler(CurrencyMismatchException.class)
+    public ResponseEntity<Map<String, Object>> handleCurrencyMismatchException(CurrencyMismatchException  ex) {
+        return buildResponseEntity(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
+    }
+
     // ========== CARD EXCEPTIONS ==========
 
     @ExceptionHandler(CardNotFoundException.class)
     public ResponseEntity<Map<String, Object>> handleCardNotFoundException(CardNotFoundException ex) {
         return buildResponseEntity(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
+
+    @ExceptionHandler(CardExpiredException.class)
+    public ResponseEntity<Map<String, Object>> handleCardExpiredException(CardExpiredException ex) {
+        return buildResponseEntity(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
     @ExceptionHandler(CardAlreadyExistsException.class)
@@ -139,6 +151,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<Map<String, Object>> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
         Throwable rootCause = ex.getRootCause();
+
+        if (rootCause instanceof CardExpiredException) {
+            return buildResponseEntity(HttpStatus.BAD_REQUEST, rootCause.getMessage());
+        }
 
         if (rootCause instanceof IllegalArgumentException) {
             return buildResponseEntity(HttpStatus.BAD_REQUEST, "El valor proporcionado no es válido para el campo enum.");

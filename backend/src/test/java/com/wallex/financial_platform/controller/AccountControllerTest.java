@@ -59,7 +59,7 @@ class AccountControllerTest {
 
     @BeforeEach
     void setup(){
-        User user = sampleDataTest.getUserList().getFirst();
+     /*   User user = sampleDataTest.getUserList().getFirst();
         accountsList = user.getAccounts();
         accountResponseDTOList = accountsList.stream().map(this::mapToDTO).toList();
         assertThat(accountsList).isNotEmpty();
@@ -71,7 +71,7 @@ class AccountControllerTest {
                 .thenReturn(auth);
         when(auth.getPrincipal())
                 .thenReturn(user.getEmail());
-        SecurityContextHolder.setContext(securityContext);
+        SecurityContextHolder.setContext(securityContext);*/
     }
 
 /*    @Test

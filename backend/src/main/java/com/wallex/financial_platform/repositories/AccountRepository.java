@@ -14,4 +14,8 @@ public interface AccountRepository extends JpaRepository<Account, Long> { ;
     List<Account> findByUserId(Long userId);
     Optional<Account> findByCbuOrAlias(String cbu, String alias);
     List<Account> findByCurrency(CurrencyType attr0);
+    Optional<Account> findByAlias(String alias);
+    List<Account> findFirst2ByOrderByCreatedAtAsc();
+    List<Account> findFirst5ByOrderByCreatedAtAsc();
+    boolean existsByAlias(String alias);
 }

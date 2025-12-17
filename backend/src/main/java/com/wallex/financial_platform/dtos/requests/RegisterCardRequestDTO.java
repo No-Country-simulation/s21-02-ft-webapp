@@ -1,6 +1,7 @@
 package com.wallex.financial_platform.dtos.requests;
 
 import com.wallex.financial_platform.entities.enums.CardType;
+import com.wallex.financial_platform.exceptions.card.CardExpiredException;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -44,7 +45,7 @@ public record RegisterCardRequestDTO(
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/yy");
             YearMonth expiration = YearMonth.parse(expirationDate, formatter);
             if (expiration.isBefore(YearMonth.now())) {
-                throw new IllegalArgumentException("La tarjeta está vencida");
+                throw new CardExpiredException("La tarjeta está vencida");
             }
         } catch (DateTimeParseException e) {
             throw new IllegalArgumentException("Formato de fecha de expiración inválido");

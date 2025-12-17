@@ -1,13 +1,11 @@
 package com.wallex.financial_platform.configs.data;
 
 import com.wallex.financial_platform.entities.Account;
-import com.wallex.financial_platform.entities.Movement;
 import com.wallex.financial_platform.entities.Transaction;
 import com.wallex.financial_platform.entities.enums.TransactionStatus;
 import com.wallex.financial_platform.entities.enums.TransactionType;
 import com.wallex.financial_platform.repositories.AccountRepository;
 import com.wallex.financial_platform.repositories.TransactionRepository;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +13,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -24,17 +23,91 @@ public class TransactionDataLoader {
     private final AccountRepository accountRepository;
 
     public void load() {
-        Account account1 = accountRepository.findById(1L).orElseThrow();
-        Account account2 = accountRepository.findById(2L).orElseThrow();
-        Account account3 = accountRepository.findById(3L).orElseThrow();
-        Account account4 = accountRepository.findById(4L).orElseThrow();
+        List<Account> accounts = findAccountsForTransactions();
 
-        List<Transaction> transactions = List.of(
-                new Transaction(null, account2, account3, new BigDecimal("150000.00").negate(), TransactionType.TRANSFER, "Pago de alquiler", LocalDateTime.now(), TransactionStatus.COMPLETED, new ArrayList<>()),
-                new Transaction(null, account2, account4, new BigDecimal("100000.00").negate(), TransactionType.TRANSFER, "Pago por prestamo", LocalDateTime.now(), TransactionStatus.COMPLETED,new ArrayList<>()),
-                new Transaction(null, account2, account2, new BigDecimal("20000.00"), TransactionType.DEPOSIT, "Ingreso de dinero desde tarjeta de debito", LocalDateTime.now(), TransactionStatus.COMPLETED, new ArrayList<>())
+        if (accounts.size() < 2) {
+            System.out.println("⚠️ No hay suficientes cuentas para crear transacciones");
+            return;
+        }
 
-        );
-        transactionRepository.saveAll(transactions);
+        List<Transaction> transactions = new ArrayList<>();
+
+        // Transferencia entre cuentas 1 y 2
+        if (accounts.size() >= 3) {
+            transactions.add(new Transaction(
+                    null,
+                    accounts.get(1), // silver.pixel.turbo
+                    accounts.get(2), // velvet.shadow.coffee
+                    new BigDecimal("150000.00").negate(),
+                    TransactionType.TRANSFER,
+                    "Pago de alquiler",
+                    LocalDateTime.now(),
+                    TransactionStatus.COMPLETED,
+                    new ArrayList<>()
+            ));
+        }
+
+        if (accounts.size() >= 4) {
+            transactions.add(new Transaction(
+                    null,
+                    accounts.get(1), // silver.pixel.turbo
+                    accounts.get(3), // aqua.flame.breeze
+                    new BigDecimal("100000.00").negate(),
+                    TransactionType.TRANSFER,
+                    "Pago por préstamo",
+                    LocalDateTime.now(),
+                    TransactionStatus.COMPLETED,
+                    new ArrayList<>()
+            ));
+        }
+
+        if (accounts.size() >= 2) {
+            transactions.add(new Transaction(
+                    null,
+                    accounts.get(1), // silver.pixel.turbo
+                    accounts.get(1), // misma cuenta
+                    new BigDecimal("20000.00"),
+                    TransactionType.DEPOSIT,
+                    "Ingreso de dinero desde tarjeta de débito",
+                    LocalDateTime.now(),
+                    TransactionStatus.COMPLETED,
+                    new ArrayList<>()
+            ));
+        }
+
+        if (!transactions.isEmpty()) {
+            transactionRepository.saveAll(transactions);
+            System.out.println("✅ " + transactions.size() + " transacciones creadas");
+        }
+    }
+
+    private List<Account> findAccountsForTransactions() {
+        List<Account> accounts = new ArrayList<>();
+
+        // Buscar por alias específicos
+        String[] aliases = {
+                "orange.cactus.wave",
+                "silver.pixel.turbo",
+                "velvet.shadow.coffee",
+                "aqua.flame.breeze",
+                "crystal.echo.spark"
+        };
+
+        for (String alias : aliases) {
+            accountRepository.findByAlias(alias)
+                    .ifPresent(accounts::add);
+        }
+
+        // Si no se encuentran por alias, tomar las primeras cuentas
+        if (accounts.size() < 4) {
+            List<Account> firstAccounts = accountRepository.findFirst5ByOrderByCreatedAtAsc();
+            firstAccounts.forEach(account -> {
+                if (!accounts.contains(account)) {
+                    accounts.add(account);
+                }
+            });
+        }
+
+        return accounts;
     }
 }

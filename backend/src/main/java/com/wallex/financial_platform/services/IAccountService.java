@@ -1,5 +1,6 @@
 package com.wallex.financial_platform.services;
 
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.wallex.financial_platform.dtos.requests.AccountRequestDTO;
 import com.wallex.financial_platform.dtos.requests.DepositRequestDTO;
 import com.wallex.financial_platform.dtos.requests.ReservationRequestDTO;
@@ -19,4 +20,7 @@ public interface IAccountService {
     TransactionResponseDTO addFundsFromCard(Long sourceAccountId, @Valid DepositRequestDTO depositRequestDTO);
     TransactionResponseDTO createReservation(Long sourceAccountId, @Valid ReservationRequestDTO reservationRequestDTO);
     TransactionResponseDTO releaseReservation(Long reservationId, Long accountId);
+    ValidateTransferResultResponseDTO  validateAccountIdentifier(String destination);
+
+    BalanceCheckResponseDTO checkAccountBalance(Long accountId, BigDecimal amount);
 }
