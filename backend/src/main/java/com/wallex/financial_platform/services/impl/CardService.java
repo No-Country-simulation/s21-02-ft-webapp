@@ -7,7 +7,6 @@ import com.wallex.financial_platform.entities.Card;
 import com.wallex.financial_platform.entities.User;
 import com.wallex.financial_platform.entities.enums.CardType;
 import com.wallex.financial_platform.exceptions.card.CardAlreadyExistsException;
-import com.wallex.financial_platform.exceptions.card.CardExpiredException;
 import com.wallex.financial_platform.exceptions.card.CardNotFoundException;
 import com.wallex.financial_platform.exceptions.card.UnauthorizedCardDeletionException;
 import com.wallex.financial_platform.repositories.CardRepository;
@@ -18,10 +17,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.time.YearMonth;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;

@@ -13,10 +13,8 @@ public class SuggestedReserveDataLoader {
 
     private final SuggestedReserveRepository suggestedReserveRepository;
 
-    // Record para almacenar datos de reservas
     private record ReserveData(String name, String iconUrl, Integer order) {}
 
-    // Datos de reservas con orden sugerido
     private static final List<ReserveData> DEFAULT_RESERVES = Arrays.asList(
             new ReserveData("Alimentación", "https://res.cloudinary.com/dtyp7s5ql/image/upload/v1755022242/dieta_hcx3xj.png", 1),
             new ReserveData("Educación", "https://res.cloudinary.com/dtyp7s5ql/image/upload/v1755274789/aula_1_t93iue.png", 2),
@@ -41,7 +39,6 @@ public class SuggestedReserveDataLoader {
         int created = 0;
 
         for (ReserveData reserveData : DEFAULT_RESERVES) {
-            // Verificar por nombre (case insensitive)
             boolean exists = suggestedReserveRepository.existsByNameIgnoreCase(reserveData.name);
 
             if (!exists) {
@@ -49,7 +46,6 @@ public class SuggestedReserveDataLoader {
                 suggestedReserve.setName(reserveData.name);
                 suggestedReserve.setIconUrl(reserveData.iconUrl);
 
-                // Si el modelo tiene campo de orden
                 trySetOrder(suggestedReserve, reserveData.order);
 
                 reservesToCreate.add(suggestedReserve);
@@ -67,20 +63,16 @@ public class SuggestedReserveDataLoader {
 
     private void trySetOrder(SuggestedReserve reserve, Integer order) {
         try {
-            // Intentar establecer el orden si el campo existe
             var orderField = reserve.getClass().getDeclaredField("displayOrder");
             orderField.setAccessible(true);
             orderField.set(reserve, order);
-        } catch (NoSuchFieldException e) {
-            // Campo no existe, ignorar
+        } catch (NoSuchFieldException ignored) {
+
         } catch (Exception e) {
             System.err.println("⚠️ No se pudo establecer orden para reserva: " + e.getMessage());
         }
     }
 
-    /**
-     * Método para verificar el estado de las reservas
-     */
     public void checkStatus() {
         long total = suggestedReserveRepository.count();
         System.out.println("📊 Estado de reservas sugeridas: " + total + " registros");

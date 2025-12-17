@@ -38,7 +38,6 @@ public class CardDataLoader {
             return;
         }
 
-        // Datos de tarjetas de prueba
         List<CardData> testCards = List.of(
                 new CardData("1234567890123456", "Banco Nación", "12/25", 500000.00),
                 new CardData("9876543210987654", "Banco Galicia", "08/24", 1000000.00),
@@ -54,7 +53,6 @@ public class CardDataLoader {
             CardData cardData = testCards.get(i);
             User user = users.get(i);
 
-            // Verificar si la tarjeta ya existe para este usuario
             String encryptedNumber = encryptionService.encrypt(cardData.cardNumber);
 
             boolean cardExists = cardRepository.existsByEncryptedNumberAndUser(encryptedNumber, user);
@@ -100,7 +98,6 @@ public class CardDataLoader {
         );
     }
 
-    // Clase auxiliar para datos de tarjeta
     private static class CardData {
         String cardNumber;
         String bankName;

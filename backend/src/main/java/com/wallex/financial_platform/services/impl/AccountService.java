@@ -121,7 +121,6 @@ public class AccountService implements IAccountService {
     @Override
     @Transactional
     public ValidateTransferResultResponseDTO validateAccountIdentifier(String identifier) {
-        // Validación CBU (22 dígitos)
         if (identifier.length() == 22 && identifier.matches("[0-9]+")) {
             return accountRepository.findByCbuOrAlias(identifier, null)
                     .map(account -> new ValidateTransferResultResponseDTO(

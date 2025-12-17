@@ -91,14 +91,9 @@ public class MovementDataLoader {
         }
     }
 
-    /**
-     * Reemplaza las cuentas proxy por entidades reales cargadas desde la BD
-     */
     private Transaction replaceAccountProxies(Transaction transaction) {
-        // Crear una nueva instancia o clonar la transacción
         Transaction safeTransaction = new Transaction();
 
-        // Copiar todos los atributos básicos
         safeTransaction.setTransactionId(transaction.getTransactionId());
         safeTransaction.setAmount(transaction.getAmount());
         safeTransaction.setType(transaction.getType());
@@ -106,13 +101,11 @@ public class MovementDataLoader {
         safeTransaction.setTransactionDateTime(transaction.getTransactionDateTime());
         safeTransaction.setStatus(transaction.getStatus());
 
-        // Cargar cuenta de origen REAL desde la BD
         Long sourceAccountId = transaction.getSourceAccount().getAccountId();
         Account realSourceAccount = accountRepository.findById(sourceAccountId)
                 .orElseThrow(() -> new RuntimeException("Cuenta de origen no encontrada: " + sourceAccountId));
         safeTransaction.setSourceAccount(realSourceAccount);
 
-        // Cargar cuenta de destino REAL si existe
         if (transaction.getDestinationAccount() != null) {
             Long destAccountId = transaction.getDestinationAccount().getAccountId();
             Account realDestAccount = accountRepository.findById(destAccountId)
@@ -123,10 +116,6 @@ public class MovementDataLoader {
         return safeTransaction;
     }
 
-    /**
-     * Crea movimientos para una transacción específica
-     * Versión segura que NO accede a propiedades lazy (como getAlias())
-     */
     private List<Movement> createMovementsForTransaction(Transaction transaction) {
         List<Movement> movements = new ArrayList<>();
 
@@ -140,7 +129,6 @@ public class MovementDataLoader {
             case DEPOSIT:
             case RENDIMIENTO:
             case RESERVE:
-                // Movimiento único de ENTRADA
                 movements.add(createMovement(
                         sourceAccount,
                         transaction,
@@ -155,7 +143,6 @@ public class MovementDataLoader {
                     boolean sameAccount = sourceAccount.getAccountId().equals(destinationAccount.getAccountId());
 
                     if (sameAccount) {
-                        // Transferencia interna (misma cuenta)
                         movements.add(createMovement(
                                 sourceAccount,
                                 transaction,
@@ -164,9 +151,6 @@ public class MovementDataLoader {
                                 LocalDateTime.now()
                         ));
                     } else {
-                        // Transferencia entre cuentas diferentes: 2 movimientos
-
-                        // 1. Movimiento de DÉBITO (salida) en cuenta origen
                         movements.add(createMovement(
                                 sourceAccount,
                                 transaction,
@@ -175,7 +159,6 @@ public class MovementDataLoader {
                                 LocalDateTime.now()
                         ));
 
-                        // 2. Movimiento de CRÉDITO (entrada) en cuenta destino
                         movements.add(createMovement(
                                 destinationAccount,
                                 transaction,
@@ -188,7 +171,6 @@ public class MovementDataLoader {
                 break;
 
             default:
-                // Para cualquier otro tipo de transacción
                 movements.add(createMovement(
                         sourceAccount,
                         transaction,
@@ -201,24 +183,18 @@ public class MovementDataLoader {
         return movements;
     }
 
-    /**
-     * Crea un movimiento individual
-     */
     private Movement createMovement(Account account, Transaction transaction,
                                     String description, BigDecimal amount, LocalDateTime date) {
         return new Movement(
-                null,           // ID generado automáticamente
-                account,        // Cuenta asociada
-                transaction,    // Transacción relacionada
-                description,    // Descripción generada
-                amount,         // Monto (positivo=entrada, negativo=salida)
-                date            // Fecha del movimiento
+                null,
+                account,
+                transaction,
+                description,
+                amount,
+                date
         );
     }
 
-    /**
-     * Genera descripciones seguras SIN acceder a propiedades lazy como getAlias()
-     */
     private String generateDescription(TransactionType type, String reason,
                                        Account relatedAccount, boolean isOutgoing) {
 
@@ -238,9 +214,6 @@ public class MovementDataLoader {
         return baseDescription.trim();
     }
 
-    /**
-     * Obtiene la descripción base según el tipo de transacción
-     */
     private String getBaseDescription(TransactionType type) {
         return switch (type) {
             case DEPOSIT -> "Depósito";

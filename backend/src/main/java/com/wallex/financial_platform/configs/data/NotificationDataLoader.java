@@ -21,7 +21,6 @@ public class NotificationDataLoader {
     private final UserRepository userRepository;
 
     public void load() {
-        // Buscar usuarios por email en lugar de asumir que existen
         List<User> users = findUsersForNotifications();
 
         if (users.isEmpty()) {
@@ -44,7 +43,7 @@ public class NotificationDataLoader {
                     NotificationStatus.SENT
             ));
 
-            if (i == 0) { // Primer usuario adicional
+            if (i == 0) {
                 notifications.add(new Notification(
                         null,
                         user,
@@ -65,7 +64,6 @@ public class NotificationDataLoader {
     private List<User> findUsersForNotifications() {
         List<User> users = new ArrayList<>();
 
-        // Emails de usuarios de prueba (puedes mover esto a properties)
         String[] testEmails = {
                 "jindrg@gmail.com",
                 "gusti.paz11@gmail.com",
@@ -80,7 +78,6 @@ public class NotificationDataLoader {
                     .ifPresent(users::add);
         }
 
-        // Si no encontramos usuarios por email, tomamos los primeros disponibles
         if (users.isEmpty()) {
             List<User> firstUsers = userRepository.findFirst3ByOrderByCreatedAtAsc();
             users.addAll(firstUsers);

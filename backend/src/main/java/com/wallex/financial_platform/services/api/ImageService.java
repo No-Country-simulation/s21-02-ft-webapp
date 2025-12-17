@@ -47,7 +47,6 @@ public class ImageService {
         }
     }
 
-    // Método auxiliar para extraer el ID público de la URL de la imagen
     private String extractPublicId(String imageUrl) {
         // Extraer el public_id eliminando la parte de Cloudinary en la URL
         String[] parts = imageUrl.split("/");

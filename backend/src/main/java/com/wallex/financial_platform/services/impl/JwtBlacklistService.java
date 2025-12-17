@@ -11,10 +11,10 @@ public class JwtBlacklistService {
     private final Set<String> blacklist = ConcurrentHashMap.newKeySet();
 
     public void invalidateToken(String token) {
-        blacklist.add(token); // Agrega el token a la lista negra
+        blacklist.add(token);
     }
 
     public boolean isTokenBlacklisted(String token) {
-        return blacklist.contains(token); // Verifica si el token está en la lista negra
+        return blacklist.contains(token);
     }
 }

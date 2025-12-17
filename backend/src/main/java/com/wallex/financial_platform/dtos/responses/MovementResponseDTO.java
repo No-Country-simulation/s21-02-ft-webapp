@@ -10,7 +10,7 @@ public record MovementResponseDTO(
         String description,
         BigDecimal amount,
         LocalDateTime movementDate,
-        String userName, // Nuevo campo: nombre del usuario
-        String transactionType// Nuevo campo: tipo de transacción
+        String userName,
+        String transactionType
 ) {
 }

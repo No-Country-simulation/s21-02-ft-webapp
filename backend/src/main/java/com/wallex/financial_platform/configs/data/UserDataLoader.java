@@ -18,7 +18,7 @@ public class UserDataLoader {
     private final BCryptPasswordEncoder passwordEncoder;
 
     public void load() {
-        // Datos de usuarios de prueba
+
         List<UserData> testUsers = List.of(
                 new UserData("Delmer Rodríguez", "12345678", "jindrg@gmail.com", "password123", true),
                 new UserData("Gustavo Paz", "87654321", "gusti.paz11@gmail.com", "password123", true),
@@ -33,7 +33,6 @@ public class UserDataLoader {
         int skipped = 0;
 
         for (UserData userData : testUsers) {
-            // Verificar si el usuario ya existe por DNI o email
             boolean existsByDni = userRepository.existsByDni(userData.dni);
             boolean existsByEmail = userRepository.existsByEmail(userData.email);
 

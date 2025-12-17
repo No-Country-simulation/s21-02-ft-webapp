@@ -13,7 +13,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -32,12 +31,11 @@ public class TransactionDataLoader {
 
         List<Transaction> transactions = new ArrayList<>();
 
-        // Transferencia entre cuentas 1 y 2
         if (accounts.size() >= 3) {
             transactions.add(new Transaction(
                     null,
-                    accounts.get(1), // silver.pixel.turbo
-                    accounts.get(2), // velvet.shadow.coffee
+                    accounts.get(1),
+                    accounts.get(2),
                     new BigDecimal("150000.00").negate(),
                     TransactionType.TRANSFER,
                     "Pago de alquiler",
@@ -50,8 +48,8 @@ public class TransactionDataLoader {
         if (accounts.size() >= 4) {
             transactions.add(new Transaction(
                     null,
-                    accounts.get(1), // silver.pixel.turbo
-                    accounts.get(3), // aqua.flame.breeze
+                    accounts.get(1),
+                    accounts.get(3),
                     new BigDecimal("100000.00").negate(),
                     TransactionType.TRANSFER,
                     "Pago por préstamo",
@@ -64,8 +62,8 @@ public class TransactionDataLoader {
         if (accounts.size() >= 2) {
             transactions.add(new Transaction(
                     null,
-                    accounts.get(1), // silver.pixel.turbo
-                    accounts.get(1), // misma cuenta
+                    accounts.get(1),
+                    accounts.get(1),
                     new BigDecimal("20000.00"),
                     TransactionType.DEPOSIT,
                     "Ingreso de dinero desde tarjeta de débito",
@@ -84,7 +82,6 @@ public class TransactionDataLoader {
     private List<Account> findAccountsForTransactions() {
         List<Account> accounts = new ArrayList<>();
 
-        // Buscar por alias específicos
         String[] aliases = {
                 "orange.cactus.wave",
                 "silver.pixel.turbo",
@@ -98,7 +95,6 @@ public class TransactionDataLoader {
                     .ifPresent(accounts::add);
         }
 
-        // Si no se encuentran por alias, tomar las primeras cuentas
         if (accounts.size() < 4) {
             List<Account> firstAccounts = accountRepository.findFirst5ByOrderByCreatedAtAsc();
             firstAccounts.forEach(account -> {

@@ -35,7 +35,6 @@ public class AccountDataLoader {
 
         List<Account> accountList = new ArrayList<>();
 
-        // Verificar si las cuentas ya existen antes de crearlas
         boolean accountsExist = checkIfDefaultAccountsExist();
 
         if (accountsExist) {
@@ -43,7 +42,6 @@ public class AccountDataLoader {
             return;
         }
 
-        // Datos de cuentas de prueba
         List<AccountData> testAccounts = List.of(
                 new AccountData("1231234900000000000001", "orange.cactus.wave",
                         new BigDecimal("2500"), BigDecimal.ZERO, CurrencyType.USD),
@@ -62,7 +60,6 @@ public class AccountDataLoader {
         // Distribuir cuentas entre usuarios disponibles
         for (int i = 0; i < testAccounts.size(); i++) {
             AccountData accountData = testAccounts.get(i);
-            // Asignar usuario de forma circular
             User user = userList.get(i % userList.size());
 
             accountList.add(createAccount(
@@ -84,7 +81,6 @@ public class AccountDataLoader {
     }
 
     private boolean checkIfDefaultAccountsExist() {
-        // Verificar si alguna de las cuentas predeterminadas ya existe
         String[] defaultAliases = {
                 "orange.cactus.wave",
                 "silver.pixel.turbo",
@@ -125,7 +121,6 @@ public class AccountDataLoader {
         return String.format("12312349%04d%03d%04d", index, randomPart, timestampPart);
     }
 
-    // Clase auxiliar para datos de cuenta
     private static class AccountData {
         String cbu;
         String alias;

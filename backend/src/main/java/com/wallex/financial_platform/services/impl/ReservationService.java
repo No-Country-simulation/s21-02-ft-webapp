@@ -46,7 +46,6 @@ public class ReservationService implements IReservationService {
         this.validateAccountOwnership(account);
         this.validateSufficientFunds(account, reservationRequestDTO.reservedAmount());
 
-        // La lógica ha sido refactorizada para no mezclar los tipos de entidad
         Optional<Reservation> optionalReservation = findExistingActiveReservationByReason(accountId, reservationRequestDTO.reason());
 
         Reservation reservation;
