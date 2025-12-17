@@ -12,7 +12,7 @@ interface ReserveState {
   releaseReserve: (accountId: number, reservationId: number) => Promise<ReserveTransactionResponseDTO | null>;
 }
 
-export const useReserveStore = create<ReserveState>((set, get) => ({
+export const useReserveStore = create<ReserveState>((set) => ({
   reserves: [],
   loading: false,
   error: null,

@@ -16,7 +16,6 @@ import {ReserveListPage} from './pages/ReserveListPage';
 import {ReserveCreateNamePage} from './pages/ReserveCreateNamePage';
 import {ReserveCreateAmountPage} from './pages/ReserveCreateAmountPage';
 import {DolarQuotesPage} from './pages/DolarQuotesPage';
-import { DolarQuotes } from "./features/dolar/components/DolarQuotes";
 // Layout para rutas protegidas que incluye Dashboard
 const ProtectedLayout = () => {
   return (

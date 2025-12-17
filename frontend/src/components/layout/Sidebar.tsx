@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
-  FaHome, FaWallet, FaMoneyBillWave,FaExchangeAlt, 
+  FaHome, FaMoneyBillWave,FaExchangeAlt, 
   FaCreditCard, FaClipboardList, FaChartLine, FaUser, 
   FaSignOutAlt, FaBell, FaBars,FaEnvelope, FaPhone, FaMapMarkerAlt
 } from 'react-icons/fa';
