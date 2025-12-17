@@ -1,5 +1,5 @@
 import axios from 'axios';
-const API_URL = 'http://localhost:9091/api'; // URL del backend
+const API_URL = 'https://wallex-backend.onrender.com/api'; // URL del backend
 
 export const api = axios.create({
   baseURL: API_URL,

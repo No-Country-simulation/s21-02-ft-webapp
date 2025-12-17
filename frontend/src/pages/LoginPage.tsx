@@ -1,10 +1,10 @@
 // src/pages/LoginPage.tsx
 import { LoginForm } from '../features/auth/components/LoginForm';
-
+import { PageContainer } from '../components/ui/PageContainer';
 export const LoginPage = () => {
   return (
-    <div className="min-h-screen bg-gray-100">
+    <PageContainer>
       <LoginForm />
-    </div>
+    </PageContainer>
   );
 };

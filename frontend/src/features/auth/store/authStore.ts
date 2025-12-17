@@ -1,18 +1,19 @@
 // 📄 authStore.ts
 import { create } from "zustand";
-import { AuthState } from "../../../types/auth/authTypes";
+import { AuthState, User } from "../../../types/auth/authTypes";
 import {
   getUserFromStorage,
   getTokenFromStorage,
   saveAuthToStorage,
   clearAuthStorage,
 } from "./authStorage";
+import { getLoggedUser } from "../services/authService";
 
 export const useAuthStore = create<AuthState>((set, get) => ({
   user: getUserFromStorage(),
   token: getTokenFromStorage(),
 
-  login: (user, token) => {
+  login: (user: User, token: string) => {
     saveAuthToStorage(user, token);
     set({ user, token });
   },
@@ -22,5 +23,15 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     set({ user: null, token: null });
   },
 
-  isAuthenticated: () => !!get().token, // Retorna true si hay token, false si no
+  isAuthenticated: () => !!get().token,
+
+  fetchUser: async () => {
+    try {
+      const user = await getLoggedUser();
+      set({ user });
+    } catch (error) {
+      console.error("Error obteniendo usuario:", error);
+      set({ user: null, token: null });
+    }
+  }
 }));

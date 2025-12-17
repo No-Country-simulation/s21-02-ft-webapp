@@ -85,7 +85,7 @@ export const LoginForm = () => {
           <div className="text-center text-sm text-gray-600 mt-4">
             ¿No tienes cuenta?{' '}
             <Link
-              to="/register"
+              to="/register-user"
               className="text-cyan-600 font-medium hover:underline"
               onClick={handleRegisterRedirect}
             >

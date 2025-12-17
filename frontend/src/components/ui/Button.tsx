@@ -2,10 +2,12 @@ import { ReactNode } from 'react';
 import { twMerge } from 'tailwind-merge';
 
 type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'outline' | 'gradient';
+type ButtonSize = 'sm' | 'md' | 'lg'; // Nuevo tipo para los tamaños
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
   variant?: ButtonVariant;
+  size?: ButtonSize; // Propiedad size añadida
   isLoading?: boolean;
   fullWidth?: boolean;
 }
@@ -18,19 +20,28 @@ const variantClasses = {
   gradient: 'bg-gradient-to-r from-sky-600 to-cyan-400 hover:from-sky-700 hover:to-cyan-500 text-white',
 };
 
+// Clases para cada tamaño
+const sizeClasses = {
+  sm: 'px-3 py-2 text-sm',
+  md: 'px-4 py-3 text-base',
+  lg: 'px-6 py-4 text-lg'
+};
+
 export const Button = ({
   children,
   variant = 'primary',
+  size = 'md', // Valor por defecto
   isLoading = false,
   fullWidth = false,
   className = '',
   ...props
 }: ButtonProps) => {
-  const baseClasses = 'px-4 py-3 rounded-lg font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 disabled:opacity-70 disabled:cursor-not-allowed';
+  const baseClasses = 'rounded-lg font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 disabled:opacity-70 disabled:cursor-not-allowed';
   
   const mergedClasses = twMerge(
     baseClasses,
     variantClasses[variant],
+    sizeClasses[size], // Aplicamos las clases de tamaño
     fullWidth ? 'w-full' : '',
     className
   );

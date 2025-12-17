@@ -6,7 +6,10 @@ export const login = async (data: LoginRequest): Promise<LoginResponse> => {
   const response = await api.post('/auth/login', data);
   return {
     token: response.data.token,
-    user: response.data.fullName // Usamos fullName como user
+    user: {
+      fullName: response.data.fullName,
+      email: response.data.email
+    }
   };
 }; // Actualiza la interfaz de retorno
 
@@ -21,12 +24,15 @@ export const logout = async (): Promise<void> => {
 export const register = async (data: RegisterRequest): Promise<RegisterResponse> => {
   const response = await api.post('/auth/register', data);
   return {
-      token: response.data.token,
-      user: response.data.fullName // Devuelve un RegisterResponse
+    token: response.data.token,
+    user: {
+      fullName: response.data.fullName,
+      email: response.data.email
+    }
   };
 };
 
 export const getLoggedUser = async (): Promise<LoggedUserResponse> => {
-  const response = await api.get('/users'); // Cambiado a endpoint específico
+  const response = await api.get('/users'); // Endpoint que devuelve el usuario actual
   return response.data[0];
 };

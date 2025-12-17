@@ -1,9 +1,42 @@
-export interface Account {
-    accountId: number;
-    cbu: string;
-    alias: string;
-    currency: string;
-    balance: number;
-    reservedBalance: number;
-  }
-  
+export interface AccountResponse {
+  userId: number;
+  accountId: number;
+  cbu: string;
+  alias: string;
+  currency: string;
+  balance: number;
+  reservedBalance: number;
+}
+
+export interface CurrencyOptionResponse {
+  value: string;
+  label: string;
+}
+
+export interface TransactionResponse {
+  transactionId: number;          // número, igual que API
+  transactionDate: string;        // string ISO
+  sourceAccount: string;
+  destinationAccount: string;
+  amount: number;
+  reason: string;
+  transactionType: "RESERVE";     // opcionalmente literal
+}
+
+export interface TransactionDetails {
+  transactionId: number;
+  transactionDate: string;
+  sourceAccount: string;
+  destinationAccount: string;
+}
+
+export interface TransferState {
+  destinationIdentifier: string;
+  amount: string;
+  reason: string;
+  isLoading: boolean;
+  error: string | null;
+  success: boolean;
+  transactionDetails: TransactionDetails | null;
+  destinationAccountName: string;
+}

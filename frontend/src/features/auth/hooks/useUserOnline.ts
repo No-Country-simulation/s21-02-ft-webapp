@@ -1,4 +1,3 @@
-// src/hooks/useUserOnline.ts
 import { useState, useEffect } from 'react';
 import { getLoggedUser } from '../services/authService';
 import { useAuthStore } from '../store/authStore';
