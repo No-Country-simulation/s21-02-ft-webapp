@@ -78,13 +78,12 @@
 			<version>1.37.0</version>
 		</dependency>
 
-		<!-- DATAFAKER - DEPENDENCIA CRÍTICA
+		<!-- OpenAPI / Swagger -->
 		<dependency>
-			<groupId>net.datafaker</groupId>
-			<artifactId>datafaker</artifactId>
-			<version>2.4.0</version>
-			&lt;!&ndash; NO usar scope runtime ni provided &ndash;&gt;
-		</dependency>-->
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>2.7.0-RC1</version>
+		</dependency>
 
 		<!-- Phone Numbers -->
 		<dependency>
