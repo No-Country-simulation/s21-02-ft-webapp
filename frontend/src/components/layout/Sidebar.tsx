@@ -9,6 +9,7 @@ import { useAuthStore} from '../../features/auth/store/authStore';
 import { LoginForm } from '../../features/auth/components/LoginForm';
 import  UserOnline  from '../../features/auth/components/UserOnlineForm';
 import { useAccountStore } from '../../features/account/stores/useAccountStore';
+import logo from '../../assets/icons/logo.svg';
 
 export const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -47,7 +48,7 @@ export const Sidebar = () => {
           </button>
 
           <div className="ml-1">
-            <img src="/src/assets/icons/logo.svg" alt="logo" className="h-12" />
+            <img src={logo} alt="logo" className="h-12" />
           </div>
 
           <div className="flex items-center space-x-4 relative">
