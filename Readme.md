@@ -26,15 +26,18 @@ El objetivo principal del sistema es facilitar la gestión del dinero de manera 
 </p>
 
 <p align="center">
-  <img src="https://i.postimg.cc/zvRyP3Mc/image0.png?ex=67c796dd&is=67c6455d&hm=c8b1adf57f2d7a2637bcd46cd70f5f8218c3b42624641a5163e44551348ea16f&=&format=webp&quality=lossless&width=353&height=614" alt="Vista de la aplicación" width="400">
+  <img 
+    src="https://res.cloudinary.com/dtyp7s5ql/image/upload/v1766111119/Captura_de_pantalla_2025-12-18_220329_xcmdny.png"
+    alt="Vista de la aplicación Wallex"
+    width="800"
+  >
 </p>
-
 
 ## 📋 **Índice**
 1. [🚀 Tecnologías Utilizadas](#-tecnologías-utilizadas)  
 2. [🛠️ Instalación y Configuración](#️-instalación-y-configuración)  
 3. [🗄️ Modelo de Datos](#️-modelo-de-datos)  
-4. [📡 Deploy y Accesos Públicos](#-deploy-y-accesos-publicos)
+4. [📡 Deploy y Accesos Públicos](#-deploy-y-accesos-públicos)
 5. [📌 Tablero de Trello](#-tablero-de-trello)  
 6. [👥 Contribuidores](#-contribuidores)  
 
