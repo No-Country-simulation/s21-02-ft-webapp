@@ -29,7 +29,7 @@ public class SwaggerConfig {
                                 - Backend: [GitHub Backend](https://github.com/No-Country-simulation/s21-02-ft-webapp/tree/delmer-backup/backend)
                                 - Frontend: [GitHub Frontend](https://github.com/No-Country-simulation/s21-02-ft-webapp/tree/delmer-backup/frontend)
                                 
-                                🚀 **Despliegue Frontend:** [Vercel](https://s21-02-ft-webapp-nlg4145xm-delmers-projects-b7fd56d9.vercel.app/)
+                                🚀 **Despliegue Frontend:** [Vercel](https://wallex-rose.vercel.app//)
                                 """)
                         .contact(new Contact()
                                 .name("Equipo Wallex")
