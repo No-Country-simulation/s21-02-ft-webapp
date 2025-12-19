@@ -1,6 +1,13 @@
 <h1 align="center">
-  <a href=""><img src="https://media.discordapp.net/attachments/1338664601998594108/1346274826494545962/image.png?ex=67d02963&is=67ced7e3&hm=1db9744e90a883f87b2a31b25de1fc851053b31b5aaf66954c97660baae19f23&=&format=webp&quality=lossless&width=585&height=276" width="400" alt="Logo"></a>
+  <a href="https://wallex-rose.vercel.app/" target="_blank">
+    <img 
+      src="https://res.cloudinary.com/dtyp7s5ql/image/upload/v1766110825/image_sbhdoo.png"
+      width="400"
+      alt="Logo Wallex"
+    >
+  </a>
 </h1>
+
 
 <h3 align="center">📌 Alcance del Proyecto: Wallex - Sistema de Gestión Financiera</h3>
 <p align="center">
@@ -27,7 +34,7 @@ El objetivo principal del sistema es facilitar la gestión del dinero de manera 
 1. [🚀 Tecnologías Utilizadas](#-tecnologías-utilizadas)  
 2. [🛠️ Instalación y Configuración](#️-instalación-y-configuración)  
 3. [🗄️ Modelo de Datos](#️-modelo-de-datos)  
-4. [📡 Documentación de la API](#-documentación-de-la-api)
+4. [📡 Deploy y Accesos Públicos](#-deploy-y-accesos-publicos)
 5. [📌 Tablero de Trello](#-tablero-de-trello)  
 6. [👥 Contribuidores](#-contribuidores)  
 
@@ -221,9 +228,30 @@ Para asegurar consistencia en los estados y tipos de datos, se definen los sigui
 
 ---
 
-## 📚 **Documentación de la API**  
-La API está documentada con **Postman**. Accede en:  
-🔗 [Postman](https://documenter.getpostman.com/view/27409208/2sAYdeLBfe)  
+## 🌐 Deploy y Accesos Públicos
+
+El proyecto cuenta con **deploys activos** tanto para el Backend como para el Frontend, permitiendo a cualquier interesado **explorar la aplicación y su API sin configuraciones locales**.
+
+### 🚀 Backend – Render
+- **API en producción:**  
+  https://wallex-backend.onrender.com
+- **Documentación Swagger (OpenAPI):**  
+  https://wallex-backend.onrender.com/swagger-ui/index.html#/
+
+Desde Swagger es posible:
+- Visualizar todos los endpoints disponibles.
+- Probar las APIs directamente desde el navegador.
+- Validar flujos de autenticación y operaciones principales.
+
+### 💻 Frontend – Vercel
+- **Aplicación Web:**  
+  https://wallex-rose.vercel.app/
+
+La aplicación incluye **usuarios demo**, lo que permite:
+- Navegar por las principales funcionalidades.
+- Simular operaciones financieras.
+- Evaluar la experiencia de usuario sin necesidad de registro previo.
+
 
 ---
 
