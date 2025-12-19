@@ -38,10 +38,10 @@ public class SwaggerConfig {
                 )
                 // Servidores disponibles
                 .addServersItem(new Server()
-                        .url("http://localhost:9091")
+                        .url("http://localhost:8080")
                         .description("Servidor de Desarrollo Local"))
                 .addServersItem(new Server()
-                        .url("https://tu-produccion-url.com")
+                        .url("https://wallex-backend.onrender.com//swagger-ui/index.html")
                         .description("Servidor de Producción"))
                 .addSecurityItem(new SecurityRequirement().addList("JWT"))
                 .components(new Components()
